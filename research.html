@@ -444,15 +444,17 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
   document.querySelectorAll('.aos').forEach(el => obs.observe(el));
 
 function toggleMenu() {
-  const menu = document.getElementById('mobileMenu');
-  menu.classList.toggle('open');
+  var menu = document.getElementById('mobileMenu');
+  if (menu) menu.classList.toggle('open');
 }
-document.addEventListener('click', function(e) {
-  const menu = document.getElementById('mobileMenu');
-  const btn = document.getElementById('hamburger');
-  if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
-    menu.classList.remove('open');
-  }
+document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('click', function(e) {
+    var menu = document.getElementById('mobileMenu');
+    var btn = document.getElementById('hamburger');
+    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('open');
+    }
+  });
 });
 
 </script>

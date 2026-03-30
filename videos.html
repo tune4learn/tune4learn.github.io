@@ -69,9 +69,9 @@ body{font-family:'Nunito',sans-serif;background:var(--offwhite);color:var(--text
 .yt-thumb{position:relative;padding-bottom:56.25%;height:0;background:#111;cursor:pointer;overflow:hidden;}
 .yt-thumb img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:transform 0.3s;}
 .yt-thumb:hover img{transform:scale(1.05);}
-.play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.1);transition:background 0.2s;}
+.play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.1);transition:background 0.2s;pointer-events:none;}
 .yt-thumb:hover .play-overlay{background:rgba(0,0,0,0.25);}
-.play-btn{width:54px;height:54px;background:rgba(255,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;box-shadow:0 4px 16px rgba(0,0,0,0.3);transition:transform 0.2s;}
+.play-btn{width:54px;height:54px;background:rgba(255,0,0,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;box-shadow:0 4px 16px rgba(0,0,0,0.3);transition:transform 0.2s;pointer-events:none;}
 .yt-thumb:hover .play-btn{transform:scale(1.15);}
 .yt-thumb iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
 .v-info{padding:12px 14px 14px;}
@@ -760,14 +760,17 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
     });
   });
 
-  // Thumbnail → iframe
+  // Thumbnail → iframe (mobile + desktop fix)
   document.querySelectorAll(".yt-thumb").forEach(t => {
-    t.addEventListener("click", function() {
-      if (this.dataset.loaded) return;
-      this.dataset.loaded = "1";
+    t.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.querySelector("iframe")) return;
       const id = this.dataset.id;
+      if (!id) return;
       this.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1" allow="autoplay;encrypted-media;fullscreen" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"></iframe>`;
     });
+  });
   });
 
   // World Days verisi
@@ -869,15 +872,17 @@ document.getElementById('pdfModal').addEventListener('click', function(e) {
 
 
 function toggleMenu() {
-  const menu = document.getElementById('mobileMenu');
-  menu.classList.toggle('open');
+  var menu = document.getElementById('mobileMenu');
+  if (menu) menu.classList.toggle('open');
 }
-document.addEventListener('click', function(e) {
-  const menu = document.getElementById('mobileMenu');
-  const btn = document.getElementById('hamburger');
-  if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
-    menu.classList.remove('open');
-  }
+document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('click', function(e) {
+    var menu = document.getElementById('mobileMenu');
+    var btn = document.getElementById('hamburger');
+    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.remove('open');
+    }
+  });
 });
 
 </script>
