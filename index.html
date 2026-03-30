@@ -248,6 +248,20 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
 .idx-card p{font-size:0.85rem;opacity:0.88;line-height:1.55;font-weight:600;flex:1;}
 .idx-arrow{font-size:0.82rem;font-weight:900;opacity:0.9;}
 
+
+/* HAMBURGER MENU */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;z-index:1000;}
+.hamburger span{display:block;width:24px;height:2.5px;background:var(--text);border-radius:2px;transition:all 0.3s;}
+.mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(16px);border-bottom:2px solid #eee;z-index:998;padding:1rem 5%;flex-direction:column;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{text-decoration:none;color:var(--text);font-weight:900;font-size:1rem;padding:12px 16px;border-radius:12px;transition:all 0.2s;}
+.mobile-menu a:hover,.mobile-menu a.active{background:var(--sky);color:white;}
+.mobile-menu .mob-tpt{background:var(--red);color:white;text-align:center;margin-top:4px;}
+@media(max-width:760px){
+  .hamburger{display:flex;}
+  .nav-links{display:none!important;}
+}
+
 </style>
 <style>
   @font-face {font-display:block;font-family:Roboto;src:url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/7529907e9eaf8ebb5220c5f9850e3811.woff2) format("woff2")}
@@ -449,7 +463,20 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
 
 <footer><div class="footer-inner"><div class="footer-grid"><div><img src="logo.png" alt="Tune4Learn" class="footer-logo"><p class="footer-brand">Educational songs and animated videos for children ages 3–8. Making learning joyful through the power of music.</p><div class="soc-row"><a href="https://youtube.com/@tune4learn" target="_blank" class="soc-btn">▶</a><a href="https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh" target="_blank" class="soc-btn">🎵</a><a href="https://music.apple.com/us/artist/tune4learn/1781419056" target="_blank" class="soc-btn">🍎</a><a href="https://www.tiktok.com/@tune4learn" target="_blank" class="soc-btn">📱</a><a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" class="soc-btn">📚</a></div></div><div class="footer-col"><h5>For Kids</h5><ul><li><a href="videos.html">Videos &amp; Songs</a></li><li><a href="videos.html">Coloring Books</a></li><li><a href="videos.html">World Days</a></li><li><a href="https://youtube.com/@tune4learn" target="_blank">YouTube</a></li></ul></div><div class="footer-col"><h5>For Teachers</h5><ul><li><a href="teachers.html">Activity Packs</a></li><li><a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank">TPT Store</a></li><li><a href="research.html">Research &amp; Blog</a></li></ul></div><div class="footer-col"><h5>Follow Us</h5><ul><li><a href="https://youtube.com/@tune4learn" target="_blank">YouTube</a></li><li><a href="https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh" target="_blank">Spotify</a></li><li><a href="https://music.apple.com/us/artist/tune4learn/1781419056" target="_blank">Apple Music</a></li><li><a href="https://www.instagram.com/Tune4Learn" target="_blank">Instagram</a></li><li><a href="https://www.tiktok.com/@tune4learn" target="_blank">TikTok</a></li></ul></div></div><div class="footer-bottom"><p>© 2026 Tune4Learn · All rights reserved</p></div></div></footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+function toggleMenu() {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('mobileMenu');
+  const btn = document.getElementById('hamburger');
+  if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+</script><script>
   const nav=document.getElementById('navbar');
   window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
   const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in');}),{threshold:0.12,rootMargin:'0px 0px -36px 0px'});
