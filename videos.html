@@ -725,157 +725,152 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
   </div>
 </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  let activeCat = "all", activeAge = "all";
 
-  function applyFilters() {
-    const cards = document.querySelectorAll(".v-card");
-    let n = 0;
-    cards.forEach(c => {
-      const catOk = activeCat === "all" || c.dataset.cat === activeCat;
-      const ageOk = activeAge === "all" || c.dataset.age.includes(activeAge);
-      const show = catOk && ageOk;
-      c.classList.toggle("hidden", !show);
-      if (show) n++;
-    });
-    document.getElementById("count").textContent = n + " song" + (n !== 1 ? "s" : "");
-    document.getElementById("empty").classList.toggle("show", n === 0);
-  }
+</body>
+</html><script>
+function toggleMenu() {
+  var menu = document.getElementById('mobileMenu');
+  if (menu) menu.classList.toggle('open');
+}
 
-  document.querySelectorAll(".fbtn:not(.age-btn)").forEach(b => {
-    b.addEventListener("click", () => {
-      document.querySelectorAll(".fbtn:not(.age-btn)").forEach(x => x.classList.remove("active"));
-      b.classList.add("active");
-      activeCat = b.dataset.filter;
-      applyFilters();
-    });
-  });
-
-  document.querySelectorAll(".age-btn").forEach(b => {
-    b.addEventListener("click", () => {
-      document.querySelectorAll(".age-btn").forEach(x => x.classList.remove("active"));
-      b.classList.add("active");
-      activeAge = b.dataset.age;
-      applyFilters();
-    });
-  });
-
-  // Thumbnail → iframe (mobile + desktop fix)
-  document.querySelectorAll(".yt-thumb").forEach(t => {
-    t.addEventListener("click", function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (this.querySelector("iframe")) return;
-      const id = this.dataset.id;
-      if (!id) return;
-      this.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1" allow="autoplay;encrypted-media;fullscreen" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"></iframe>`;
-    });
-  });
-
-  // World Days verisi
-  const WORLD_DAYS = [
-    {date:"Jan 4",  emoji:"🖐️", title:"World Braille Day",              vid:"mY6tfeNutLQ"},
-    {date:"Feb 11", emoji:"🔬", title:"Women & Girls in Science Day",    vid:"DItuuTXwd6s"},
-    {date:"Mar 4",  emoji:"🛠️", title:"World Engineering Day",          vid:"a1KlR2jL4mY"},
-    {date:"Mar 14", emoji:"🔢", title:"International Day of Mathematics",vid:"_gxOLYe7Kp8"},
-    {date:"Mar 20", emoji:"🌸", title:"Spring Equinox",                  vid:"zxBJ54lD04Q"},
-    {date:"Mar 21", emoji:"🧊", title:"World Day for Glaciers",          vid:"Ym44okqehWM"},
-    {date:"Mar 25", emoji:"🧇", title:"Waffle Day",                      vid:"76mujwgF98E"},
-    {date:"Apr 2",  emoji:"💙", title:"World Autism Awareness Day",      vid:"BwUGbZgWr2Y"},
-    {date:"Apr 7",  emoji:"💚", title:"World Health Day",                vid:"b8O_dVbvI0w"},
-    {date:"Apr 22", emoji:"🌍", title:"Earth Day",                       vid:"foJWDSjK9kA"},
-    {date:"May 5",  emoji:"🧼", title:"World Hand Hygiene Day",          vid:"HPO3FSgBE9c"},
-    {date:"May 20", emoji:"🐝", title:"World Bee Day",                   vid:"Nrp-bJxOs8U"},
-    {date:"Jun 21", emoji:"👨‍👧", title:"Father's Day",                   vid:"c8ztV2r547s"},
-    {date:"Sep 20", emoji:"🌿", title:"World Cleanup Day",               vid:"WiDmPsvnAA8"},
-    {date:"Sep 22", emoji:"🌓", title:"Autumn Equinox",                  vid:"YJot-PYxZbE"},
-    {date:"Oct 5",  emoji:"👩‍🏫", title:"World Teachers' Day",            vid:"ir8wiwSBv3o"},
-    {date:"Oct 6",  emoji:"🪨", title:"World Geodiversity Day",          vid:"L-k2IL-2_Ds"},
-    {date:"Oct 11", emoji:"👧", title:"International Day of the Girl",   vid:"RzXV94EhO4g"},
-    {date:"Oct 29", emoji:"💻", title:"World Coding Day",                vid:"pOHMN2IY9T8"},
-    {date:"Oct 31", emoji:"🎃", title:"Halloween",                       vid:"HPZ88JwLqVU"},
-    {date:"Nov 20", emoji:"🌍", title:"World Children's Day",            vid:"-BRgbQrGc5s"},
-    {date:"Nov 21", emoji:"👋", title:"World Hello Day",                 vid:"F09Kz6SDhpI"},
-    {date:"Dec 10", emoji:"⚖️", title:"Human Rights Day",                vid:"L4wkp_vJggg"},
-    {date:"Dec 11", emoji:"⛰️", title:"International Mountain Day",      vid:"-cs3DnlUlbw"},
-  ];
-
-  function renderWorldDays() {
-    const today = new Date();
-    const year = today.getFullYear();
-
-    // Her güne kaç gün kaldığını hesapla
-    const days = WORLD_DAYS.map(d => {
-      const parts = d.date.split(" ");
-      const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-      let target = new Date(year, months[parts[0]], parseInt(parts[1]));
-      // Geçtiyse gelecek yıla al
-      if (target < today) target = new Date(year + 1, months[parts[0]], parseInt(parts[1]));
-      const diff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
-      return {...d, diff, target};
-    });
-
-    // Yakına göre sırala
-    days.sort((a, b) => a.diff - b.diff);
-
-    const grid = document.getElementById("wd-grid");
-    grid.innerHTML = days.map((d, i) => {
-      const cls = i === 0 ? "wd-card next-up" : d.diff <= 14 ? "wd-card soon" : "wd-card";
-      const daysLabel = d.diff === 0 ? "Today! 🎉" : d.diff === 1 ? "Tomorrow!" : d.diff + " days left";
-      return `<div class="${cls}" onclick="scrollToVideo('${d.vid}')">
-        <div class="wd-days-left">${daysLabel}</div>
-        <div class="wd-date">${d.date}</div>
-        <div class="wd-emoji">${d.emoji}</div>
-        <div class="wd-title">${d.title}</div>
-      </div>`;
-    }).join("");
-  }
-
-  function scrollToVideo(id) {
-    activeCat = "all"; activeAge = "all";
-    document.querySelectorAll(".fbtn:not(.age-btn)").forEach(x => x.classList.remove("active"));
-    document.querySelector('[data-filter="all"]').classList.add("active");
-    document.querySelectorAll(".age-btn").forEach(x => x.classList.remove("active"));
-    document.querySelector('[data-age="all"]').classList.add("active");
-    applyFilters();
-    const card = document.querySelector(`[data-id="${id}"]`);
-    if (card) {
+function scrollToVideo(id) {
+  var sec = document.getElementById("videos");
+  if (sec) sec.scrollIntoView({behavior:"smooth"});
+  setTimeout(function() {
+    var card = document.querySelector('[data-id="' + id + '"]');
+    if (card && card.closest(".v-card")) {
       card.closest(".v-card").scrollIntoView({behavior:"smooth", block:"center"});
       card.closest(".v-card").style.borderColor = "var(--sun)";
-      setTimeout(() => card.closest(".v-card").style.borderColor = "", 2000);
+      setTimeout(function() { card.closest(".v-card").style.borderColor = ""; }, 2000);
     }
-    document.getElementById("videos").scrollIntoView({behavior:"smooth"});
-  }
-
-  renderWorldDays();
-
-  window.addEventListener("scroll", () =>
-    document.getElementById("navbar").classList.toggle("scrolled", window.scrollY > 60)
-  );
+  }, 300);
+}
 
 function openPdfModal(title, fileId) {
   document.getElementById('pdfModalTitle').textContent = title;
   document.getElementById('pdfFrame').src = 'https://drive.google.com/file/d/' + fileId + '/preview';
-  document.getElementById('pdfDlBtn').href = 'https://drive.google.com/uc?export=download&id=' + fileId;
+  document.getElementById('pdfDlBtn').href = 'https://drive.google.com/file/d/' + fileId + '/view';
   document.getElementById('pdfModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
 function closePdfModal() {
   document.getElementById('pdfModal').classList.remove('open');
   document.getElementById('pdfFrame').src = '';
   document.body.style.overflow = '';
 }
-document.getElementById('pdfModal').addEventListener('click', function(e) {
-  if (e.target === this) closePdfModal();
-});
 
-
-function toggleMenu() {
-  var menu = document.getElementById('mobileMenu');
-  if (menu) menu.classList.toggle('open');
-}
 document.addEventListener('DOMContentLoaded', function() {
+
+  // VIDEO TIKLAMA
+  document.querySelectorAll('.yt-thumb').forEach(function(thumb) {
+    thumb.addEventListener('click', function() {
+      if (this.querySelector('iframe')) return;
+      var id = this.getAttribute('data-id');
+      if (!id) return;
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1';
+      iframe.allow = 'autoplay; encrypted-media; fullscreen';
+      iframe.allowFullscreen = true;
+      iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:0;';
+      this.innerHTML = '';
+      this.appendChild(iframe);
+    });
+  });
+
+  // FİLTRELER
+  var activeCat = "all", activeAge = "all";
+
+  function applyFilters() {
+    var cards = document.querySelectorAll('.v-card');
+    var n = 0;
+    cards.forEach(function(c) {
+      var catOk = activeCat === "all" || c.dataset.cat === activeCat;
+      var ageOk = activeAge === "all" || c.dataset.age.includes(activeAge);
+      var show = catOk && ageOk;
+      c.classList.toggle('hidden', !show);
+      if (show) n++;
+    });
+    var countEl = document.getElementById('count');
+    if (countEl) countEl.textContent = n + ' song' + (n !== 1 ? 's' : '');
+    var emptyEl = document.getElementById('empty');
+    if (emptyEl) emptyEl.classList.toggle('show', n === 0);
+  }
+
+  document.querySelectorAll('.fbtn:not(.age-btn)').forEach(function(b) {
+    b.addEventListener('click', function() {
+      document.querySelectorAll('.fbtn:not(.age-btn)').forEach(function(x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      activeCat = b.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  document.querySelectorAll('.age-btn').forEach(function(b) {
+    b.addEventListener('click', function() {
+      document.querySelectorAll('.age-btn').forEach(function(x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      activeAge = b.dataset.age;
+      applyFilters();
+    });
+  });
+
+  // WORLD DAYS
+  var WORLD_DAYS = [
+    {date:"Jan 4",  emoji:"🖐️", title:"World Braille Day",         vid:"mY6tfeNutLQ"},
+    {date:"Feb 11", emoji:"🔬", title:"Women & Girls in Science",   vid:"DItuuTXwd6s"},
+    {date:"Mar 4",  emoji:"🛠️", title:"World Engineering Day",     vid:"a1KlR2jL4mY"},
+    {date:"Mar 14", emoji:"🔢", title:"Day of Mathematics",         vid:"_gxOLYe7Kp8"},
+    {date:"Mar 21", emoji:"🧊", title:"World Day for Glaciers",     vid:"Ym44okqehWM"},
+    {date:"Mar 25", emoji:"🧇", title:"Waffle Day",                 vid:"76mujwgF98E"},
+    {date:"Apr 2",  emoji:"💙", title:"Autism Awareness Day",       vid:"BwUGbZgWr2Y"},
+    {date:"Apr 7",  emoji:"💚", title:"World Health Day",           vid:"b8O_dVbvI0w"},
+    {date:"Apr 22", emoji:"🌍", title:"Earth Day",                  vid:"foJWDSjK9kA"},
+    {date:"May 5",  emoji:"🧼", title:"Hand Hygiene Day",           vid:"HPO3FSgBE9c"},
+    {date:"May 20", emoji:"🐝", title:"World Bee Day",              vid:"Nrp-bJxOs8U"},
+    {date:"Sep 20", emoji:"🌿", title:"World Cleanup Day",          vid:"WiDmPsvnAA8"},
+    {date:"Oct 5",  emoji:"👩‍🏫", title:"World Teachers Day",        vid:"ir8wiwSBv3o"},
+    {date:"Oct 11", emoji:"👧", title:"Day of the Girl Child",      vid:"RzXV94EhO4g"},
+    {date:"Oct 29", emoji:"💻", title:"World Coding Day",           vid:"pOHMN2IY9T8"},
+    {date:"Oct 31", emoji:"🎃", title:"Halloween",                  vid:"HPZ88JwLqVU"},
+    {date:"Nov 20", emoji:"🌍", title:"World Children's Day",       vid:"-BRgbQrGc5s"},
+    {date:"Nov 21", emoji:"👋", title:"World Hello Day",            vid:"F09Kz6SDhpI"},
+    {date:"Dec 10", emoji:"⚖️", title:"Human Rights Day",           vid:"L4wkp_vJggg"},
+    {date:"Dec 11", emoji:"⛰️", title:"International Mountain Day", vid:"-cs3DnlUlbw"}
+  ];
+
+  var grid = document.getElementById('wd-grid');
+  if (grid) {
+    var today = new Date();
+    var year = today.getFullYear();
+    var months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    var days = WORLD_DAYS.map(function(d) {
+      var p = d.date.split(' ');
+      var t = new Date(year, months[p[0]], parseInt(p[1]));
+      if (t < today) t = new Date(year+1, months[p[0]], parseInt(p[1]));
+      return {date:d.date, emoji:d.emoji, title:d.title, vid:d.vid, diff:Math.ceil((t-today)/86400000)};
+    });
+    days.sort(function(a,b) { return a.diff-b.diff; });
+    grid.innerHTML = days.map(function(d,i) {
+      var cls = i===0 ? 'wd-card next-up' : d.diff<=14 ? 'wd-card soon' : 'wd-card';
+      var lbl = d.diff===0 ? 'Today!' : d.diff===1 ? 'Tomorrow!' : d.diff+' days';
+      return '<div class="'+cls+'" onclick="scrollToVideo(''+d.vid+'')">'+
+        '<div class="wd-days-left">'+lbl+'</div>'+
+        '<div class="wd-date">'+d.date+'</div>'+
+        '<div class="wd-emoji">'+d.emoji+'</div>'+
+        '<div class="wd-title">'+d.title+'</div></div>';
+    }).join('');
+  }
+
+  // NAVBAR SCROLL
+  var navbar = document.getElementById('navbar');
+  if (navbar) {
+    window.addEventListener('scroll', function() {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+  }
+
+  // HAMBURGER DIŞINA TIKLA KAPAT
   document.addEventListener('click', function(e) {
     var menu = document.getElementById('mobileMenu');
     var btn = document.getElementById('hamburger');
@@ -883,9 +878,14 @@ document.addEventListener('DOMContentLoaded', function() {
       menu.classList.remove('open');
     }
   });
-});
+
+  // PDF MODAL DIŞINA TIKLA KAPAT
+  var pdfModal = document.getElementById('pdfModal');
+  if (pdfModal) {
+    pdfModal.addEventListener('click', function(e) {
+      if (e.target === this) closePdfModal();
+    });
+  }
 
 });
 </script>
-</body>
-</html>
