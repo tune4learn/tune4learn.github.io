@@ -728,95 +728,55 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
 
 </body>
 </html><script>
-function toggleMenu() {
-  var menu = document.getElementById('mobileMenu');
-  if (menu) menu.classList.toggle('open');
-}
+// VIDEO OYNAT
+document.addEventListener("DOMContentLoaded", function() {
 
-function scrollToVideo(id) {
-  var sec = document.getElementById("videos");
-  if (sec) sec.scrollIntoView({behavior:"smooth"});
-  setTimeout(function() {
-    var card = document.querySelector('[data-id="' + id + '"]');
-    if (card && card.closest(".v-card")) {
-      card.closest(".v-card").scrollIntoView({behavior:"smooth", block:"center"});
-      card.closest(".v-card").style.borderColor = "var(--sun)";
-      setTimeout(function() { card.closest(".v-card").style.borderColor = ""; }, 2000);
-    }
-  }, 300);
-}
-
-function openPdfModal(title, fileId) {
-  document.getElementById('pdfModalTitle').textContent = title;
-  document.getElementById('pdfFrame').src = 'https://drive.google.com/file/d/' + fileId + '/preview';
-  document.getElementById('pdfDlBtn').href = 'https://drive.google.com/file/d/' + fileId + '/view';
-  document.getElementById('pdfModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closePdfModal() {
-  document.getElementById('pdfModal').classList.remove('open');
-  document.getElementById('pdfFrame').src = '';
-  document.body.style.overflow = '';
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-
-  // VIDEO TIKLAMA
-  document.querySelectorAll('.yt-thumb').forEach(function(thumb) {
-    thumb.addEventListener('click', function() {
-      if (this.querySelector('iframe')) return;
-      var id = this.getAttribute('data-id');
+  document.querySelectorAll(".yt-thumb").forEach(function(el) {
+    el.onclick = function() {
+      var id = this.getAttribute("data-id");
       if (!id) return;
-      var iframe = document.createElement('iframe');
-      iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1';
-      iframe.allow = 'autoplay; encrypted-media; fullscreen';
-      iframe.allowFullscreen = true;
-      iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:0;';
-      this.innerHTML = '';
-      this.appendChild(iframe);
-    });
+      if (this.querySelector("iframe")) return;
+      this.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1&origin=https://tune4learn.com" allow="autoplay; encrypted-media; fullscreen" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"></iframe>';
+    };
   });
 
-  // FİLTRELER
+  // Filtreler
   var activeCat = "all", activeAge = "all";
 
   function applyFilters() {
-    var cards = document.querySelectorAll('.v-card');
     var n = 0;
-    cards.forEach(function(c) {
-      var catOk = activeCat === "all" || c.dataset.cat === activeCat;
-      var ageOk = activeAge === "all" || c.dataset.age.includes(activeAge);
-      var show = catOk && ageOk;
-      c.classList.toggle('hidden', !show);
+    document.querySelectorAll(".v-card").forEach(function(c) {
+      var show = (activeCat === "all" || c.dataset.cat === activeCat) &&
+                 (activeAge === "all" || (c.dataset.age && c.dataset.age.includes(activeAge)));
+      c.classList.toggle("hidden", !show);
       if (show) n++;
     });
-    var countEl = document.getElementById('count');
-    if (countEl) countEl.textContent = n + ' song' + (n !== 1 ? 's' : '');
-    var emptyEl = document.getElementById('empty');
-    if (emptyEl) emptyEl.classList.toggle('show', n === 0);
+    var el = document.getElementById("count");
+    if (el) el.textContent = n + " song" + (n !== 1 ? "s" : "");
+    var em = document.getElementById("empty");
+    if (em) em.classList.toggle("show", n === 0);
   }
 
-  document.querySelectorAll('.fbtn:not(.age-btn)').forEach(function(b) {
-    b.addEventListener('click', function() {
-      document.querySelectorAll('.fbtn:not(.age-btn)').forEach(function(x) { x.classList.remove('active'); });
-      b.classList.add('active');
-      activeCat = b.dataset.filter;
+  document.querySelectorAll(".fbtn:not(.age-btn)").forEach(function(b) {
+    b.onclick = function() {
+      document.querySelectorAll(".fbtn:not(.age-btn)").forEach(function(x) { x.classList.remove("active"); });
+      this.classList.add("active");
+      activeCat = this.dataset.filter;
       applyFilters();
-    });
+    };
   });
 
-  document.querySelectorAll('.age-btn').forEach(function(b) {
-    b.addEventListener('click', function() {
-      document.querySelectorAll('.age-btn').forEach(function(x) { x.classList.remove('active'); });
-      b.classList.add('active');
-      activeAge = b.dataset.age;
+  document.querySelectorAll(".age-btn").forEach(function(b) {
+    b.onclick = function() {
+      document.querySelectorAll(".age-btn").forEach(function(x) { x.classList.remove("active"); });
+      this.classList.add("active");
+      activeAge = this.dataset.age;
       applyFilters();
-    });
+    };
   });
 
-  // WORLD DAYS
-  var WORLD_DAYS = [
+  // World Days
+  var WD = [
     {date:"Jan 4",  emoji:"🖐️", title:"World Braille Day",         vid:"mY6tfeNutLQ"},
     {date:"Feb 11", emoji:"🔬", title:"Women & Girls in Science",   vid:"DItuuTXwd6s"},
     {date:"Mar 4",  emoji:"🛠️", title:"World Engineering Day",     vid:"a1KlR2jL4mY"},
@@ -839,53 +799,80 @@ document.addEventListener('DOMContentLoaded', function() {
     {date:"Dec 11", emoji:"⛰️", title:"International Mountain Day", vid:"-cs3DnlUlbw"}
   ];
 
-  var grid = document.getElementById('wd-grid');
+  var grid = document.getElementById("wd-grid");
   if (grid) {
-    var today = new Date();
-    var year = today.getFullYear();
-    var months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-    var days = WORLD_DAYS.map(function(d) {
-      var p = d.date.split(' ');
-      var t = new Date(year, months[p[0]], parseInt(p[1]));
-      if (t < today) t = new Date(year+1, months[p[0]], parseInt(p[1]));
-      return {date:d.date, emoji:d.emoji, title:d.title, vid:d.vid, diff:Math.ceil((t-today)/86400000)};
-    });
-    days.sort(function(a,b) { return a.diff-b.diff; });
-    grid.innerHTML = days.map(function(d,i) {
-      var cls = i===0 ? 'wd-card next-up' : d.diff<=14 ? 'wd-card soon' : 'wd-card';
-      var lbl = d.diff===0 ? 'Today!' : d.diff===1 ? 'Tomorrow!' : d.diff+' days';
-      return '<div class="'+cls+'" onclick="scrollToVideo(''+d.vid+'')">'+
-        '<div class="wd-days-left">'+lbl+'</div>'+
-        '<div class="wd-date">'+d.date+'</div>'+
-        '<div class="wd-emoji">'+d.emoji+'</div>'+
-        '<div class="wd-title">'+d.title+'</div></div>';
-    }).join('');
-  }
-
-  // NAVBAR SCROLL
-  var navbar = document.getElementById('navbar');
-  if (navbar) {
-    window.addEventListener('scroll', function() {
-      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    var today = new Date(), year = today.getFullYear();
+    var M = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    WD.map(function(d) {
+      var p = d.date.split(" ");
+      var t = new Date(year, M[p[0]], parseInt(p[1]));
+      if (t < today) t = new Date(year+1, M[p[0]], parseInt(p[1]));
+      d.diff = Math.ceil((t - today) / 86400000);
+      return d;
+    }).sort(function(a,b) { return a.diff - b.diff; }).forEach(function(d, i) {
+      var div = document.createElement("div");
+      div.className = i===0 ? "wd-card next-up" : d.diff<=14 ? "wd-card soon" : "wd-card";
+      div.innerHTML = '<div class="wd-days-left">' + (d.diff===0?"Today!":d.diff===1?"Tomorrow!":d.diff+" days") + '</div>' +
+        '<div class="wd-date">' + d.date + '</div>' +
+        '<div class="wd-emoji">' + d.emoji + '</div>' +
+        '<div class="wd-title">' + d.title + '</div>';
+      div.onclick = function() { scrollToVideo(d.vid); };
+      grid.appendChild(div);
     });
   }
 
-  // HAMBURGER DIŞINA TIKLA KAPAT
-  document.addEventListener('click', function(e) {
-    var menu = document.getElementById('mobileMenu');
-    var btn = document.getElementById('hamburger');
+  // Scroll
+  window.addEventListener("scroll", function() {
+    var nav = document.getElementById("navbar");
+    if (nav) nav.classList.toggle("scrolled", window.scrollY > 60);
+  });
+
+  // Hamburger dışı kapat
+  document.addEventListener("click", function(e) {
+    var menu = document.getElementById("mobileMenu");
+    var btn = document.getElementById("hamburger");
     if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
-      menu.classList.remove('open');
+      menu.classList.remove("open");
     }
   });
 
-  // PDF MODAL DIŞINA TIKLA KAPAT
-  var pdfModal = document.getElementById('pdfModal');
+  // PDF Modal dışı kapat
+  var pdfModal = document.getElementById("pdfModal");
   if (pdfModal) {
-    pdfModal.addEventListener('click', function(e) {
-      if (e.target === this) closePdfModal();
-    });
+    pdfModal.onclick = function(e) { if (e.target === this) closePdfModal(); };
   }
-
 });
+
+// Global fonksiyonlar
+function scrollToVideo(id) {
+  var sec = document.getElementById("videos");
+  if (sec) sec.scrollIntoView({behavior:"smooth"});
+  setTimeout(function() {
+    var el = document.querySelector('[data-id="' + id + '"]');
+    if (el && el.closest(".v-card")) {
+      el.closest(".v-card").scrollIntoView({behavior:"smooth", block:"center"});
+      el.closest(".v-card").style.borderColor = "var(--sun)";
+      setTimeout(function() { el.closest(".v-card").style.borderColor = ""; }, 2000);
+    }
+  }, 400);
+}
+
+function openPdfModal(title, fileId) {
+  document.getElementById("pdfModalTitle").textContent = title;
+  document.getElementById("pdfFrame").src = "https://drive.google.com/file/d/" + fileId + "/preview";
+  document.getElementById("pdfDlBtn").href = "https://drive.google.com/file/d/" + fileId + "/view";
+  document.getElementById("pdfModal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closePdfModal() {
+  document.getElementById("pdfModal").classList.remove("open");
+  document.getElementById("pdfFrame").src = "";
+  document.body.style.overflow = "";
+}
+
+function toggleMenu() {
+  var menu = document.getElementById("mobileMenu");
+  if (menu) menu.classList.toggle("open");
+}
 </script>
