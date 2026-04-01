@@ -373,13 +373,16 @@ const PREVIEW_IDS = {
   "World Cleanup Day": "12zRl7aaoLdAHSwTcivN2Tp5ZHSxzGAOr",
   "Back to School Coloring Book": "1_zX5zlOtb7mrqu98x7szVYqZM4-5vilC",
   "Waffle Day": "1zM_mWkwqQQwXadtQgnAPj3b3U4nttA01",
-  "Blue Light Sammy – Activity Book": "14nekopHCBWGw5KbjyRGgrhDHAfoLcsQ4",
-  "Blue Light Sammy – Teacher Guide":  "1LoXVhYsDl6iZkhnUj-WyRcVH7BMTueWd",
 };
 
 const PACKS = [
-  { title:"Blue Light Sammy – Activity Book",  emoji:"💙", cat:"inclusion", label:"Inclusion", age:"Pre-K · K–2", subtitle:"World Autism Awareness Day · Apr 2", drive:"https://drive.google.com/uc?export=download&id=14nekopHCBWGw5KbjyRGgrhDHAfoLcsQ4", vid:"BwUGbZgWr2Y" },
-  { title:"Blue Light Sammy – Teacher Guide",   emoji:"📋", cat:"inclusion", label:"Inclusion", age:"Pre-K · K–2", subtitle:"World Autism Awareness Day · Apr 2", drive:"https://drive.google.com/uc?export=download&id=1LoXVhYsDl6iZkhnUj-WyRcVH7BMTueWd", vid:"BwUGbZgWr2Y" },
+  { title:"Blue Light Sammy", emoji:"💙", cat:"inclusion", label:"Inclusion", age:"Pre-K · K–2", subtitle:"World Autism Awareness Day · Apr 2", vid:"BwUGbZgWr2Y",
+    drive:"https://drive.google.com/uc?export=download&id=14nekopHCBWGw5KbjyRGgrhDHAfoLcsQ4",
+    extra:[
+      {label:"Activity Book", previewId:"14nekopHCBWGw5KbjyRGgrhDHAfoLcsQ4"},
+      {label:"Teacher Guide", previewId:"1LoXVhYsDl6iZkhnUj-WyRcVH7BMTueWd"}
+    ]
+  },
   { title:"Drip Drip Drip",                     emoji:"🧊", cat:"science",  label:"Science",     age:"Pre-K · K–2", subtitle:"World Day for Glaciers · Mar 21",  drive:"https://drive.google.com/uc?export=download&id=1ZaNrlcDenzl-YcnxAabb1d9kBSkZc7pl", vid:"Ym44okqehWM" },
   { title:"International Day of Mathematics",    emoji:"🔢", cat:"math",     label:"Math",        age:"Pre-K · K–2", subtitle:"Pi Day · Mar 14",                  drive:"https://drive.google.com/uc?export=download&id=14l-fbSbc72FXutlVgsnOfJiOdHRjsftj", vid:"_gxOLYe7Kp8" },
   { title:"World Engineering Day",               emoji:"🛠️", cat:"science",  label:"STEM",        age:"K–2",         subtitle:"Mar 4",                            drive:"https://drive.google.com/uc?export=download&id=11_Ocijbk2kkGP4CkJPAkEPJMsS3JjGDY", vid:"a1KlR2jL4mY" },
@@ -417,9 +420,17 @@ function renderPacks() {
       const [bg,col] = TAG[p.cat] || ["#eee","#333"];
       const vidBtn = p.vid ? `<button onclick="openVidModal('${p.title}', '${p.vid}')" class="pack-btn pack-btn-vid" style="border:none;cursor:pointer;">▶ Watch</button>` : "";
       const previewId = PREVIEW_IDS[p.title];
-      const packBtn = previewId 
-        ? `<button onclick="openPdfModal('${p.title}', '${previewId}')" class="pack-btn" style="border:none;cursor:pointer;">👁 Preview & Download</button>`
-        : `<a href="${p.drive}" target="_blank" class="pack-btn">📥 Pack</a>`;
+      let packBtns = '';
+      if (p.extra) {
+        // Birden fazla dosya — her biri için ayrı buton
+        packBtns = p.extra.map(function(e) {
+          return `<button onclick="openPdfModal('${e.label}', '${e.previewId}')" class="pack-btn" style="border:none;cursor:pointer;font-size:0.75rem;">👁 ${e.label}</button>`;
+        }).join('');
+      } else if (previewId) {
+        packBtns = `<button onclick="openPdfModal('${p.title}', '${previewId}')" class="pack-btn" style="border:none;cursor:pointer;">👁 Preview & Download</button>`;
+      } else {
+        packBtns = `<a href="${p.drive}" target="_blank" class="pack-btn">📥 Pack</a>`;
+      }
       return `<div class="pack-card">
         <div class="pack-emoji">${p.emoji}</div>
         <div class="pack-body">
@@ -429,7 +440,7 @@ function renderPacks() {
         </div>
         <div class="pack-btns">
           ${vidBtn}
-          ${packBtn}
+          ${packBtns}
         </div>
       </div>`;
     }).join("");
