@@ -180,19 +180,6 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
 .new-badge{display:inline-block;background:#FF4757;color:white;font-size:0.6rem;font-weight:900;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;vertical-align:middle;margin-left:6px;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
 
-
-.wd-sec{padding:3rem 4vw 0;}
-.wd-sec h2{font-family:'Fredoka One',cursive;font-size:1.8rem;color:var(--dark);margin-bottom:1.2rem;}
-.wd-grid-t{display:flex;gap:0.8rem;overflow-x:auto;padding-bottom:1rem;margin-bottom:2rem;scrollbar-width:thin;-webkit-overflow-scrolling:touch;}
-.wd-card-t{background:white;border:2px solid rgba(0,0,0,0.07);border-radius:16px;padding:1rem 1.2rem;cursor:pointer;transition:all 0.2s;min-width:130px;flex-shrink:0;text-align:center;}
-.wd-card-t:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
-.wd-card-t.next-up{border-color:var(--sun);background:linear-gradient(135deg,#fff9e6,#fff);}
-.wd-card-t.soon{border-color:var(--sky);background:linear-gradient(135deg,#e8f8ff,#fff);}
-.wd-days-left-t{font-size:0.65rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px;}
-.wd-emoji-t{font-size:1.6rem;margin:4px 0;}
-.wd-title-t{font-size:0.75rem;font-weight:800;color:var(--dark);line-height:1.3;}
-.wd-date-t{font-size:0.65rem;color:var(--muted);font-weight:700;margin-top:3px;}
-
 </style>
 <style>
   @font-face {font-display:block;font-family:Roboto;src:url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/7529907e9eaf8ebb5220c5f9850e3811.woff2) format("woff2")}
@@ -393,61 +380,6 @@ const PREVIEW_IDS = {
   "Waffle Day": "1zM_mWkwqQQwXadtQgnAPj3b3U4nttA01",
 };
 
-
-// World Days Takvimi
-(function() {
-  var WD = [
-    {date:"Jan 4",  emoji:"🖐️", title:"World Braille Day",              vid:"mY6tfeNutLQ"},
-    {date:"Feb 11", emoji:"🔬", title:"Women & Girls in Science Day",    vid:"DItuuTXwd6s"},
-    {date:"Mar 4",  emoji:"🛠️", title:"World Engineering Day",          vid:"a1KlR2jL4mY"},
-    {date:"Mar 14", emoji:"🔢", title:"International Day of Mathematics",vid:"_gxOLYe7Kp8"},
-    {date:"Mar 20", emoji:"🌸", title:"Spring Equinox",                  vid:"zxBJ54lD04Q"},
-    {date:"Mar 21", emoji:"🧊", title:"World Day for Glaciers",          vid:"Ym44okqehWM"},
-    {date:"Mar 25", emoji:"🧇", title:"Waffle Day",                      vid:"76mujwgF98E"},
-    {date:"Apr 2",  emoji:"💙", title:"World Autism Awareness Day",      vid:"BwUGbZgWr2Y"},
-    {date:"Apr 7",  emoji:"💚", title:"World Health Day",                vid:"b8O_dVbvI0w"},
-    {date:"Apr 12", emoji:"🚀", title:"Space Flight Day",                vid:"ERDCuvvseD8"},
-    {date:"Apr 22", emoji:"🌍", title:"Earth Day",                       vid:"foJWDSjK9kA"},
-    {date:"May 5",  emoji:"🧼", title:"World Hand Hygiene Day",          vid:"HPO3FSgBE9c"},
-    {date:"May 20", emoji:"🐝", title:"World Bee Day",                   vid:"Nrp-bJxOs8U"},
-    {date:"Jun 21", emoji:"👨‍👧", title:"Father's Day",                   vid:"c8ztV2r547s"},
-    {date:"Sep 20", emoji:"🌿", title:"World Cleanup Day",               vid:"WiDmPsvnAA8"},
-    {date:"Sep 22", emoji:"🌓", title:"Autumn Equinox",                  vid:"YJot-PYxZbE"},
-    {date:"Oct 5",  emoji:"👩‍🏫", title:"World Teachers' Day",            vid:"ir8wiwSBv3o"},
-    {date:"Oct 6",  emoji:"🪨", title:"World Geodiversity Day",          vid:"L-k2IL-2_Ds"},
-    {date:"Oct 11", emoji:"👧", title:"International Day of the Girl",   vid:"RzXV94EhO4g"},
-    {date:"Oct 29", emoji:"💻", title:"World Coding Day",                vid:"pOHMN2IY9T8"},
-    {date:"Oct 31", emoji:"🎃", title:"Halloween",                       vid:"HPZ88JwLqVU"},
-    {date:"Nov 20", emoji:"🌍", title:"World Children's Day",            vid:"-BRgbQrGc5s"},
-    {date:"Nov 21", emoji:"👋", title:"World Hello Day",                 vid:"F09Kz6SDhpI"},
-    {date:"Dec 10", emoji:"⚖️", title:"Human Rights Day",                vid:"L4wkp_vJggg"},
-    {date:"Dec 11", emoji:"⛰️", title:"International Mountain Day",      vid:"-cs3DnlUlbw"},
-  ];
-
-  var grid = document.getElementById('wd-grid-t');
-  if (!grid) return;
-
-  var today = new Date(), year = today.getFullYear();
-  var M = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-
-  WD.map(function(d) {
-    var p = d.date.split(' ');
-    var t = new Date(year, M[p[0]], parseInt(p[1]));
-    if (t < today) t = new Date(year+1, M[p[0]], parseInt(p[1]));
-    d.diff = Math.ceil((t - today) / 86400000);
-    return d;
-  }).sort(function(a,b) { return a.diff - b.diff; })
-  .forEach(function(d, i) {
-    var cls = i===0 ? 'wd-card-t next-up' : d.diff<=14 ? 'wd-card-t soon' : 'wd-card-t';
-    var lbl = d.diff===0 ? 'Today! 🎉' : d.diff===1 ? 'Tomorrow!' : d.diff+' days';
-    var div = document.createElement('div');
-    div.className = cls;
-    div.innerHTML = '<div class="wd-days-left-t">'+lbl+'</div><div class="wd-emoji-t">'+d.emoji+'</div><div class="wd-title-t">'+d.title+'</div><div class="wd-date-t">'+d.date+'</div>';
-    div.onclick = function() { openVidModal(d.title, d.vid); };
-    grid.appendChild(div);
-  });
-})();
-
 const PACKS = [
   { title:"My Very Excellent Mother – Planet Song 🆕", emoji:"🚀", cat:"science", label:"Science", age:"Pre-K · K–2", subtitle:"Space Flight Day · Apr 12", vid:"ERDCuvvseD8",
     drive:"https://drive.google.com/drive/folders/1HDB4mO8JlW7Tv9-54IjAvtzTFfwBqu7J",
@@ -538,6 +470,7 @@ document.addEventListener("DOMContentLoaded", () => {
     {date:"Mar 25", emoji:"🧇", title:"Waffle Day",                       vid:"76mujwgF98E"},
     {date:"Apr 2",  emoji:"💙", title:"World Autism Awareness Day",       vid:"BwUGbZgWr2Y"},
     {date:"Apr 7",  emoji:"💚", title:"World Health Day",                 vid:"b8O_dVbvI0w"},
+    {date:"Apr 12", emoji:"🚀", title:"Space Flight Day",                 vid:"ERDCuvvseD8"},
     {date:"Apr 22", emoji:"🌍", title:"Earth Day",                        vid:"foJWDSjK9kA"},
     {date:"May 5",  emoji:"🧼", title:"World Hand Hygiene Day",           vid:"HPO3FSgBE9c"},
     {date:"May 20", emoji:"🐝", title:"World Bee Day",                    vid:"Nrp-bJxOs8U"},
@@ -561,7 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (t < today) t = new Date(year+1, months[p[0]], parseInt(p[1]));
       const diff = Math.ceil((t - today) / 86400000);
       return {...d, diff};
-    }).sort((a,b) => a.diff - b.diff).slice(0, 8);
+    }).sort((a,b) => a.diff - b.diff);
 
     document.getElementById("wd-strip").innerHTML = sorted.map((d,i) => {
       const daysLabel = d.diff === 0 ? "Today! 🎉" : d.diff === 1 ? "Tomorrow!" : d.diff + " days";
