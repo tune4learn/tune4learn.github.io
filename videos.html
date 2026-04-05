@@ -130,7 +130,7 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
 
 
 /* HAMBURGER MENU */
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;z-index:1000;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;z-index:1000;} @media(max-width:760px){.hamburger{display:flex;}.nav-links{display:none!important;}}
 .hamburger span{display:block;width:24px;height:2.5px;background:var(--text);border-radius:2px;transition:all 0.3s;}
 .mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(16px);border-bottom:2px solid #eee;z-index:998;padding:1rem 5%;flex-direction:column;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,0.1);}
 .mobile-menu.open{display:flex;}
@@ -142,7 +142,6 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
   .nav-links{display:none!important;}
 }
 
-.new-badge{display:inline-block;background:#FF4757;color:white;font-size:0.6rem;font-weight:900;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;vertical-align:middle;margin-left:6px;animation:blink 2s infinite;}@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.5;}}
 </style>
 <style>
   @font-face {font-display:block;font-family:Roboto;src:url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/7529907e9eaf8ebb5220c5f9850e3811.woff2) format("woff2")}
@@ -574,17 +573,6 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
                 <p class="v-sub">World Health Day · April 7</p>
             </div>
         </div>
-        <div class="v-card" data-cat="science" data-age="prek k2">
-            <div class="yt-thumb" data-id="ERDCuvvseD8">
-                <img src="https://i.ytimg.com/vi/ERDCuvvseD8/hqdefault.jpg" alt="My Very Excellent Mother" loading="lazy">
-                <div class="play-overlay"><span class="play-btn">▶</span></div>
-            </div>
-            <div class="v-info">
-                <span class="v-tag">🚀 Science</span>
-                <h3>My Very Excellent Mother <span class="new-badge">New</span></h3>
-                <p class="v-sub">Space Flight Day · Apr 12</p>
-            </div>
-        </div>
         <div class="v-card" data-cat="inclusion" data-age="prek k2">
             <div class="yt-thumb" data-id="BwUGbZgWr2Y">
                 <img src="https://i.ytimg.com/vi/BwUGbZgWr2Y/hqdefault.jpg" alt="Blue Light Sammy" loading="lazy">
@@ -754,9 +742,7 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
 document.addEventListener("DOMContentLoaded", function() {
 
   document.querySelectorAll(".yt-thumb").forEach(function(el) {
-    el.onclick = function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+    el.onclick = function() {
       var id = this.getAttribute("data-id");
       if (!id) return;
       if (this.querySelector("iframe")) return;
@@ -805,7 +791,6 @@ document.addEventListener("DOMContentLoaded", function() {
     var WD_DATES = {
       "mY6tfeNutLQ": "Jan 4",  "DItuuTXwd6s": "Feb 11", "a1KlR2jL4mY": "Mar 4",
       "_gxOLYe7Kp8": "Mar 14", "Ym44okqehWM": "Mar 21", "76mujwgF98E": "Mar 25",
-      "ERDCuvvseD8": "Apr 12",
       "BwUGbZgWr2Y": "Apr 2",  "b8O_dVbvI0w": "Apr 7",  "foJWDSjK9kA": "Apr 22",
       "HPO3FSgBE9c": "May 5",  "Nrp-bJxOs8U": "May 20", "c8ztV2r547s": "Jun 21",
       "WiDmPsvnAA8": "Sep 20", "YJot-PYxZbE": "Sep 22", "ir8wiwSBv3o": "Oct 5",
@@ -845,7 +830,6 @@ document.addEventListener("DOMContentLoaded", function() {
     {date:"Mar 25", emoji:"🧇", title:"Waffle Day",                 vid:"76mujwgF98E"},
     {date:"Apr 2",  emoji:"💙", title:"Autism Awareness Day",       vid:"BwUGbZgWr2Y"},
     {date:"Apr 7",  emoji:"💚", title:"World Health Day",           vid:"b8O_dVbvI0w"},
-    {date:"Apr 12", emoji:"🚀", title:"Space Flight Day",             vid:"ERDCuvvseD8"},
     {date:"Apr 22", emoji:"🌍", title:"Earth Day",                  vid:"foJWDSjK9kA"},
     {date:"May 5",  emoji:"🧼", title:"Hand Hygiene Day",           vid:"HPO3FSgBE9c"},
     {date:"May 20", emoji:"🐝", title:"World Bee Day",              vid:"Nrp-bJxOs8U"},
