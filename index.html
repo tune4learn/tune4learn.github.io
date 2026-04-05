@@ -18,7 +18,7 @@ html{scroll-behavior:smooth;}
 body{font-family:'Nunito',sans-serif;background:var(--offwhite);color:var(--text);overflow-x:hidden;}
 
 /* ── NAVBAR ── */
-.navbar{position:fixed;top:0;left:0;right:0;z-index:999;height:70px;display:flex;align-items:center;padding:0 4vw;gap:2rem;transition:background 0.3s,box-shadow 0.3s;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);}.navbar.scrolled{background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);box-shadow:0 2px 20px rgba(0,0,0,0.08);}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:999;height:70px;display:flex;align-items:center;padding:0 4vw;gap:2rem;transition:background 0.3s,box-shadow 0.3s;}.navbar.scrolled{background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);box-shadow:0 2px 20px rgba(0,0,0,0.08);}
 .navbar.scrolled{background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);box-shadow:0 2px 20px rgba(0,0,0,0.08);}
 .nav-logo img{height:44px;width:auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,0.25));}
 .nav-links{display:flex;align-items:center;gap:4px;list-style:none;margin-left:auto;}
@@ -251,9 +251,9 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
 
 /* HAMBURGER MENU */
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;z-index:1000;}@media(max-width:760px){.hamburger{display:flex!important;}.nav-links{display:none!important;}} 
-.hamburger span{display:block;width:24px;height:2.5px;background:#1a2e44;border-radius:2px;transition:all 0.3s;}
-.mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(16px);border-bottom:2px solid #eee;z-index:998;padding:1rem 5%;flex-direction:column;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,0.1);}
-.mobile-menu.open{display:flex;}
+.hamburger span{display:block;width:24px;height:2.5px;background:var(--text);border-radius:2px;transition:all 0.3s;}
+.mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(16px);border-bottom:2px solid #eee;z-index:9998;padding:1rem 5%;flex-direction:column;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+.mobile-menu.open{display:flex;flex-direction:column;}
 
 .mobile-menu a{text-decoration:none;color:var(--text);font-weight:900;font-size:1rem;padding:12px 16px;border-radius:12px;transition:all 0.2s;}
 .mobile-menu a:hover,.mobile-menu a.active{background:var(--sky);color:white;}
@@ -488,7 +488,9 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
 function toggleMenu() {
   var menu = document.getElementById('mobileMenu');
-  if (menu) menu.classList.toggle('open');
+  if (!menu) { console.log('mobileMenu bulunamadi!'); return; }
+  menu.classList.toggle('open');
+  console.log('toggleMenu called, open:', menu.classList.contains('open'));
 }
 document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', function(e) {
