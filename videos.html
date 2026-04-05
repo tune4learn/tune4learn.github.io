@@ -130,10 +130,11 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
 
 
 /* HAMBURGER MENU */
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;z-index:1000;} @media(max-width:760px){.hamburger{display:flex;}.nav-links{display:none!important;}}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;z-index:1000;} 
 .hamburger span{display:block;width:24px;height:2.5px;background:var(--text);border-radius:2px;transition:all 0.3s;}
 .mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(16px);border-bottom:2px solid #eee;z-index:998;padding:1rem 5%;flex-direction:column;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,0.1);}
 .mobile-menu.open{display:flex;}
+@media(max-width:760px){.hamburger{display:flex!important;}.nav-links{display:none!important;}}
 .mobile-menu a{text-decoration:none;color:var(--text);font-weight:900;font-size:1rem;padding:12px 16px;border-radius:12px;transition:all 0.2s;}
 .mobile-menu a:hover,.mobile-menu a.active{background:var(--sky);color:white;}
 .mobile-menu .mob-tpt{background:var(--red);color:white;text-align:center;margin-top:4px;}
@@ -141,6 +142,10 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
   .hamburger{display:flex;}
   .nav-links{display:none!important;}
 }
+
+
+.new-badge{display:inline-block;background:#FF4757;color:white;font-size:0.6rem;font-weight:900;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;vertical-align:middle;margin-left:6px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
 
 </style>
 <style>
@@ -580,7 +585,7 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
             </div>
             <div class="v-info">
                 <span class="v-tag">🚀 Science</span>
-                <h3>My Very Excellent Mother</h3>
+                <h3>My Very Excellent Mother <span class="new-badge">New</span></h3>
                 <p class="v-sub">Space Flight Day · Apr 12</p>
             </div>
         </div>
@@ -757,6 +762,16 @@ document.addEventListener("DOMContentLoaded", function() {
       var id = this.getAttribute("data-id");
       if (!id) return;
       if (this.querySelector("iframe")) return;
+
+      // Önce tüm açık videoları kapat
+      document.querySelectorAll(".yt-thumb").forEach(function(t) {
+        var iframe = t.querySelector("iframe");
+        if (iframe) {
+          var tid = t.getAttribute("data-id");
+          t.innerHTML = '<img src="https://i.ytimg.com/vi/' + tid + '/hqdefault.jpg" loading="lazy" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;"><div class="play-overlay"><span class="play-btn">▶</span></div>';
+        }
+      });
+
       this.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1&origin=https://tune4learn.com" allow="autoplay; encrypted-media; fullscreen" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"></iframe>';
     };
   });
