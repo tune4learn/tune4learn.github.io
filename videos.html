@@ -848,7 +848,8 @@ document.addEventListener("DOMContentLoaded", function() {
       if (!dateStr) return 999;
       var p = dateStr.split(" ");
       var t = new Date(year, M[p[0]], parseInt(p[1]));
-      if (t < today) t = new Date(year+1, M[p[0]], parseInt(p[1]));
+      var todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      if (t < todayStart) t = new Date(year+1, M[p[0]], parseInt(p[1]));
       return Math.ceil((t - today) / 86400000);
     }
 
@@ -896,7 +897,7 @@ document.addEventListener("DOMContentLoaded", function() {
     WD.map(function(d) {
       var p = d.date.split(" ");
       var t = new Date(year, M[p[0]], parseInt(p[1]));
-      if (t < today) t = new Date(year+1, M[p[0]], parseInt(p[1]));
+      var ts = new Date(today.getFullYear(), today.getMonth(), today.getDate()); if (t < ts) t = new Date(year+1, M[p[0]], parseInt(p[1]));
       d.diff = Math.ceil((t - today) / 86400000);
       return d;
     }).sort(function(a,b) { return a.diff - b.diff; }).forEach(function(d, i) {

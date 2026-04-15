@@ -503,7 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const sorted = WD.map(d => {
       const p = d.date.split(" ");
       let t = new Date(year, months[p[0]], parseInt(p[1]));
-      if (t < today) t = new Date(year+1, months[p[0]], parseInt(p[1]));
+      var ts2 = new Date(today.getFullYear(), today.getMonth(), today.getDate()); if (t < ts2) t = new Date(year+1, months[p[0]], parseInt(p[1]));
       const diff = Math.ceil((t - today) / 86400000);
       return {...d, diff};
     }).sort((a,b) => a.diff - b.diff);
