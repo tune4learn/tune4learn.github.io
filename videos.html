@@ -845,12 +845,17 @@ document.addEventListener("DOMContentLoaded", function() {
     var today = new Date(), year = today.getFullYear();
 
     function getDiff(dateStr) {
-      if (!dateStr) return 999;
+      if (!dateStr) return 9999;
       var p = dateStr.split(" ");
       var t = new Date(year, M[p[0]], parseInt(p[1]));
       var todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      // Bu ay içindeyse (geçmiş de olsa) önce göster — negatif diff verir, en üste çıkar
+      if (t.getMonth() === todayStart.getMonth() && t.getFullYear() === todayStart.getFullYear()) {
+        return Math.ceil((t - todayStart) / 86400000); // Bu ay: negatif veya 0 = üstte
+      }
+      // Geçmiş aylar → sonraki yıla al
       if (t < todayStart) t = new Date(year+1, M[p[0]], parseInt(p[1]));
-      return Math.ceil((t - today) / 86400000);
+      return Math.ceil((t - todayStart) / 86400000);
     }
 
     var grid = document.getElementById("video-grid");
