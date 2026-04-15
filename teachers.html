@@ -410,7 +410,8 @@ const PACKS = [
   { title:"International Day of Mathematics",    emoji:"🔢", cat:"math",     label:"Math",        age:"Pre-K · K–2", subtitle:"Pi Day · Mar 14",                  drive:"https://drive.google.com/uc?export=download&id=14l-fbSbc72FXutlVgsnOfJiOdHRjsftj", vid:"_gxOLYe7Kp8" },
   { title:"World Engineering Day",               emoji:"🛠️", cat:"science",  label:"STEM",        age:"K–2",         subtitle:"Mar 4",                            drive:"https://drive.google.com/uc?export=download&id=11_Ocijbk2kkGP4CkJPAkEPJMsS3JjGDY", vid:"a1KlR2jL4mY" },
   { title:"My Day, My Rights!",                  emoji:"🌍", cat:"values",   label:"Values",      age:"K–2",         subtitle:"World Children's Day · Nov 20",    drive:"https://drive.google.com/uc?export=download&id=1WnD_jycHthUL8hZOXtpcMHrImPjarmYY", vid:"-BRgbQrGc5s" },
-  { title:"Say Hello Dance",                     emoji:"👋", cat:"values",   label:"SEL",         age:"Pre-K",       subtitle:"World Hello Day · Nov 21",         drive:"https://drive.google.com/uc?export=download&id=1GAuhdKkQwWktWOD-nmS7MVw165buFihA", vid:"F09Kz6SDhpI" },
+  { title:"We All Move Together",               emoji:"🌍", cat:"inclusion", label:"Inclusion",   age:"Pre-K · K–2", subtitle:"International Day of Persons with Disabilities · Dec 3", drive:"", vid:"smToX54V-lI" },
+  { title:"Say Hello Dance",                     emoji:"👋", cat:"values",   label:"SEL",         age:"Pre-K",       subtitle:"World Hello Day · Nov 21",         drive:"https://drive.google.com/uc?export=download&id=1GAuhdKkQwWktWOD-nmS7MVw165buFihA", vid:"smToX54V-lI" },
   { title:"Friends All Day",                     emoji:"💛", cat:"values",   label:"SEL",         age:"Pre-K",       subtitle:"Friendship & SEL",                 drive:"https://drive.google.com/uc?export=download&id=1xFIdhsf9GxGJTBFLybGJG_bwei3cYHlr", vid:"smToX54V-lI" },
   { title:"Science for Peace Coloring Book",     emoji:"🕊️", cat:"science",  label:"Science",     age:"Pre-K · K–2", subtitle:"Science & Peace",                  drive:"https://drive.google.com/uc?export=download&id=1is4e2QvtEyArqX6_jpGt04km7ye-C76a", vid:"DItuuTXwd6s" },
   { title:"No Bullying Day",                     emoji:"🛡️", cat:"values",   label:"SEL",         age:"K–2",         subtitle:"Anti-Bullying Awareness",          drive:"https://drive.google.com/uc?export=download&id=1-5_RpuUSf0V1P8MuwcAuPLgUQfAu_f7n", vid:"2iuzNiVTqto" },
@@ -451,7 +452,7 @@ function renderPacks() {
         }).join('');
       } else if (previewId) {
         packBtns = `<button onclick="openPdfModal('${p.title}', '${previewId}')" class="pack-btn" style="border:none;cursor:pointer;">👁 Preview & Download</button>`;
-      } else {
+      } else if (p.drive) {
         packBtns = `<a href="${p.drive}" target="_blank" class="pack-btn">📥 Pack</a>`;
       }
       return `<div class="pack-card">
