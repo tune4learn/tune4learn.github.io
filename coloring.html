@@ -479,7 +479,7 @@ function loadPage(id){
   // Remove floating items
   var wrap=document.getElementById("canvasWrap");
   floatItems.forEach(function(el){try{wrap.removeChild(el)}catch(e){}});floatItems=[];
-  var img=new Image();img.crossOrigin="anonymous";
+  var img=new Image();
   img.onload=function(){
     var area=document.querySelector(".cv-area");var mW=area.clientWidth-20,mH=area.clientHeight-20;
     var r=img.width/img.height;var cw=mW,ch=cw/r;if(ch>mH){ch=mH;cw=ch*r}
@@ -489,7 +489,15 @@ function loadPage(id){
     baseImg=ctx.getImageData(0,0,cw,ch);undoS=[];redoS=[];saveState();zl=1;cvs.style.transform="";
     document.getElementById("loader").classList.add("hid");
   };
-  img.onerror=function(){document.getElementById("loader").classList.add("hid")};img.src=pg.src;
+  img.onerror=function(){
+    document.getElementById("loader").classList.add("hid");
+    console.error("Coloring page failed to load:", pg.src);
+    ctx.fillStyle="#FFF";ctx.fillRect(0,0,cvs.width||400,cvs.height||300);
+    ctx.fillStyle="#999";ctx.font="16px Nunito, sans-serif";ctx.textAlign="center";
+    ctx.fillText("Oops! Could not load this page.", (cvs.width||400)/2, (cvs.height||300)/2 - 10);
+    ctx.fillText("Please try another one.", (cvs.width||400)/2, (cvs.height||300)/2 + 14);
+  };
+  img.src=pg.src;
 }
 function saveState(){undoS.push(cvs.toDataURL());if(undoS.length>40)undoS.shift()}
 function undo(){if(undoS.length<=1)return;redoS.push(undoS.pop());restState(undoS[undoS.length-1])}
