@@ -446,10 +446,45 @@ const TAG = {
 
 let activeFilter = "all";
 
+// Subtitle'dan tarih çıkarır: "Earth Day · Apr 22" -> "Apr 22"
+function extractDate(subtitle) {
+  if (!subtitle) return null;
+  const m = subtitle.match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})\b/);
+  return m ? (m[1] + " " + m[2]) : null;
+}
+
+// Sıralama anahtarı: [ayGrubu, ayIçiPozisyon]
+// Grup 0 = bu ay, 1 = bir sonraki ay, ..., 11 = önceki ay (en uzak)
+// Bu ay içinde: yaklaşanlar önce (0'dan başlayan sayı), geçmişler sonra (1000+)
+function packSortKey(p) {
+  const dateStr = p.date || extractDate(p.subtitle);
+  if (!dateStr) return [99, 99];
+  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  const today = new Date();
+  const todayMonth = today.getMonth();
+  const todayDay = today.getDate();
+  const parts = dateStr.split(" ");
+  const vMonth = months[parts[0]];
+  const vDay = parseInt(parts[1]);
+  let monthOffset = vMonth - todayMonth;
+  if (monthOffset < 0) monthOffset += 12;
+  if (monthOffset === 0) {
+    return vDay >= todayDay ? [0, vDay - todayDay] : [0, 1000 + (todayDay - vDay)];
+  }
+  return [monthOffset, vDay];
+}
+
 function renderPacks() {
   const list = document.getElementById("packs-list");
-  list.innerHTML = PACKS
-    .filter(p => activeFilter === "all" || p.cat === activeFilter)
+  // Önce filtrele, sonra sırala
+  const filtered = PACKS.filter(p => activeFilter === "all" || p.cat === activeFilter);
+  const sorted = [...filtered].sort((a,b) => {
+    const [ag,ai] = packSortKey(a);
+    const [bg,bi] = packSortKey(b);
+    if (ag !== bg) return ag - bg;
+    return ai - bi;
+  });
+  list.innerHTML = sorted
     .map(p => {
       const [bg,col] = TAG[p.cat] || ["#eee","#333"];
       const vidBtn = p.vid ? `<button onclick="openVidModal('${p.title}', '${p.vid}')" class="pack-btn pack-btn-vid" style="border:none;cursor:pointer;">▶ Watch</button>` : "";
@@ -509,18 +544,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderWDStrip() {
     const today = new Date();
-    const year = today.getFullYear();
     const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    const todayMonth = today.getMonth();
+    const todayDay = today.getDate();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    // Grup + ay içi sıralama
+    function getSortKey(dateStr) {
+      const p = dateStr.split(" ");
+      const vMonth = months[p[0]];
+      const vDay = parseInt(p[1]);
+      let monthOffset = vMonth - todayMonth;
+      if (monthOffset < 0) monthOffset += 12;
+      if (monthOffset === 0) {
+        // Bu ay: yaklaşanlar önce, sonra geçmişler
+        return vDay >= todayDay ? [0, vDay - todayDay] : [0, 1000 + (todayDay - vDay)];
+      }
+      return [monthOffset, vDay];
+    }
+    // Gerçek gün farkını hesapla (etiket için)
+    function getDiff(dateStr) {
+      const p = dateStr.split(" ");
+      const vMonth = months[p[0]];
+      const vDay = parseInt(p[1]);
+      let year = today.getFullYear();
+      let t = new Date(year, vMonth, vDay);
+      // Geçmiş ay ise bu yıl, gelecek ay ise bu yıl (tarih aynı kalsın)
+      return Math.round((t - todayStart) / 86400000);
+    }
     const sorted = WD.map(d => {
-      const p = d.date.split(" ");
-      let t = new Date(year, months[p[0]], parseInt(p[1]));
-      var ts2 = new Date(today.getFullYear(), today.getMonth(), today.getDate()); if (t < ts2) t = new Date(year+1, months[p[0]], parseInt(p[1]));
-      const diff = Math.ceil((t - today) / 86400000);
-      return {...d, diff};
-    }).sort((a,b) => a.diff - b.diff);
+      const [g,i] = getSortKey(d.date);
+      return {...d, sortGroup:g, sortIdx:i, diff:getDiff(d.date)};
+    }).sort((a,b) => {
+      if (a.sortGroup !== b.sortGroup) return a.sortGroup - b.sortGroup;
+      return a.sortIdx - b.sortIdx;
+    });
 
     document.getElementById("wd-strip").innerHTML = sorted.map((d,i) => {
-      const daysLabel = d.diff === 0 ? "Today! 🎉" : d.diff === 1 ? "Tomorrow!" : d.diff + " days";
+      let daysLabel;
+      if (d.diff === 0) daysLabel = "Today! 🎉";
+      else if (d.diff === 1) daysLabel = "Tomorrow!";
+      else if (d.diff === -1) daysLabel = "Yesterday";
+      else if (d.diff > 0) daysLabel = d.diff + " days";
+      else daysLabel = Math.abs(d.diff) + " days ago";
       return `<a class="wd-chip${i===0?" next":""}" href="https://www.youtube.com/watch?v=${d.vid}" target="_blank">
         <span class="wd-chip-emoji">${d.emoji}</span>
         <div class="wd-chip-info">

@@ -415,22 +415,41 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!grid) return;
     const M = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
     const today = new Date();
-    const year = today.getFullYear();
-    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    function getDiff(dateStr) {
-      if (!dateStr) return 9999;
+    const todayMonth = today.getMonth();
+    const todayDay = today.getDate();
+    // Sıralama için 2 anahtar döndürür: [grupSırası, ayIçiSırası]
+    // Grup 0 = bu ay, 1 = bir sonraki ay, ..., 11 = önceki ay (en uzak)
+    // Ay içi: yaklaşanlar önce (küçük pozitif sayı), geçmişler sonra (küçük negatif sayı → büyük değer)
+    function getSortKey(dateStr) {
+      if (!dateStr) return [99, 99];  // tarihsiz videolar en sona
       const p = dateStr.split(" ");
-      let t = new Date(year, M[p[0]], parseInt(p[1]));
-      if (t.getMonth() === todayStart.getMonth() && t.getFullYear() === todayStart.getFullYear()) {
-        return Math.ceil((t - todayStart) / 86400000);
+      const vMonth = M[p[0]];
+      const vDay = parseInt(p[1]);
+      // Ay grubu: bu aydan kaç ay sonra? (0-11 arası)
+      let monthOffset = vMonth - todayMonth;
+      if (monthOffset < 0) monthOffset += 12;
+      // Ay içi sıralama: bu aydaysa özel mantık, değilse tarih sırası
+      if (monthOffset === 0) {
+        // Bu ay: yaklaşanlar önce (tarih artarak), geçmişler sonra (bugüne yakın önce)
+        if (vDay >= todayDay) {
+          // Yaklaşan veya bugün: 0'dan başlayan pozitif sıra
+          return [0, vDay - todayDay];
+        } else {
+          // Geçmiş: 1000+ (yaklaşanlardan sonra), bugüne yakın önce
+          return [0, 1000 + (todayDay - vDay)];
+        }
       }
-      if (t < todayStart) t = new Date(year+1, M[p[0]], parseInt(p[1]));
-      return Math.ceil((t - todayStart) / 86400000);
+      // Diğer aylar: sadece ay içi tarih artışı
+      return [monthOffset, vDay];
     }
     const sorted = [...VIDEOS].sort((a,b) => {
+      // NEW olanlar her zaman en başta
       if (a.new && !b.new) return -1;
       if (!a.new && b.new) return 1;
-      return getDiff(a.date) - getDiff(b.date);
+      const [ag, ad] = getSortKey(a.date);
+      const [bg, bd] = getSortKey(b.date);
+      if (ag !== bg) return ag - bg;
+      return ad - bd;
     });
     grid.innerHTML = sorted.map(v => {
       const newBadge = v.new ? '<span style="background:#FF4757;color:white;font-size:0.6rem;font-weight:900;padding:2px 7px;border-radius:20px;text-transform:uppercase;margin-left:6px;vertical-align:middle;">NEW</span>' : '';
