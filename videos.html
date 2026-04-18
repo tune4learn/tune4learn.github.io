@@ -360,6 +360,211 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
 </footer>
 
 
+<!-- ============================================ -->
+<!-- SUPPORT US WIDGET — Floating button + modal  -->
+<!-- Bu bloğu tüm sayfalarda </body> etiketinden  -->
+<!-- HEMEN ÖNCE yapıştırın. İş yapacak 3 parça:   -->
+<!-- 1) CSS (stil) 2) HTML (buton+modal) 3) JS    -->
+<!-- ============================================ -->
+<style>
+/* Floating buton (her sayfada sağ alt) */
+.support-fab {
+  position: fixed; right: 20px; bottom: 20px; z-index: 997;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #FF4757 0%, #FF6B35 100%);
+  color: white; font-family: 'Nunito', sans-serif; font-weight: 900;
+  font-size: 0.9rem; padding: 12px 20px; border-radius: 30px;
+  border: none; cursor: pointer; text-decoration: none;
+  box-shadow: 0 6px 20px rgba(255,71,87,0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: supportPulse 2.5s ease-in-out infinite;
+}
+.support-fab:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 10px 28px rgba(255,71,87,0.5);
+  animation: none;
+}
+.support-fab-icon { font-size: 1.2rem; }
+@keyframes supportPulse {
+  0%, 100% { box-shadow: 0 6px 20px rgba(255,71,87,0.35); }
+  50% { box-shadow: 0 6px 28px rgba(255,71,87,0.6); }
+}
+
+/* Modal overlay */
+.support-modal {
+  display: none; position: fixed; inset: 0; z-index: 9998;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 20px;
+  animation: supportFadeIn 0.25s ease-out;
+}
+.support-modal.open { display: flex; }
+@keyframes supportFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal içeriği */
+.support-box {
+  background: white; border-radius: 24px; max-width: 440px; width: 100%;
+  padding: 2rem 1.8rem; position: relative; max-height: 90vh; overflow-y: auto;
+  animation: supportSlideUp 0.3s ease-out;
+  font-family: 'Nunito', sans-serif;
+}
+@keyframes supportSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.support-close {
+  position: absolute; top: 14px; right: 14px; width: 36px; height: 36px;
+  background: #f4f4f4; border: none; border-radius: 50%; cursor: pointer;
+  font-size: 1.3rem; color: #666; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.support-close:hover { background: #ff4757; color: white; transform: rotate(90deg); }
+
+.support-head { text-align: center; margin-bottom: 1.4rem; }
+.support-emoji { font-size: 2.8rem; display: block; margin-bottom: 0.5rem; }
+.support-title {
+  font-family: 'Fredoka One', cursive; font-size: 1.6rem;
+  color: #1E2A3A; margin-bottom: 0.4rem;
+}
+.support-subtitle {
+  font-size: 0.9rem; color: #7F8C8D; font-weight: 600;
+  line-height: 1.55;
+}
+
+/* Opsiyon kartları */
+.support-options { display: flex; flex-direction: column; gap: 10px; }
+.support-option {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: 16px; text-decoration: none;
+  border: 2px solid #f0f0f0; background: white;
+  transition: all 0.2s;
+}
+.support-option:hover {
+  transform: translateX(4px); border-color: var(--support-color, #23BFEF);
+  background: var(--support-bg, #f7fbff);
+}
+.support-option-emoji { font-size: 1.7rem; flex-shrink: 0; }
+.support-option-body { flex: 1; }
+.support-option-title {
+  font-size: 0.95rem; font-weight: 900; color: #1E2A3A;
+  margin-bottom: 2px;
+}
+.support-option-desc {
+  font-size: 0.78rem; color: #7F8C8D; font-weight: 600;
+  line-height: 1.4;
+}
+.support-option-arrow {
+  color: var(--support-color, #23BFEF); font-weight: 900; font-size: 1.2rem;
+}
+
+/* Alt not */
+.support-foot {
+  margin-top: 1.4rem; padding-top: 1.2rem;
+  border-top: 1.5px dashed #e5e5e5;
+  text-align: center;
+}
+.support-foot p {
+  font-size: 0.8rem; color: #7F8C8D; font-weight: 600; margin-bottom: 0.7rem;
+}
+.support-share-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.support-share-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; font-size: 1.1rem; color: white;
+  transition: transform 0.2s;
+}
+.support-share-btn:hover { transform: scale(1.15); }
+.ss-fb { background: #1877F2; }
+.ss-tw { background: #1DA1F2; }
+.ss-wa { background: #25D366; }
+.ss-em { background: #EA4335; }
+
+@media (max-width: 480px) {
+  .support-fab { padding: 10px 16px; font-size: 0.85rem; right: 14px; bottom: 14px; }
+  .support-box { padding: 1.6rem 1.3rem; border-radius: 20px; }
+  .support-title { font-size: 1.35rem; }
+}
+</style>
+
+<button class="support-fab" onclick="openSupportModal()">
+  <span class="support-fab-icon">💛</span>
+  <span>Support Us</span>
+</button>
+
+<div class="support-modal" id="supportModal" onclick="if(event.target===this)closeSupportModal()">
+  <div class="support-box">
+    <button class="support-close" onclick="closeSupportModal()" aria-label="Close">✕</button>
+
+    <div class="support-head">
+      <span class="support-emoji">💛</span>
+      <div class="support-title">Support Tune4Learn</div>
+      <p class="support-subtitle">Every contribution helps us create more educational songs and free resources for children around the world!</p>
+    </div>
+
+    <div class="support-options">
+
+      <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" rel="noopener"
+         class="support-option" style="--support-color:#FF6B35; --support-bg:#fff6ed;">
+        <span class="support-option-emoji">🛒</span>
+        <div class="support-option-body">
+          <div class="support-option-title">Shop on TPT</div>
+          <div class="support-option-desc">Premium activity packs &amp; teaching resources</div>
+        </div>
+        <span class="support-option-arrow">→</span>
+      </a>
+
+      <a href="https://ko-fi.com/tune4learn" target="_blank" rel="noopener"
+         class="support-option" style="--support-color:#29ABE0; --support-bg:#f0f9ff;">
+        <span class="support-option-emoji">☕</span>
+        <div class="support-option-body">
+          <div class="support-option-title">Buy Us a Coffee on Ko-fi</div>
+          <div class="support-option-desc">One-time tips &amp; monthly support</div>
+        </div>
+        <span class="support-option-arrow">→</span>
+      </a>
+
+      <a href="https://youtube.com/@tune4learn?sub_confirmation=1" target="_blank" rel="noopener"
+         class="support-option" style="--support-color:#FF4757; --support-bg:#fff5f5;">
+        <span class="support-option-emoji">🔔</span>
+        <div class="support-option-body">
+          <div class="support-option-title">Subscribe on YouTube</div>
+          <div class="support-option-desc">Free — but means the world to us!</div>
+        </div>
+        <span class="support-option-arrow">→</span>
+      </a>
+
+    </div>
+
+    <div class="support-foot">
+      <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
+      <div class="support-share-row">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://tune4learn.com" target="_blank" rel="noopener" class="support-share-btn ss-fb" aria-label="Facebook">f</a>
+        <a href="https://twitter.com/intent/tweet?text=Check%20out%20Tune4Learn%20-%20free%20educational%20songs%20for%20kids!%20&url=https://tune4learn.com" target="_blank" rel="noopener" class="support-share-btn ss-tw" aria-label="Twitter">𝕏</a>
+        <a href="https://wa.me/?text=Check%20out%20Tune4Learn%20-%20free%20educational%20songs%20for%20kids!%20https://tune4learn.com" target="_blank" rel="noopener" class="support-share-btn ss-wa" aria-label="WhatsApp">✉</a>
+        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email">@</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function openSupportModal() {
+  document.getElementById('supportModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSupportModal() {
+  document.getElementById('supportModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeSupportModal();
+});
+</script>
+<!-- === SUPPORT WIDGET SONU === -->
+
 </body>
 </html><script>
 // VIDEO OYNAT
