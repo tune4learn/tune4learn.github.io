@@ -243,6 +243,7 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
 </script>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 
 <nav class="navbar" id="navbar">
   <a href="index.html" class="nav-logo"><picture><source srcset="assets/t4l-logo.webp" type="image/webp"><img src="assets/t4l-logo.png" alt="Tune4Learn" width="44" height="44" decoding="async"></picture></a>
@@ -252,7 +253,7 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
     <li><a href="research.html" class="active">Research &amp; Blog</a></li>
     <li><a href="coloring.html" class="nav-link-color">🖍️ Color</a></li>
     <li><a href="mazes.html" class="nav-link-color">🌀 Mazes</a>
-    <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" class="nav-cta">TPT Store ↗</a></li>
+    <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" class="nav-cta" rel="noopener noreferrer">TPT Store ↗</a></li>
   </ul>
   <button class="hamburger" id="hamburger" onclick="toggleMenu()">
     <span></span><span></span><span></span>
@@ -265,7 +266,7 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
     <a href="research.html" class="active">🔬 Research & Blog</a>
     <a href="coloring.html">🖍️ Color Online</a>
     <a href="mazes.html">🌀 Mazes</a>
-    <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" class="mob-tpt">TPT Store ↗</a>
+    <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" class="mob-tpt" rel="noopener noreferrer">TPT Store ↗</a>
   </div>
 
 <!-- HERO -->
@@ -540,9 +541,9 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
       <div class="footer-col">
         <h5>Find Us</h5>
         <ul>
-          <li><a href="https://www.youtube.com/@Tune4Learn" target="_blank">YouTube</a></li>
-          <li><a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank">TPT Store</a></li>
-          <li><a href="https://open.spotify.com" target="_blank">Spotify</a></li>
+          <li><a href="https://www.youtube.com/@Tune4Learn" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+          <li><a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" rel="noopener noreferrer">TPT Store</a></li>
+          <li><a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer">Spotify</a></li>
         </ul>
       </div>
     </div>
@@ -726,6 +727,10 @@ document.addEventListener('DOMContentLoaded', function() {
   .support-box { padding: 1.6rem 1.3rem; border-radius: 20px; }
   .support-title { font-size: 1.35rem; }
 }
+
+/* Skip to content link — visible on keyboard focus only */
+.skip-link{position:absolute;top:-100px;left:8px;background:#6C3FA0;color:#fff;padding:10px 18px;border-radius:0 0 10px 10px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.92rem;text-decoration:none;z-index:9999;transition:top 0.2s;}
+.skip-link:focus{top:0;outline:3px solid #FFD93D;}
 </style>
 
 <button class="support-fab" onclick="openSupportModal()">
