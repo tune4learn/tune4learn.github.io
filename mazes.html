@@ -229,8 +229,10 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
 
 /* ── TABLET & MOBILE: Fullscreen maze play ── */
 @media(max-width:900px){
+  html, body {overscroll-behavior:none;}
   .maze-play{
     width:100vw;
+    width:100dvw;
     height:100vh;
     height:100dvh;
     max-height:100vh;
@@ -239,17 +241,22 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
     display:flex;
     flex-direction:column;
     overflow:hidden;
+    padding-bottom:env(safe-area-inset-bottom,0);
+    padding-top:env(safe-area-inset-top,0);
   }
   .play-header{border-radius:0;padding:10px 12px;flex-shrink:0;}
+  .maze-overlay{padding:0;}
   .maze-overlay.active{align-items:stretch;justify-content:stretch;}
-  .diff-bar,.hud,.play-info,.dpad,.maze-controls,.swipe-hint{flex-shrink:0;}
+  .diff-bar,.hud,.play-info,.dpad,.maze-controls,.swipe-hint,.coding-panel{flex-shrink:0;}
   .canvas-wrap{flex:1 1 0;padding:2px;align-items:center;justify-content:center;min-height:0;overflow:hidden;}
-  canvas#mazeCanvas{max-width:100%;max-height:100%;width:auto;height:auto;}
+  canvas#mazeCanvas{max-width:100%;max-height:100%;width:auto;height:auto;display:block;}
   .diff-bar{padding:6px 10px 2px;}
   .hud{padding:3px 10px;gap:10px;}
   .play-info{padding:2px 10px 3px;}
-  .dpad{padding:3px 0 8px;}
-  .maze-controls{padding:3px 10px 8px;}
+  .dpad{padding:3px 0 6px;}
+  .maze-controls{padding:3px 10px 6px;}
+  /* body lock when maze is open */
+  body.maze-locked{position:fixed;width:100%;overflow:hidden;}
 }
 @media(max-width:600px){
   .maze-grid{grid-template-columns:repeat(2,1fr);gap:10px;padding:12px;}
@@ -956,8 +963,13 @@ requestAnimationFrame(animate);
 // ==============================================================
 function drawMaze(){
   const mob=window.innerWidth<=900;
-  // Reserve space for header(~52) + diff(~38) + hud(~32) + info(~20) + controls(~38) + dpad(~170 mob, 0 desk) + padding(~24)
-  const reserveH=mob?(window.innerWidth<=600?384:214):220;
+  const phone=window.innerWidth<=600;
+  const isCoding=currentMazeData&&currentMazeData.category==='Coding';
+  // Reserve: header(~52) + diff(~38) + hud(~32) + info(~20) + controls(~38) + padding(~24) = ~204
+  // + either dpad(~170 phone only) OR coding-panel(~200)
+  let reserveH=204;
+  if(isCoding)reserveH+=200;
+  else if(phone)reserveH+=170;
   const maxW=mob?window.innerWidth-24:492;
   const maxH=mob?window.innerHeight-reserveH:9999;
   let cellSize=Math.floor(Math.min(maxW/cols,maxH/rows));
@@ -971,6 +983,32 @@ function drawMaze(){
   ctx.fillStyle='#FAFBFE';ctx.fillRect(0,0,w,h);
   for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
     if((x+y)%2===0){ctx.fillStyle='rgba(108,63,160,0.013)';ctx.fillRect(x*cellSize,y*cellSize,cellSize,cellSize);}
+  }
+
+  // Coding mazes: more prominent grid so kids can count cells ahead
+  if(currentMazeData&&currentMazeData.category==='Coding'){
+    // Alternating cell fill (stronger)
+    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+      ctx.fillStyle=(x+y)%2===0?'rgba(108,63,160,0.06)':'rgba(35,191,239,0.04)';
+      ctx.fillRect(x*cellSize,y*cellSize,cellSize,cellSize);
+    }
+    // Dotted grid lines between cells
+    ctx.save();
+    ctx.strokeStyle='rgba(108,63,160,0.22)';
+    ctx.lineWidth=1;
+    ctx.setLineDash([3,3]);
+    for(let x=1;x<cols;x++){
+      ctx.beginPath();ctx.moveTo(x*cellSize,0);ctx.lineTo(x*cellSize,h);ctx.stroke();
+    }
+    for(let y=1;y<rows;y++){
+      ctx.beginPath();ctx.moveTo(0,y*cellSize);ctx.lineTo(w,y*cellSize);ctx.stroke();
+    }
+    ctx.restore();
+    // Corner dots for each cell
+    ctx.fillStyle='rgba(108,63,160,0.35)';
+    for(let y=0;y<=rows;y++)for(let x=0;x<=cols;x++){
+      ctx.beginPath();ctx.arc(x*cellSize,y*cellSize,1.6,0,Math.PI*2);ctx.fill();
+    }
   }
 
   // Walls
@@ -1760,12 +1798,12 @@ function openMaze(id){
   document.getElementById('playInfo').textContent=currentMazeData.char==='T4L'?`🎵 Melody → ${currentMazeData.goal}  ${currentMazeData.story}`:`${currentMazeData.char} → ${currentMazeData.goal}  ${currentMazeData.story}`;
   document.getElementById('playFooter').innerHTML=`<a class="watch-btn" href="${currentMazeData.yt}" target="_blank" rel="noopener">▶ Watch the Song</a>`;
   currentDifficulty=currentMazeData.difficulty;updateDiffUI();startGame();
-  document.getElementById('mazeOverlay').classList.add('active');document.body.style.overflow='hidden';
+  document.getElementById('mazeOverlay').classList.add('active');document.body.style.overflow='hidden';document.body.classList.add('maze-locked');
   document.getElementById('floatingClose').classList.add('active');
   ensureAudio();
 }
 
-function closeMaze(){document.getElementById('mazeOverlay').classList.remove('active');document.body.style.overflow='';gameActive=false;stopTimer();currentMazeData=null;mathQuestion=null;mathGates=[];mathFeedback=null;patternSequence=null;patternAnswer=null;patternGates=[];codingProgram=[];codingExecuting=false;codingStep=0;
+function closeMaze(){document.getElementById('mazeOverlay').classList.remove('active');document.body.style.overflow='';document.body.classList.remove('maze-locked');gameActive=false;stopTimer();currentMazeData=null;mathQuestion=null;mathGates=[];mathFeedback=null;patternSequence=null;patternAnswer=null;patternGates=[];codingProgram=[];codingExecuting=false;codingStep=0;
   document.getElementById('floatingClose').classList.remove('active');
 }
 function resetMaze(){if(!currentMazeData)return;playerPos={x:0,y:0};moveCounter=0;updMovDisp();gameActive=true;hintsLeft=3;hintCells=[];mathFeedback=null;updateHintUI();if(hintTimeout){clearTimeout(hintTimeout);hintTimeout=null;}
@@ -2025,7 +2063,7 @@ renderFilters();renderGrid();
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="/cdn-cgi/l/email-protection#47783432252d2224337a13322922730b222635296275776a6275770223322426332e2829262b6275771428292034612528233e7a0e6275772128322923627577332f2e3462757720352226336275773522342832352422627577212835627577332226242f223534627577262923627577372635222933347d6275772f333337347d686833322922732b222635296924282a" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -2033,7 +2071,7 @@ renderFilters();renderGrid();
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;
