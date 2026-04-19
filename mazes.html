@@ -690,8 +690,11 @@ let patternSequence=null,patternAnswer=null,patternGates=[];
 // codingExecuting: true while the program is running
 // codingStep: current step index during execution
 let codingProgram=[],codingExecuting=false,codingStep=0;
+// Checkpoints — only used in Hard coding mazes. Robot must reach each one
+// BEFORE the final goal. 1 or 2 checkpoints chosen randomly per game.
+let checkpoints=[]; // [{x,y,reached:bool,emoji:string}]
 // Larger grids = more complex mazes
-const DIFF_SIZES={easy:{c:9,r:9},medium:{c:13,r:13},hard:{c:18,r:18}};
+const DIFF_SIZES={easy:{c:6,r:6},medium:{c:9,r:9},hard:{c:12,r:12}};
 const DIFF_STAR={easy:[30,65,120],medium:[60,120,200],hard:[100,180,300]};
 const canvas=document.getElementById('mazeCanvas'),ctx=canvas.getContext('2d');
 
@@ -962,7 +965,7 @@ function updateHintUI(){
 
 // Animation loop — keeps hint pulses smooth
 function animate(){
-  if(gameActive&&currentMazeData&&hintCells.length>0)drawMaze();
+  if(gameActive&&currentMazeData&&(hintCells.length>0||checkpoints.some(cp=>!cp.reached)))drawMaze();
   requestAnimationFrame(animate);
 }
 requestAnimationFrame(animate);
@@ -1010,15 +1013,15 @@ function drawMaze(){
 
   // Coding mazes: more prominent grid so kids can count cells ahead
   if(currentMazeData&&currentMazeData.category==='Coding'){
-    // Alternating cell fill (stronger, checkerboard style)
+    // Alternating cell fill (checkerboard — subtle enough to let walls dominate)
     for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
-      ctx.fillStyle=(x+y)%2===0?'rgba(108,63,160,0.14)':'rgba(35,191,239,0.10)';
+      ctx.fillStyle=(x+y)%2===0?'rgba(108,63,160,0.08)':'rgba(35,191,239,0.05)';
       ctx.fillRect(x*cellSize,y*cellSize,cellSize,cellSize);
     }
-    // Solid grid lines between cells
+    // Solid grid lines between cells — subtle guide lines
     ctx.save();
-    ctx.strokeStyle='rgba(108,63,160,0.38)';
-    ctx.lineWidth=1.2;
+    ctx.strokeStyle='rgba(108,63,160,0.18)';
+    ctx.lineWidth=1;
     for(let x=1;x<cols;x++){
       ctx.beginPath();ctx.moveTo(x*cellSize+0.5,0);ctx.lineTo(x*cellSize+0.5,h);ctx.stroke();
     }
@@ -1026,22 +1029,20 @@ function drawMaze(){
       ctx.beginPath();ctx.moveTo(0,y*cellSize+0.5);ctx.lineTo(w,y*cellSize+0.5);ctx.stroke();
     }
     ctx.restore();
-    // Bigger corner dots for each cell intersection
-    ctx.fillStyle='rgba(108,63,160,0.55)';
+    // Subtle corner dots for each cell intersection
+    ctx.fillStyle='rgba(108,63,160,0.28)';
     for(let y=0;y<=rows;y++)for(let x=0;x<=cols;x++){
-      ctx.beginPath();ctx.arc(x*cellSize,y*cellSize,2.6,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(x*cellSize,y*cellSize,1.6,0,Math.PI*2);ctx.fill();
     }
-    // Small cell-center markers (tiny dot in middle of each cell)
-    ctx.fillStyle='rgba(108,63,160,0.25)';
-    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
-      ctx.beginPath();ctx.arc(x*cellSize+cellSize/2,y*cellSize+cellSize/2,1.6,0,Math.PI*2);ctx.fill();
-    }
+    // No cell-center markers — keep cells clean so walls stand out
   }
 
   // Walls
   const wc=currentMazeData?currentMazeData.color:'#6C3FA0';
+  const isCoding2=currentMazeData&&currentMazeData.category==='Coding';
   ctx.strokeStyle=wc;
-  ctx.lineWidth=currentDifficulty==='hard'?1.5:currentDifficulty==='medium'?2:2.5;
+  // Thicker walls for coding mazes so they dominate the grid
+  ctx.lineWidth=isCoding2?4:(currentDifficulty==='hard'?1.5:currentDifficulty==='medium'?2:2.5);
   ctx.lineCap='square';
   for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
     const cx=x*cellSize,cy=y*cellSize,c=grid[y][x];
@@ -1125,6 +1126,33 @@ function drawMaze(){
     ctx.strokeStyle=wc+'55';ctx.lineWidth=1.8;ctx.beginPath();ctx.arc(gx,gy,cellSize*0.44,0,Math.PI*2);ctx.stroke();
   }
 
+  // CHECKPOINTS — drawn beneath player/hints so player appears on top.
+  // Hard coding mazes only. Unreached = pulsing gold note; reached = faded check.
+  if(checkpoints.length>0){
+    const cpPulse=0.75+0.2*Math.sin(Date.now()/250);
+    checkpoints.forEach(cp=>{
+      const cx=cp.x*cellSize+cellSize/2,cy=cp.y*cellSize+cellSize/2;
+      if(cp.reached){
+        // Reached — subtle green check background
+        ctx.fillStyle='rgba(0,184,148,0.22)';
+        ctx.beginPath();ctx.arc(cx,cy,cellSize*0.4,0,Math.PI*2);ctx.fill();
+        ctx.font=`bold ${Math.floor(cellSize*0.5)}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
+        ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText('✓',cx,cy+1);
+      } else {
+        // Not yet reached — pulsing gold halo with note emoji
+        const rad=ctx.createRadialGradient(cx,cy,cellSize*0.08,cx,cy,cellSize*0.5);
+        rad.addColorStop(0,`rgba(253,203,110,${cpPulse})`);
+        rad.addColorStop(1,'rgba(253,203,110,0)');
+        ctx.fillStyle=rad;
+        ctx.beginPath();ctx.arc(cx,cy,cellSize*0.5,0,Math.PI*2);ctx.fill();
+        ctx.font=`bold ${Math.floor(cellSize*0.65)}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
+        ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(cp.emoji,cx,cy+1);
+      }
+    });
+  }
+
   // HINT CELLS (drawn beneath player so player appears on top)
   if(hintCells.length>0){
     const pulse=0.55+0.25*Math.sin(Date.now()/200);
@@ -1185,6 +1213,17 @@ function movePlayer(dx,dy){
   if(dx===0&&dy===1&&!c.bottom){playerPos.y++;ok=true;}
   if(dx===-1&&dy===0&&!c.left){playerPos.x--;ok=true;}
   if(ok){moveCounter++;updMovDisp();playMove();}else playBump();
+
+  // ===== CODING MAZE CHECKPOINT: collect musical notes before the goal =====
+  if(ok&&currentMazeData.codingMaze&&checkpoints.length>0){
+    for(const cp of checkpoints){
+      if(!cp.reached&&cp.x===playerPos.x&&cp.y===playerPos.y){
+        cp.reached=true;
+        playHint(); // cheerful ding — reuses hint sound
+      }
+    }
+  }
+
   drawMaze();
 
   // ===== MATH / PATTERN MAZE: check if player landed on an answer gate =====
@@ -1212,7 +1251,22 @@ function movePlayer(dx,dy){
   }
 
   // Regular maze (and coding maze while executing): check goal cell
-  if(playerPos.x===goalPos.x&&playerPos.y===goalPos.y){gameActive=false;stopTimer();setTimeout(showWin,260);}
+  if(playerPos.x===goalPos.x&&playerPos.y===goalPos.y){
+    // Coding Hard: must collect all checkpoints BEFORE the final goal counts
+    if(currentMazeData.codingMaze&&checkpoints.length>0){
+      const allReached=checkpoints.every(cp=>cp.reached);
+      if(!allReached){
+        // Reached goal early — show "collect notes first" feedback, don't end game
+        const missing=checkpoints.filter(cp=>!cp.reached).length;
+        mathFeedback={x:playerPos.x,y:playerPos.y,
+          text:`Collect ${missing} more 🎵!`,color:'#E84393',until:Date.now()+1500};
+        drawMaze();
+        setTimeout(()=>{mathFeedback=null;drawMaze();},1500);
+        return;
+      }
+    }
+    gameActive=false;stopTimer();setTimeout(showWin,260);
+  }
 }
 
 document.addEventListener('keydown',e=>{
@@ -1618,11 +1672,39 @@ function placeSmartGates(values,correctValue,gateCount){
 // ==============================================================
 function setupCodingMaze(){
   if(!currentMazeData||!currentMazeData.codingMaze){
-    codingProgram=[];codingExecuting=false;codingStep=0;return;
+    codingProgram=[];codingExecuting=false;codingStep=0;checkpoints=[];return;
   }
   codingProgram=[];
   codingExecuting=false;
   codingStep=0;
+  checkpoints=[];
+  // Hard coding mazes: add 1 or 2 random checkpoints between start and goal.
+  // Player must collect them before reaching the final goal — teaches kids
+  // multi-step planning ("first A, then B, then finish").
+  if(currentDifficulty==='hard'){
+    const count=1+Math.floor(Math.random()*2); // 1 or 2
+    // Theme-aware checkpoint emoji — musical note fits T4L brand
+    const cpEmoji='🎵';
+    // Candidate cells: not start (0,0), not goal (cols-1,rows-1), at least 1 cell away from each
+    const candidates=[];
+    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+      const distStart=Math.abs(x)+Math.abs(y);
+      const distGoal=Math.abs(x-(cols-1))+Math.abs(y-(rows-1));
+      if(distStart>=2&&distGoal>=2)candidates.push({x,y});
+    }
+    // Shuffle candidates and pick `count` that are also far from each other
+    for(let i=candidates.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [candidates[i],candidates[j]]=[candidates[j],candidates[i]];
+    }
+    const picked=[];
+    for(const c of candidates){
+      if(picked.length>=count)break;
+      const farEnough=picked.every(p=>Math.abs(p.x-c.x)+Math.abs(p.y-c.y)>=2);
+      if(farEnough)picked.push(c);
+    }
+    checkpoints=picked.map(p=>({x:p.x,y:p.y,reached:false,emoji:cpEmoji}));
+  }
 }
 
 // ==============================================================
@@ -1774,10 +1856,15 @@ function showCodingFeedback(text,color){
 
 // ===== GAME FLOW =====
 function startGame(){
-  // Coding mazes use smaller grids for clarity of the program-to-path mapping
+  // Coding mazes use smaller grids for clarity of the program-to-path mapping.
+  // Hard coding gets a bigger 8x8 grid so checkpoints have room to scatter.
   let sz=DIFF_SIZES[currentDifficulty];
   if(currentMazeData&&currentMazeData.codingMaze){
-    sz=currentMazeData.codingSize==='small'?{c:5,r:5}:{c:7,r:7};
+    if(currentDifficulty==='hard'){
+      sz={c:8,r:8};
+    } else {
+      sz=currentMazeData.codingSize==='small'?{c:5,r:5}:{c:7,r:7};
+    }
   }
   generateMaze(sz.c,sz.r);
   playerPos={x:0,y:0};goalPos={x:cols-1,y:rows-1};
@@ -1797,8 +1884,14 @@ function startGame(){
     document.getElementById('playInfo').innerHTML=
       `🔁 <b>Pattern:</b> <span style="font-size:1.35em;color:${currentMazeData.color};font-family:'Fredoka',sans-serif;letter-spacing:2px">${seqDisplay}</span>  ·  Walk to what comes next!`;
   } else if(currentMazeData&&currentMazeData.codingMaze){
-    document.getElementById('playInfo').innerHTML=
-      `🤖 <b>Code it:</b> Build a program with arrow buttons below, then press <b style="color:${currentMazeData.color}">▶ Run</b> to watch your robot go!`;
+    if(checkpoints.length>0){
+      const n=checkpoints.length;
+      document.getElementById('playInfo').innerHTML=
+        `🤖 <b>Hard mission:</b> Collect <b style="color:#E17055">${n}× 🎵</b> first, then reach <b>${currentMazeData.goal}</b>! Build your program and press <b style="color:${currentMazeData.color}">▶ Run</b>.`;
+    } else {
+      document.getElementById('playInfo').innerHTML=
+        `🤖 <b>Code it:</b> Build a program with arrow buttons below, then press <b style="color:${currentMazeData.color}">▶ Run</b> to watch your robot go!`;
+    }
   }
   // Show/hide coding panel and manual-movement UI based on maze type.
   // Coding mazes are fully program-driven — no D-pad, no swipe hint, no manual keys.
