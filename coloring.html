@@ -3,7 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tune4Learn Coloring Book</title>
+<title>Online Coloring Book for Kids | Tune4Learn</title>
+<meta name="description" content="Free online coloring pages for kids — 16+ interactive designs including space, animals, seasons and songs. Paint in your browser, no download needed.">
+<meta name="keywords" content="online coloring for kids, free coloring pages, interactive coloring, kids coloring book, Tune4Learn coloring">
+<meta name="author" content="Tune4Learn">
+<meta name="theme-color" content="#FF6B35">
+<link rel="canonical" href="https://tune4learn.com/coloring.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Online Coloring Book for Kids | Tune4Learn">
+<meta property="og:description" content="16+ free interactive coloring pages for children. Paint directly in your browser — no download needed.">
+<meta property="og:url" content="https://tune4learn.com/coloring.html">
+<meta property="og:site_name" content="Tune4Learn">
+<meta property="og:image" content="https://tune4learn.com/assets/og-coloring.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Online Coloring Book for Kids | Tune4Learn">
+<meta name="twitter:description" content="16+ free interactive coloring pages — paint in your browser.">
+<meta name="twitter:image" content="https://tune4learn.com/assets/og-coloring.png">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -339,7 +358,7 @@ function buildSidebar(){
   PAGES.forEach(function(p){if(!cats[p.category]){cats[p.category]={e:p.categoryEmoji,pgs:[]};co.push(p.category)}cats[p.category].pgs.push(p)});
   co.forEach(function(cat){var d=cats[cat];var t=document.createElement("div");t.className="cat-t";t.textContent=d.e+" "+cat;list.appendChild(t);
     d.pgs.forEach(function(p){var info=LEVEL_INFO[p.level];var el=document.createElement("div");el.className="pg";el.id="th-"+p.id;el.setAttribute("data-level",p.level);
-      var img=document.createElement("img");img.className="pg-img";img.src=p.src;img.alt=p.title;img.loading="lazy";
+      var img=document.createElement("img");img.className="pg-img";img.src=p.src+"?v=1";img.alt=p.title;img.loading="lazy";
       var id=document.createElement("div");id.className="pg-info";
       var tt=document.createElement("div");tt.className="pg-title";tt.textContent=p.title;
       var m=document.createElement("div");m.className="pg-meta";
@@ -497,7 +516,7 @@ function loadPage(id){
     ctx.fillText("Oops! Could not load this page.", (cvs.width||400)/2, (cvs.height||300)/2 - 10);
     ctx.fillText("Please try another one.", (cvs.width||400)/2, (cvs.height||300)/2 + 14);
   };
-  img.src=pg.src;
+  img.src=pg.src+"?v=1";
 }
 function saveState(){undoS.push(cvs.toDataURL());if(undoS.length>40)undoS.shift()}
 function undo(){if(undoS.length<=1)return;redoS.push(undoS.pop());restState(undoS[undoS.length-1])}

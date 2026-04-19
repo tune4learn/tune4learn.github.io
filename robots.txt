@@ -1,0 +1,7 @@
+# robots.txt for tune4learn.com
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://tune4learn.com/sitemap.xml
