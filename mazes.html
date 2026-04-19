@@ -247,13 +247,17 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
   .play-header{border-radius:0;padding:10px 12px;flex-shrink:0;}
   .maze-overlay{padding:0;}
   .maze-overlay.active{align-items:stretch;justify-content:stretch;}
-  .diff-bar,.hud,.play-info,.dpad,.maze-controls,.swipe-hint,.coding-panel{flex-shrink:0;}
-  .canvas-wrap{flex:1 1 0;padding:2px;align-items:center;justify-content:center;min-height:0;overflow:hidden;}
-  canvas#mazeCanvas{max-width:100%;max-height:100%;width:auto;height:auto;display:block;}
+  .diff-bar,.hud,.play-info,.swipe-hint{flex-shrink:0;}
+  /* Canvas area — capped height so scrollable area below has room */
+  .canvas-wrap{flex:0 0 auto;padding:4px;align-items:center;justify-content:center;overflow:hidden;max-height:42vh;max-height:42dvh;}
+  canvas#mazeCanvas{max-width:100%;max-height:42vh;max-height:42dvh;width:auto;height:auto;display:block;}
   .diff-bar{padding:6px 10px 2px;}
   .hud{padding:3px 10px;gap:10px;}
   .play-info{padding:2px 10px 3px;}
-  .dpad{padding:3px 0 6px;}
+  /* Scrollable area for controls + coding panel + footer */
+  .scrollable-controls{flex:1 1 0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;}
+  .dpad,.maze-controls,.coding-panel{flex-shrink:0;}
+  .dpad{padding:6px 0 6px;}
   .maze-controls{padding:3px 10px 6px;}
   /* body lock when maze is open */
   body.maze-locked{position:fixed;width:100%;overflow:hidden;}
@@ -379,6 +383,7 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
     </div>
     <div class="play-info" id="playInfo"></div>
     <div class="canvas-wrap"><canvas id="mazeCanvas"></canvas></div>
+    <div class="scrollable-controls">
     <div class="swipe-hint">👆 Swipe or use D-pad to move</div>
     <div class="dpad">
       <div class="dpad-grid">
@@ -418,6 +423,7 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
       <button onclick="newMaze()">🆕 New Maze</button>
     </div>
     <div class="play-footer" id="playFooter"></div>
+    </div><!-- /scrollable-controls -->
     <div class="win-modal" id="winModal">
       <div class="win-emoji" id="winEmoji">🎉</div>
       <div class="win-title">Amazing!</div>
@@ -965,24 +971,27 @@ function drawMaze(){
   const mob=window.innerWidth<=900;
   const phone=window.innerWidth<=600;
   const isCoding=currentMazeData&&currentMazeData.category==='Coding';
-  // Measure actual reserved space from DOM instead of guessing
-  let reserveH=180; // fallback
+  // Mobile: give canvas a FIXED share of viewport height so the scrollable
+  // controls area below (dpad + coding panel + buttons) always has room.
+  // Measure the top chrome (header + diff-bar + hud + play-info) only.
+  let topChrome=120;
   if(mob){
     const play=document.querySelector('.maze-play');
     const wrap=document.querySelector('.canvas-wrap');
     if(play&&wrap){
-      // Sum heights of all siblings inside play-modal, except canvas-wrap itself
       let used=0;
       for(const el of play.children){
-        if(el===wrap)continue;
-        if(el.offsetParent===null)continue; // hidden
+        if(el===wrap)break; // stop at canvas-wrap — everything after is scrollable
+        if(el.offsetParent===null)continue;
         used+=el.offsetHeight;
       }
-      reserveH=used+12; // small breathing room
+      topChrome=used+8;
     }
   }
   const maxW=mob?window.innerWidth-12:492;
-  const maxH=mob?Math.max(window.innerHeight-reserveH,180):9999;
+  // Canvas gets ~42% of viewport on mobile, minus top chrome if it overlaps
+  const mobileCanvasH=Math.floor(window.innerHeight*0.42);
+  const maxH=mob?mobileCanvasH:9999;
   let cellSize=Math.floor(Math.min(maxW/cols,maxH/rows));
   cellSize=Math.max(cellSize,16);cellSize=Math.min(cellSize,mob?72:52);
   const w=cols*cellSize,h=rows*cellSize,dpr=window.devicePixelRatio||1;
@@ -2078,7 +2087,7 @@ renderFilters();renderGrid();
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="/cdn-cgi/l/email-protection#7c430f091e16191f0841280912194830191d0e12594e4c51594e4c3918091f1d081513121d10594e4c2f13121b0f5a1e1318054135594e4c1a13091218594e4c0814150f594e4c1b0e191d08594e4c0e190f13090e1f19594e4c1a130e594e4c08191d1f14190e0f594e4c1d1218594e4c0c1d0e1912080f46594e4c1408080c0f465353080912194810191d0e12521f1311" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -2086,7 +2095,7 @@ renderFilters();renderGrid();
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
+<script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;
