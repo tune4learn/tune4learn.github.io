@@ -363,12 +363,12 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dk);overfl
 var PAGES=[{id:"earth-day",title:"Happy Earth Day",category:"Earth Day",categoryEmoji:"\ud83c\udf0d",emoji:"\ud83c\udf0d",level:"easy",src:"assets/coloring/earth-day.jpg"},
 {id:"space-rocket",title:"Space Rocket",category:"World Space Day",categoryEmoji:"\ud83d\ude80",emoji:"\ud83d\ude80",level:"easy",src:"assets/coloring/space-rocket.jpg"},
 {id:"space-planets",title:"Solar System Friends",category:"World Space Day",categoryEmoji:"\ud83d\ude80",emoji:"\ud83e\ude90",level:"detailed",src:"assets/coloring/space-planets.jpg"},
-{id:"glacier-day",title:"Save Our Ice",category:"World Glaciers Day",categoryEmoji:"\ud83c\udfd4\ufe0f",emoji:"\u2744\ufe0f",level:"medium",src:"assets/coloring/glacier-day.jpg"},
-{id:"math-day",title:"Math & Hope",category:"World Math Day",categoryEmoji:"\ud83d\udd22",emoji:"\ud83c\udfb2",level:"easy",src:"assets/coloring/math-day.jpg"},
+{id:"glacier-day",title:"Save Our Ice",category:"World Glaciers Day",categoryEmoji:"\ud83c\udfd4\ufe0f",emoji:"\u2744\ufe0f",level:"medium",src:"assets/coloring/glacier-day.jpg",hidden:true},
+{id:"math-day",title:"Math & Hope",category:"World Math Day",categoryEmoji:"\ud83d\udd22",emoji:"\ud83c\udfb2",level:"easy",src:"assets/coloring/math-day.jpg",hidden:true},
 {id:"engineering-team",title:"Engineer Team",category:"World Engineering Day",categoryEmoji:"\u2699\ufe0f",emoji:"\ud83d\udc77",level:"detailed",src:"assets/coloring/engineering-team.jpg"},
 {id:"engineering-robot",title:"Fix the Robot",category:"World Engineering Day",categoryEmoji:"\u2699\ufe0f",emoji:"\ud83e\udd16",level:"easy",src:"assets/coloring/engineering-robot.jpg"},
-{id:"children-rights",title:"All Kids Same",category:"World Children Day",categoryEmoji:"\ud83d\udc67",emoji:"\ud83e\udd1d",level:"medium",src:"assets/coloring/children-rights.jpg"},
-{id:"children-future",title:"We Are the Future",category:"World Children Day",categoryEmoji:"\ud83d\udc67",emoji:"\ud83c\udf31",level:"medium",src:"assets/coloring/children-future.jpg"},
+{id:"children-rights",title:"All Kids Same",category:"World Children Day",categoryEmoji:"\ud83d\udc67",emoji:"\ud83e\udd1d",level:"medium",src:"assets/coloring/children-rights.jpg",hidden:true},
+{id:"children-future",title:"We Are the Future",category:"World Children Day",categoryEmoji:"\ud83d\udc67",emoji:"\ud83c\udf31",level:"medium",src:"assets/coloring/children-future.jpg",hidden:true},
 {id:"art-leonardo",title:"Leonardo at Work",category:"World Art Day",categoryEmoji:"\ud83c\udfa8",emoji:"\ud83d\udd8c\ufe0f",level:"detailed",src:"assets/coloring/art-leonardo.jpg"},
 {id:"hickory-rock",title:"Hickory Dickory Rock",category:"Tune4Learn Songs",categoryEmoji:"\ud83c\udfb5",emoji:"\ud83e\udea8",level:"easy",src:"assets/coloring/hickory-rock.jpg"},
 {id:"autumn-tree",title:"Apple Tree Kids",category:"Autumn Color Dance",categoryEmoji:"\ud83c\udf42",emoji:"\ud83c\udf4e",level:"easy",src:"assets/coloring/autumn-tree.jpg"},
@@ -435,7 +435,7 @@ window.addEventListener("DOMContentLoaded",function(){
     if((e.ctrlKey||e.metaKey)&&e.key==="z"){e.preventDefault();undo()}
     if((e.ctrlKey||e.metaKey)&&e.key==="y"){e.preventDefault();doRedo()}
   });
-  if(PAGES.length)loadPage(PAGES[0].id);
+  var _visPgs=PAGES.filter(function(p){return !p.hidden});if(_visPgs.length)loadPage(_visPgs[0].id);
   setTimeout(function(){document.getElementById("splash").classList.add("hid")},1000);
 });
 
@@ -455,7 +455,7 @@ function applyFilter(){
 function makeStars(l){var n=LEVEL_INFO[l].stars;var s="";for(var i=1;i<=3;i++)s+=i<=n?"\u2B50":"\u2606";return s}
 function buildSidebar(){
   var list=document.getElementById("pageList");var cats={};var co=[];
-  PAGES.forEach(function(p){if(!cats[p.category]){cats[p.category]={e:p.categoryEmoji,pgs:[]};co.push(p.category)}cats[p.category].pgs.push(p)});
+  PAGES.forEach(function(p){if(p.hidden)return;if(!cats[p.category]){cats[p.category]={e:p.categoryEmoji,pgs:[]};co.push(p.category)}cats[p.category].pgs.push(p)});
   co.forEach(function(cat){var d=cats[cat];var t=document.createElement("div");t.className="cat-t";t.textContent=d.e+" "+cat;list.appendChild(t);
     d.pgs.forEach(function(p){var info=LEVEL_INFO[p.level];var el=document.createElement("div");el.className="pg";el.id="th-"+p.id;el.setAttribute("data-level",p.level);
       var img=document.createElement("img");img.className="pg-img";img.src=p.src+"?v=1";img.alt=p.title;img.loading="lazy";
@@ -586,7 +586,10 @@ function flattenAndSave(){
 }
 function flattenAndPrint(){
   var c=flattenToCanvas();var u=c.toDataURL("image/png");var w=window.open("","_blank");
-  w.document.write("<html><head><title>Tune4Learn</title><style>body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh}img{max-width:100%;max-height:100vh}</style></head><body><img src=\""+u+"\" onload=\"window.print();window.close()\"><script>
+  w.document.write('<html><head><title>Tune4Learn</title><style>body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh}img{max-width:100%;max-height:100vh}<\/style></head><body><img src="'+u+'" onload="window.print();window.close()"></body></html>');
+  w.document.close();
+}
+/* ---- end flattenAndPrint ---- */
 /* ── GA4 Event Tracking ── Delegated listener */
 (function(){
   if(!window.gtag) return;
@@ -615,9 +618,6 @@ function flattenAndPrint(){
     }
   }, {passive:true});
 })();
-</script>
-</body></html>");
-}
 
 function loadPage(id){
   if(window.gtag)gtag('event','coloring_open',{book_id:id});
@@ -910,7 +910,7 @@ window.addEventListener("resize",function(){if(curPg)loadPage(curPg)});
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="/cdn-cgi/l/email-protection#d4eba7a1b6beb1b7a0e980a1bab1e098b1b5a6baf1e6e4f9f1e6e491b0a1b7b5a0bdbbbab5b8f1e6e487bbbab3a7f2b6bbb0ade99df1e6e4b2bba1bab0f1e6e4a0bcbda7f1e6e4b3a6b1b5a0f1e6e4a6b1a7bba1a6b7b1f1e6e4b2bba6f1e6e4a0b1b5b7bcb1a6a7f1e6e4b5bab0f1e6e4a4b5a6b1baa0a7eef1e6e4bca0a0a4a7eefbfba0a1bab1e0b8b1b5a6bafab7bbb9" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -918,7 +918,7 @@ window.addEventListener("resize",function(){if(curPg)loadPage(curPg)});
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;
