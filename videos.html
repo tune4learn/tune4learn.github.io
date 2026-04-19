@@ -194,6 +194,17 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
   gtag('js', new Date());
   gtag('config', 'G-SSPW3HB9F8');
 </script>
+<style>
+/* ── Accessibility: Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
 </head>
 <body>
 
@@ -220,7 +231,7 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
   </div>
 </div>
 <nav class="navbar" id="navbar">
-  <a href="index.html" class="nav-logo"><img src="assets/t4l-logo.png" alt="Tune4Learn"></a>
+  <a href="index.html" class="nav-logo"><picture><source srcset="assets/t4l-logo.webp" type="image/webp"><img src="assets/t4l-logo.png" alt="Tune4Learn" width="44" height="44" decoding="async"></picture></a>
   <ul class="nav-links">
     <li><a href="videos.html" class="active">For Kids</a></li>
     <li><a href="teachers.html">For Teachers &amp; Parents</a></li>
@@ -367,7 +378,7 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
 </div>
 <footer>
   <div class="footer-inner">
-    <a href="index.html" class="footer-logo"><img src="assets/t4l-logo.png" alt="Tune4Learn"></a>
+    <a href="index.html" class="footer-logo"><picture><source srcset="assets/t4l-logo.webp" type="image/webp"><img src="assets/t4l-logo.png" alt="Tune4Learn" width="44" height="44" decoding="async" loading="lazy"></picture></a>
     <div class="footer-links">
       <a href="videos.html">For Kids</a>
       <a href="teachers.html">For Teachers</a>

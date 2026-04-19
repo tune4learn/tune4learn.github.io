@@ -144,11 +144,22 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
   #sib-container a {text-decoration:underline;color:#2BB2FC;}
 </style>
 <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
+<style>
+/* ── Accessibility: Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
 </head>
 <body>
 
 <nav class="navbar" id="navbar">
-  <a href="index.html" class="nav-logo"><img src="assets/t4l-logo.png" alt="Tune4Learn"></a>
+  <a href="index.html" class="nav-logo"><picture><source srcset="assets/t4l-logo.webp" type="image/webp"><img src="assets/t4l-logo.png" alt="Tune4Learn" width="44" height="44" decoding="async"></picture></a>
   <ul class="nav-links">
     <li><a href="videos.html">For Kids</a></li>
     <li><a href="teachers.html">For Teachers &amp; Parents</a></li>
@@ -429,7 +440,7 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
   <div class="footer-inner">
     <div class="footer-grid">
       <div>
-        <img src="assets/t4l-logo.png" alt="Tune4Learn" class="footer-logo">
+        <picture><source srcset="assets/t4l-logo.webp" type="image/webp"><img src="assets/t4l-logo.png" alt="Tune4Learn" class="footer-logo" width="44" height="44" decoding="async" loading="lazy"></picture>
         <p class="footer-brand">Educational songs and resources for children ages 3–8. Making learning joyful through the power of music.</p>
       </div>
       <div class="footer-col">

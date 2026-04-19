@@ -188,6 +188,17 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dk);overfl
 }
 @media print{.hdr,.side,.tb,.zm,.float-item .delete-btn{display:none!important}.main{display:block!important}.cv-area{padding:0!important}.cv-wrap{box-shadow:none!important;border-radius:0!important}}
 </style>
+<style>
+/* ── Accessibility: Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="splash" id="splash"><div class="splash-ic">&#127912;</div><div class="splash-tt">Coloring Book</div><div class="splash-dots"><div class="splash-d"></div><div class="splash-d"></div><div class="splash-d"></div></div></div>

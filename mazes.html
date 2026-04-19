@@ -23,7 +23,7 @@
 <!-- Favicon (uses musical note emoji as a data URI so no extra file needed) -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧩%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script>window.T4L_MASCOT_URI="assets/t4l-mascot-small.png";</script>
+<script>window.T4L_MASCOT_URI=(document.createElement("canvas").toDataURL("image/webp").indexOf("webp")>-1?"assets/t4l-mascot-small.webp":"assets/t4l-mascot-small.png");</script>
 <style>
 :root {
   --t4l-purple:#6C3FA0;--t4l-pink:#E84393;--t4l-yellow:#FDCB6E;
@@ -236,6 +236,17 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
   .dpad{display:flex;}.swipe-hint{display:block;}
 }
 @media(min-width:601px){.dpad{display:none!important}.swipe-hint{display:none!important}}
+</style>
+<style>
+/* ── Accessibility: Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 </style>
 </head>
 <body>
