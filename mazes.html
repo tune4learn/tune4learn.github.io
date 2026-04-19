@@ -227,9 +227,35 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
 .page-footer{text-align:center;padding:26px;font-size:13px;color:#A0AEC0;font-weight:700;border-top:1.5px solid #eef0f4;background:#fff;margin-top:20px;}
 .page-footer a{color:var(--t4l-purple);text-decoration:none;}
 
+/* ── TABLET & MOBILE: Fullscreen maze play ── */
+@media(max-width:900px){
+  .maze-play{
+    width:100vw;
+    height:100vh;
+    height:100dvh;
+    max-height:100vh;
+    max-height:100dvh;
+    border-radius:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .play-header{border-radius:0;padding:10px 12px;flex-shrink:0;}
+  .maze-overlay.active{align-items:stretch;justify-content:stretch;}
+  .diff-bar,.hud,.play-info,.dpad,.maze-controls,.swipe-hint{flex-shrink:0;}
+  .canvas-wrap{flex:1 1 0;padding:2px;align-items:center;justify-content:center;min-height:0;overflow:hidden;}
+  canvas#mazeCanvas{max-width:100%;max-height:100%;width:auto;height:auto;}
+  .diff-bar{padding:6px 10px 2px;}
+  .hud{padding:3px 10px;gap:10px;}
+  .play-info{padding:2px 10px 3px;}
+  .dpad{padding:3px 0 8px;}
+  .maze-controls{padding:3px 10px 8px;}
+}
 @media(max-width:600px){
   .maze-grid{grid-template-columns:repeat(2,1fr);gap:10px;padding:12px;}
   .card-top{height:100px;}.card-emoji{font-size:40px;}.card-mascot-img{height:78px;}
+  .dpad-grid{grid-template-columns:48px 48px 48px;grid-template-rows:48px 48px 48px;gap:3px;}
+  .dpad-btn{width:48px;height:48px;font-size:20px;}
   .card-body{padding:9px 10px 10px;}.card-title{font-size:13px;}
   .card-story{font-size:11px;margin-bottom:6px;}
   .hero{padding:38px 16px 46px;}.hero-mascot{height:140px;}
@@ -248,6 +274,48 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
   }
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://tune4learn.com/#org",
+      "name": "Tune4Learn",
+      "url": "https://tune4learn.com",
+      "logo": "https://tune4learn.com/assets/t4l-logo.png",
+      "description": "Educational music platform for children ages 3–8. Songs, coloring books and games that support global awareness and early childhood education.",
+      "sameAs": [
+        "https://www.youtube.com/@Tune4Learn"
+      ]
+    },
+    {
+      "@type": "Game",
+      "name": "Tune4Learn Mazes",
+      "url": "https://tune4learn.com/mazes.html",
+      "description": "Educational maze games for children. Includes classic mazes, math mazes, and coding mazes inspired by Bee-Bot and ScratchJr.",
+      "genre": "Educational",
+      "audience": {
+        "@type": "PeopleAudience",
+        "suggestedMinAge": 3,
+        "suggestedMaxAge": 8
+      },
+      "publisher": {
+        "@id": "https://tune4learn.com/#org"
+      },
+      "inLanguage": "en"
+    }
+  ]
+}
+</script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SSPW3HB9F8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SSPW3HB9F8');
+</script>
 </head>
 <body>
 
@@ -887,10 +955,13 @@ requestAnimationFrame(animate);
 // DRAW
 // ==============================================================
 function drawMaze(){
-  const mob=window.innerWidth<=600;
-  const maxW=mob?window.innerWidth-32:492;
-  cellSize=Math.floor(maxW/cols);
-  cellSize=Math.max(cellSize,16);cellSize=Math.min(cellSize,52);
+  const mob=window.innerWidth<=900;
+  // Reserve space for header(~52) + diff(~38) + hud(~32) + info(~20) + controls(~38) + dpad(~170 mob, 0 desk) + padding(~24)
+  const reserveH=mob?(window.innerWidth<=600?384:214):220;
+  const maxW=mob?window.innerWidth-24:492;
+  const maxH=mob?window.innerHeight-reserveH:9999;
+  let cellSize=Math.floor(Math.min(maxW/cols,maxH/rows));
+  cellSize=Math.max(cellSize,16);cellSize=Math.min(cellSize,mob?64:52);
   const w=cols*cellSize,h=rows*cellSize,dpr=window.devicePixelRatio||1;
   canvas.width=w*dpr;canvas.height=h*dpr;
   canvas.style.width=w+'px';canvas.style.height=h+'px';
@@ -1085,6 +1156,12 @@ document.addEventListener('keydown',e=>{
   const d=m[e.key];if(d){e.preventDefault();movePlayer(d[0],d[1]);}
 });
 let tSX,tSY;
+// Redraw on window resize (handles orientation change, browser resize)
+let _resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(_resizeTimer);
+  _resizeTimer=setTimeout(()=>{if(currentMazeData&&gameActive)drawMaze();},150);
+});
 canvas.addEventListener('touchstart',e=>{e.preventDefault();tSX=e.touches[0].clientX;tSY=e.touches[0].clientY;},{passive:false});
 canvas.addEventListener('touchend',e=>{e.preventDefault();if(!tSX)return;const dx=e.changedTouches[0].clientX-tSX,dy=e.changedTouches[0].clientY-tSY;if(Math.max(Math.abs(dx),Math.abs(dy))<14)return;if(Math.abs(dx)>Math.abs(dy))movePlayer(dx>0?1:-1,0);else movePlayer(0,dy>0?1:-1);tSX=null;},{passive:false});
 
@@ -1677,6 +1754,8 @@ function startGame(){
 
 function openMaze(id){
   currentMazeData=MAZES.find(m=>m.id===id);if(!currentMazeData)return;
+  // GA4 tracking
+  if(window.gtag)gtag('event','maze_open',{maze_id:id,maze_title:currentMazeData.title,maze_category:currentMazeData.cat,difficulty:currentMazeData.difficulty});
   document.getElementById('playTitle').innerHTML=`${currentMazeData.emoji} ${currentMazeData.title}`;
   document.getElementById('playInfo').textContent=currentMazeData.char==='T4L'?`🎵 Melody → ${currentMazeData.goal}  ${currentMazeData.story}`:`${currentMazeData.char} → ${currentMazeData.goal}  ${currentMazeData.story}`;
   document.getElementById('playFooter').innerHTML=`<a class="watch-btn" href="${currentMazeData.yt}" target="_blank" rel="noopener">▶ Watch the Song</a>`;
@@ -1700,6 +1779,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMaze();});
 
 // ===== WIN =====
 function showWin(){
+  // GA4 tracking
+  if(window.gtag&&currentMazeData)gtag('event','maze_complete',{maze_id:currentMazeData.id,maze_title:currentMazeData.title,time_seconds:elapsedSeconds,difficulty:currentMazeData.difficulty});
   playWin();
   const stars=calcStars(elapsedSeconds),k=bestKey();
   let rec=false;if(bestTimes[k]===undefined||elapsedSeconds<bestTimes[k]){bestTimes[k]=elapsedSeconds;rec=true;saveBestTimes();}
@@ -1736,7 +1817,37 @@ renderFilters();renderGrid();
 </script>
 <!-- ============================================ -->
 <!-- SUPPORT US WIDGET — Floating button + modal  -->
-<!-- Bu bloğu tüm sayfalarda </body> etiketinden  -->
+<!-- Bu bloğu tüm sayfalarda <script>
+/* ── GA4 Event Tracking ── Delegated listener */
+(function(){
+  if(!window.gtag) return;
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a,button,[data-track]');
+    if(!a) return;
+    const href = (a.getAttribute('href')||'').toLowerCase();
+    const txt = (a.textContent||'').trim().substring(0,60);
+    const track = a.getAttribute('data-track');
+    // YouTube video clicks
+    if(href.includes('youtube.com/watch') || href.includes('youtu.be/')){
+      const m = href.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
+      gtag('event','video_click',{video_id:m?m[1]:'',video_title:txt,page:location.pathname});
+    }
+    // PDF downloads
+    else if(href.endsWith('.pdf') || a.hasAttribute('download')){
+      gtag('event','file_download',{file_name:href.split('/').pop(),file_type:'pdf',page:location.pathname});
+    }
+    // External links (outbound)
+    else if(href.startsWith('http') && !href.includes(location.hostname) && !href.startsWith('mailto:')){
+      gtag('event','click_outbound',{link_url:href,link_text:txt});
+    }
+    // Custom-tracked actions (data-track="maze_open" etc.)
+    if(track){
+      gtag('event',track,{label:txt,page:location.pathname});
+    }
+  }, {passive:true});
+})();
+</script>
+</body> etiketinden  -->
 <!-- HEMEN ÖNCE yapıştırın. İş yapacak 3 parça:   -->
 <!-- 1) CSS (stil) 2) HTML (buton+modal) 3) JS    -->
 <!-- ============================================ -->

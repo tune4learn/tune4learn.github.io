@@ -199,6 +199,44 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dk);overfl
   }
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://tune4learn.com/#org",
+      "name": "Tune4Learn",
+      "url": "https://tune4learn.com",
+      "logo": "https://tune4learn.com/assets/t4l-logo.png",
+      "description": "Educational music platform for children ages 3–8. Songs, coloring books and games that support global awareness and early childhood education.",
+      "sameAs": [
+        "https://www.youtube.com/@Tune4Learn"
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "url": "https://tune4learn.com/coloring.html",
+      "name": "Coloring Book — Tune4Learn",
+      "description": "Free interactive online coloring pages for children. Color a character and listen to the song while coloring.",
+      "isPartOf": {
+        "@id": "https://tune4learn.com/#website"
+      },
+      "publisher": {
+        "@id": "https://tune4learn.com/#org"
+      }
+    }
+  ]
+}
+</script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SSPW3HB9F8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SSPW3HB9F8');
+</script>
 </head>
 <body>
 <div class="splash" id="splash"><div class="splash-ic">&#127912;</div><div class="splash-tt">Coloring Book</div><div class="splash-dots"><div class="splash-d"></div><div class="splash-d"></div><div class="splash-d"></div></div></div>
@@ -265,8 +303,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dk);overfl
     </div>
 
     <div class="tb-sec"><div class="tb-t">&#128190; Save &amp; Share</div>
-      <button class="ab ab-f" onclick="flattenAndSave()">&#128229; Save as Image</button>
-      <button class="ab ab-p" onclick="flattenAndPrint()">&#128424; Print</button>
+      <button class="ab ab-f" onclick="flattenAndSave()" data-track="coloring_save">&#128229; Save as Image</button>
+      <button class="ab ab-p" onclick="flattenAndPrint()" data-track="coloring_print">&#128424; Print</button>
     </div>
   </aside>
 </div>
@@ -497,10 +535,41 @@ function flattenAndSave(){
 }
 function flattenAndPrint(){
   var c=flattenToCanvas();var u=c.toDataURL("image/png");var w=window.open("","_blank");
-  w.document.write("<html><head><title>Tune4Learn</title><style>body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh}img{max-width:100%;max-height:100vh}</style></head><body><img src=\""+u+"\" onload=\"window.print();window.close()\"></body></html>");
+  w.document.write("<html><head><title>Tune4Learn</title><style>body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh}img{max-width:100%;max-height:100vh}</style></head><body><img src=\""+u+"\" onload=\"window.print();window.close()\"><script>
+/* ── GA4 Event Tracking ── Delegated listener */
+(function(){
+  if(!window.gtag) return;
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a,button,[data-track]');
+    if(!a) return;
+    const href = (a.getAttribute('href')||'').toLowerCase();
+    const txt = (a.textContent||'').trim().substring(0,60);
+    const track = a.getAttribute('data-track');
+    // YouTube video clicks
+    if(href.includes('youtube.com/watch') || href.includes('youtu.be/')){
+      const m = href.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
+      gtag('event','video_click',{video_id:m?m[1]:'',video_title:txt,page:location.pathname});
+    }
+    // PDF downloads
+    else if(href.endsWith('.pdf') || a.hasAttribute('download')){
+      gtag('event','file_download',{file_name:href.split('/').pop(),file_type:'pdf',page:location.pathname});
+    }
+    // External links (outbound)
+    else if(href.startsWith('http') && !href.includes(location.hostname) && !href.startsWith('mailto:')){
+      gtag('event','click_outbound',{link_url:href,link_text:txt});
+    }
+    // Custom-tracked actions (data-track="maze_open" etc.)
+    if(track){
+      gtag('event',track,{label:txt,page:location.pathname});
+    }
+  }, {passive:true});
+})();
+</script>
+</body></html>");
 }
 
 function loadPage(id){
+  if(window.gtag)gtag('event','coloring_open',{book_id:id});
   var pg=null;for(var i=0;i<PAGES.length;i++){if(PAGES[i].id===id){pg=PAGES[i];break}}
   if(!pg)return;curPg=id;
   document.querySelectorAll(".pg").forEach(function(t){t.classList.remove("act")});

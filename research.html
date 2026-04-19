@@ -119,6 +119,7 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
 .footer-bottom{border-top:1px solid rgba(255,255,255,0.07);padding-top:1.5rem;text-align:center;color:rgba(255,255,255,0.2);font-size:0.8rem;font-weight:700;}
 
 @media(max-width:860px){.research-wrap{grid-template-columns:1fr;}.r-sidebar{position:static;}.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:860px){.nav-links{display:none;}}
 @media(max-width:580px){.navbar.scrolled .nav-links{display:none;}.footer-grid{grid-template-columns:1fr;}}
 .nav-link-color{text-decoration:none;color:var(--text);font-weight:900;font-size:0.88rem;padding:8px 14px;border-radius:30px;background:linear-gradient(135deg,#FF6B35,#FFD93D);color:white!important;transition:all 0.2s;}
 .nav-link-color:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,107,53,0.4);}
@@ -155,6 +156,44 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
   }
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://tune4learn.com/#org",
+      "name": "Tune4Learn",
+      "url": "https://tune4learn.com",
+      "logo": "https://tune4learn.com/assets/t4l-logo.png",
+      "description": "Educational music platform for children ages 3–8. Songs, coloring books and games that support global awareness and early childhood education.",
+      "sameAs": [
+        "https://www.youtube.com/@Tune4Learn"
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "url": "https://tune4learn.com/research.html",
+      "name": "Research — Tune4Learn",
+      "description": "Research publications and academic articles on music education, early childhood learning, and educational technology by Tune4Learn team.",
+      "isPartOf": {
+        "@id": "https://tune4learn.com/#website"
+      },
+      "publisher": {
+        "@id": "https://tune4learn.com/#org"
+      }
+    }
+  ]
+}
+</script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SSPW3HB9F8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SSPW3HB9F8');
+</script>
 </head>
 <body>
 
@@ -487,7 +526,37 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <!-- ============================================ -->
 <!-- SUPPORT US WIDGET — Floating button + modal  -->
-<!-- Bu bloğu tüm sayfalarda </body> etiketinden  -->
+<!-- Bu bloğu tüm sayfalarda <script>
+/* ── GA4 Event Tracking ── Delegated listener */
+(function(){
+  if(!window.gtag) return;
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a,button,[data-track]');
+    if(!a) return;
+    const href = (a.getAttribute('href')||'').toLowerCase();
+    const txt = (a.textContent||'').trim().substring(0,60);
+    const track = a.getAttribute('data-track');
+    // YouTube video clicks
+    if(href.includes('youtube.com/watch') || href.includes('youtu.be/')){
+      const m = href.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
+      gtag('event','video_click',{video_id:m?m[1]:'',video_title:txt,page:location.pathname});
+    }
+    // PDF downloads
+    else if(href.endsWith('.pdf') || a.hasAttribute('download')){
+      gtag('event','file_download',{file_name:href.split('/').pop(),file_type:'pdf',page:location.pathname});
+    }
+    // External links (outbound)
+    else if(href.startsWith('http') && !href.includes(location.hostname) && !href.startsWith('mailto:')){
+      gtag('event','click_outbound',{link_url:href,link_text:txt});
+    }
+    // Custom-tracked actions (data-track="maze_open" etc.)
+    if(track){
+      gtag('event',track,{label:txt,page:location.pathname});
+    }
+  }, {passive:true});
+})();
+</script>
+</body> etiketinden  -->
 <!-- HEMEN ÖNCE yapıştırın. İş yapacak 3 parça:   -->
 <!-- 1) CSS (stil) 2) HTML (buton+modal) 3) JS    -->
 <!-- ============================================ -->

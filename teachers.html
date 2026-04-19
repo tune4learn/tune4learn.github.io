@@ -179,6 +179,7 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
 .aos.in{opacity:1;transform:translateY(0);}
 
 @media(max-width:860px){.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:860px){.nav-links{display:none;}}
 @media(max-width:580px){.navbar.scrolled .nav-links{display:none;}.footer-grid{grid-template-columns:1fr;gap:2rem;}}
 
 /* HAMBURGER MENU */
@@ -223,6 +224,48 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
   }
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://tune4learn.com/#org",
+      "name": "Tune4Learn",
+      "url": "https://tune4learn.com",
+      "logo": "https://tune4learn.com/assets/t4l-logo.png",
+      "description": "Educational music platform for children ages 3–8. Songs, coloring books and games that support global awareness and early childhood education.",
+      "sameAs": [
+        "https://www.youtube.com/@Tune4Learn"
+      ]
+    },
+    {
+      "@type": "CollectionPage",
+      "url": "https://tune4learn.com/teachers.html",
+      "name": "For Teachers — Tune4Learn",
+      "description": "Free downloadable teacher resources, lesson plans, and coloring books aligned with global awareness days for early childhood education.",
+      "isPartOf": {
+        "@id": "https://tune4learn.com/#website"
+      },
+      "publisher": {
+        "@id": "https://tune4learn.com/#org"
+      },
+      "audience": {
+        "@type": "EducationalAudience",
+        "educationalRole": "teacher"
+      }
+    }
+  ]
+}
+</script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SSPW3HB9F8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SSPW3HB9F8');
+</script>
 </head>
 <body>
 
@@ -691,7 +734,37 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <!-- ============================================ -->
 <!-- SUPPORT US WIDGET — Floating button + modal  -->
-<!-- Bu bloğu tüm sayfalarda </body> etiketinden  -->
+<!-- Bu bloğu tüm sayfalarda <script>
+/* ── GA4 Event Tracking ── Delegated listener */
+(function(){
+  if(!window.gtag) return;
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a,button,[data-track]');
+    if(!a) return;
+    const href = (a.getAttribute('href')||'').toLowerCase();
+    const txt = (a.textContent||'').trim().substring(0,60);
+    const track = a.getAttribute('data-track');
+    // YouTube video clicks
+    if(href.includes('youtube.com/watch') || href.includes('youtu.be/')){
+      const m = href.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
+      gtag('event','video_click',{video_id:m?m[1]:'',video_title:txt,page:location.pathname});
+    }
+    // PDF downloads
+    else if(href.endsWith('.pdf') || a.hasAttribute('download')){
+      gtag('event','file_download',{file_name:href.split('/').pop(),file_type:'pdf',page:location.pathname});
+    }
+    // External links (outbound)
+    else if(href.startsWith('http') && !href.includes(location.hostname) && !href.startsWith('mailto:')){
+      gtag('event','click_outbound',{link_url:href,link_text:txt});
+    }
+    // Custom-tracked actions (data-track="maze_open" etc.)
+    if(track){
+      gtag('event',track,{label:txt,page:location.pathname});
+    }
+  }, {passive:true});
+})();
+</script>
+</body> etiketinden  -->
 <!-- HEMEN ÖNCE yapıştırın. İş yapacak 3 parça:   -->
 <!-- 1) CSS (stil) 2) HTML (buton+modal) 3) JS    -->
 <!-- ============================================ -->
@@ -869,7 +942,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="/cdn-cgi/l/email-protection#d3eca0a6b1b9b6b0a7ee87a6bdb6e79fb6b2a1bdf6e1e3fef6e1e396b7a6b0b2a7babcbdb2bff6e1e380bcbdb4a0f5b1bcb7aaee9af6e1e3b5bca6bdb7f6e1e3a7bbbaa0f6e1e3b4a1b6b2a7f6e1e3a1b6a0bca6a1b0b6f6e1e3b5bca1f6e1e3a7b6b2b0bbb6a1a0f6e1e3b2bdb7f6e1e3a3b2a1b6bda7a0e9f6e1e3bba7a7a3a0e9fcfca7a6bdb6e7bfb6b2a1bdfdb0bcbe" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -877,7 +950,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
+<script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;

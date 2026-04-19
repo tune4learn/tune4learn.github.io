@@ -221,9 +221,20 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
 .teaser-grid .t-card{text-decoration:none;color:white;}
 .t-link{font-size:0.82rem;font-weight:900;color:var(--sun);margin-top:auto;}
 .aos{opacity:1;transform:translateY(0);}
+@media(max-width:1024px){
+  /* ── TABLET breakpoint (768–1024px: iPad portrait/landscape) ── */
+  .hero{min-height:auto;height:auto;padding-bottom:60px;}
+  .hero-text{
+    width:52%;
+    padding:120px 4vw 80px 2vw;
+  }
+  .hero-mascot{width:clamp(260px,42vw,440px);left:1%;}
+  .hero-title{font-size:clamp(2.6rem,5.2vw,4rem);}
+  .hero-sub{font-size:1rem;max-width:100%;}
+}
 @media(max-width:860px){
   .hero-mascot{width:clamp(200px,38vw,380px);}
-  .hero-text{width:55%;padding:80px 3vw 120px 1vw;}
+  .hero-text{width:55%;padding:110px 3vw 80px 1vw;}
   .r-layout{grid-template-columns:1fr;}
   .footer-grid{grid-template-columns:1fr 1fr;}
   .idx-grid{grid-template-columns:1fr 1fr;}
@@ -260,6 +271,42 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
 
 /* INDEX TEASER CARDS */
 .idx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:2rem;}
+
+/* ── PLAY & CREATE ── */
+.play-sec{background:linear-gradient(180deg,#FFF8FB 0%,#F0F4FF 100%);}
+.play-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.4rem;}
+.play-card{position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr;gap:1.2rem;align-items:center;padding:2rem 2rem 2rem 1.6rem;border-radius:28px;text-decoration:none;color:#fff;background:var(--bg,#E84393);box-shadow:0 14px 36px rgba(232,67,147,0.28);transition:transform 0.32s cubic-bezier(0.22,1,0.36,1),box-shadow 0.32s;cursor:pointer;isolation:isolate;}
+.play-mazes{--bg:linear-gradient(135deg,#6C3FA0 0%,#E84393 100%);box-shadow:0 14px 36px rgba(108,63,160,0.32);}
+.play-coloring{--bg:linear-gradient(135deg,#23BFEF 0%,#00B894 100%);box-shadow:0 14px 36px rgba(0,184,148,0.3);}
+.play-card:hover{transform:translateY(-6px) scale(1.012);box-shadow:0 22px 52px rgba(108,63,160,0.42);}
+.play-card:active{transform:scale(0.99);}
+.play-card:focus-visible{outline:3px solid #fff;outline-offset:4px;}
+.play-emoji{font-size:4.6rem;line-height:1;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.22));animation:playFloat 3.2s ease-in-out infinite;flex-shrink:0;}
+@keyframes playFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+.play-card:hover .play-emoji{animation-duration:1.4s;}
+.play-body{min-width:0;}
+.play-badge{display:inline-block;font-family:'Fredoka',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:rgba(255,255,255,0.22);padding:4px 12px;border-radius:20px;margin-bottom:0.6rem;border:1.2px solid rgba(255,255,255,0.3);}
+.play-card h3{font-family:'Fredoka One',cursive;font-size:1.7rem;margin:0 0 0.4rem;line-height:1.1;}
+.play-card p{font-family:'Nunito',sans-serif;font-weight:700;font-size:0.95rem;opacity:0.92;margin:0 0 0.9rem;line-height:1.45;}
+.play-cta{display:inline-flex;align-items:center;gap:5px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.95rem;background:rgba(255,255,255,0.22);padding:8px 18px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.35);transition:all 0.25s;}
+.play-card:hover .play-cta{background:#fff;color:#1E2A3A;transform:translateX(4px);}
+/* Decorative dots / stripes */
+.play-decor{position:absolute;top:0;right:0;width:140px;height:140px;opacity:0.35;pointer-events:none;z-index:-1;}
+.play-decor .dot{position:absolute;border-radius:50%;background:#fff;}
+.play-decor .d1{width:22px;height:22px;top:18px;right:26px;animation:dotBob 2.8s ease-in-out infinite;}
+.play-decor .d2{width:14px;height:14px;top:62px;right:58px;animation:dotBob 3.6s ease-in-out infinite 0.3s;}
+.play-decor .d3{width:30px;height:30px;top:86px;right:14px;animation:dotBob 2.4s ease-in-out infinite 0.6s;opacity:0.6;}
+@keyframes dotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.play-decor .stripe{position:absolute;height:5px;border-radius:5px;background:#fff;}
+.play-decor .s1{width:60px;top:20px;right:12px;transform:rotate(-18deg);}
+.play-decor .s2{width:40px;top:50px;right:30px;transform:rotate(-18deg);}
+.play-decor .s3{width:80px;top:84px;right:-8px;transform:rotate(-18deg);opacity:0.7;}
+@media(max-width:820px){
+  .play-grid{grid-template-columns:1fr;gap:1.1rem;}
+  .play-card{padding:1.6rem 1.5rem;}
+  .play-emoji{font-size:3.8rem;}
+  .play-card h3{font-size:1.45rem;}
+}
 .idx-card{border-radius:20px;padding:1.8rem;text-decoration:none;color:white;display:flex;flex-direction:column;gap:0.6rem;transition:all 0.25s;box-shadow:0 6px 24px rgba(0,0,0,0.12);}
 .idx-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,0.18);}
 .idx-icon{font-size:2.2rem;}
@@ -315,6 +362,46 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
   }
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://tune4learn.com/#org",
+      "name": "Tune4Learn",
+      "url": "https://tune4learn.com",
+      "logo": "https://tune4learn.com/assets/t4l-logo.png",
+      "description": "Educational music platform for children ages 3–8. Songs, coloring books and games that support global awareness and early childhood education.",
+      "sameAs": [
+        "https://www.youtube.com/@Tune4Learn"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://tune4learn.com/#website",
+      "url": "https://tune4learn.com",
+      "name": "Tune4Learn",
+      "publisher": {
+        "@id": "https://tune4learn.com/#org"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://tune4learn.com/#home",
+      "url": "https://tune4learn.com/",
+      "name": "Tune4Learn — Educational Music for Children",
+      "isPartOf": {
+        "@id": "https://tune4learn.com/#website"
+      },
+      "about": {
+        "@id": "https://tune4learn.com/#org"
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -416,6 +503,41 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
         <h3>YouTube Channel</h3>
         <p>Subscribe for new songs, playlists and animated videos.</p>
         <span class="idx-arrow">Subscribe →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PLAY & CREATE — Interactive entrance to mazes/coloring -->
+<section class="sec play-sec" id="play-create" aria-labelledby="play-title">
+  <div class="sec-inner">
+    <div class="sec-label" style="color:#E84393;">Play &amp; Create</div>
+    <h2 class="sec-title" id="play-title">Jump In &amp; Have Fun 🎮</h2>
+    <p class="sec-sub">Interactive games and coloring pages — no sign-up, play right in the browser.</p>
+    <div class="play-grid">
+      <a href="mazes.html" class="play-card play-mazes" aria-label="Play educational mazes">
+        <div class="play-emoji" aria-hidden="true">🧩</div>
+        <div class="play-body">
+          <div class="play-badge">20+ Mazes</div>
+          <h3>Maze Adventures</h3>
+          <p>Classic, math and coding mazes. Ages 3–8.</p>
+          <span class="play-cta">Play Now →</span>
+        </div>
+        <div class="play-decor" aria-hidden="true">
+          <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span>
+        </div>
+      </a>
+      <a href="coloring.html" class="play-card play-coloring" aria-label="Open interactive coloring book">
+        <div class="play-emoji" aria-hidden="true">🎨</div>
+        <div class="play-body">
+          <div class="play-badge">Interactive</div>
+          <h3>Coloring Studio</h3>
+          <p>Color, paint and play with music. 16+ pages.</p>
+          <span class="play-cta">Start Coloring →</span>
+        </div>
+        <div class="play-decor" aria-hidden="true">
+          <span class="stripe s1"></span><span class="stripe s2"></span><span class="stripe s3"></span>
+        </div>
       </a>
     </div>
   </div>
@@ -544,7 +666,37 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <!-- ============================================ -->
 <!-- SUPPORT US WIDGET — Floating button + modal  -->
-<!-- Bu bloğu tüm sayfalarda </body> etiketinden  -->
+<!-- Bu bloğu tüm sayfalarda <script>
+/* ── GA4 Event Tracking ── Delegated listener */
+(function(){
+  if(!window.gtag) return;
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a,button,[data-track]');
+    if(!a) return;
+    const href = (a.getAttribute('href')||'').toLowerCase();
+    const txt = (a.textContent||'').trim().substring(0,60);
+    const track = a.getAttribute('data-track');
+    // YouTube video clicks
+    if(href.includes('youtube.com/watch') || href.includes('youtu.be/')){
+      const m = href.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
+      gtag('event','video_click',{video_id:m?m[1]:'',video_title:txt,page:location.pathname});
+    }
+    // PDF downloads
+    else if(href.endsWith('.pdf') || a.hasAttribute('download')){
+      gtag('event','file_download',{file_name:href.split('/').pop(),file_type:'pdf',page:location.pathname});
+    }
+    // External links (outbound)
+    else if(href.startsWith('http') && !href.includes(location.hostname) && !href.startsWith('mailto:')){
+      gtag('event','click_outbound',{link_url:href,link_text:txt});
+    }
+    // Custom-tracked actions (data-track="maze_open" etc.)
+    if(track){
+      gtag('event',track,{label:txt,page:location.pathname});
+    }
+  }, {passive:true});
+})();
+</script>
+</body> etiketinden  -->
 <!-- HEMEN ÖNCE yapıştırın. İş yapacak 3 parça:   -->
 <!-- 1) CSS (stil) 2) HTML (buton+modal) 3) JS    -->
 <!-- ============================================ -->
