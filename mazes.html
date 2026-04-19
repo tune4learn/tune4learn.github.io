@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Learn &amp; Play Mazes | Tune4Learn</title>
 <meta name="description" content="Free interactive maze games for kids PreK to Grade 2. Solve mazes, learn math with addition & subtraction puzzles, and discover fun facts — all paired with real Tune4Learn songs.">
 <meta name="keywords" content="kids mazes, interactive learning games, addition maze, subtraction maze, preschool games, kindergarten math, Tune4Learn, educational songs, math puzzles for kids">
@@ -249,8 +252,8 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
   .maze-overlay.active{align-items:stretch;justify-content:stretch;}
   .diff-bar,.hud,.play-info,.swipe-hint{flex-shrink:0;}
   /* Canvas area — capped height so scrollable area below has room */
-  .canvas-wrap{flex:0 0 auto;padding:4px;align-items:center;justify-content:center;overflow:hidden;max-height:42vh;max-height:42dvh;}
-  canvas#mazeCanvas{max-width:100%;max-height:42vh;max-height:42dvh;width:auto;height:auto;display:block;}
+  .canvas-wrap{flex:0 0 auto;padding:4px;align-items:center;justify-content:center;overflow:hidden;}
+  canvas#mazeCanvas{display:block;}
   .diff-bar{padding:6px 10px 2px;}
   .hud{padding:3px 10px;gap:10px;}
   .play-info{padding:2px 10px 3px;}
@@ -989,11 +992,11 @@ function drawMaze(){
     }
   }
   const maxW=mob?window.innerWidth-12:492;
-  // Canvas gets ~42% of viewport on mobile, minus top chrome if it overlaps
-  const mobileCanvasH=Math.floor(window.innerHeight*0.42);
+  // Canvas gets ~36% of viewport on mobile — leaves room for d-pad + coding panel + buttons
+  const mobileCanvasH=Math.floor(window.innerHeight*0.36);
   const maxH=mob?mobileCanvasH:9999;
   let cellSize=Math.floor(Math.min(maxW/cols,maxH/rows));
-  cellSize=Math.max(cellSize,16);cellSize=Math.min(cellSize,mob?72:52);
+  cellSize=Math.max(cellSize,14);cellSize=Math.min(cellSize,mob?56:52);
   const w=cols*cellSize,h=rows*cellSize,dpr=window.devicePixelRatio||1;
   canvas.width=w*dpr;canvas.height=h*dpr;
   canvas.style.width=w+'px';canvas.style.height=h+'px';
