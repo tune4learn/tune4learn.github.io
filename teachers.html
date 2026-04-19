@@ -265,6 +265,47 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-SSPW3HB9F8');
+  // ── GA4 event helpers ──
+  window.t4lTrack = function(name, params){
+    try { gtag('event', name, params || {}); } catch(e) {}
+  };
+  // Auto-track outbound nav links (header/footer) once DOM is ready
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href') || '';
+      // Track internal nav (.html links). YouTube/outbound is handled per-page.
+      if (href.endsWith('.html')) {
+        a.addEventListener('click', function(){
+          window.t4lTrack('nav_click', {
+            link_url: href,
+            link_text: (a.textContent || '').trim().substring(0, 80),
+            page: location.pathname
+          });
+        }, { passive: true });
+      }
+    });
+  });
+</script>
+<!-- Schema.org / JSON-LD for SEO rich results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "For Teachers & Parents — Tune4Learn",
+  "url": "https://tune4learn.com/teachers.html",
+  "description": "Resources, songs and ideas for teachers and parents who want to bring music-based learning into their classroom or home.",
+  "audience": [
+    {"@type": "EducationalAudience", "educationalRole": "teacher"},
+    {"@type": "Audience", "audienceType": "Parent"}
+  ],
+  "isPartOf": {"@type": "WebSite", "url": "https://tune4learn.com", "name": "Tune4Learn"},
+  "publisher": {
+    "@type": "Organization",
+    "name": "Tune4Learn",
+    "url": "https://tune4learn.com",
+    "logo": "https://tune4learn.com/assets/t4l-logo-small.webp"
+  }
+}
 </script>
 </head>
 <body>

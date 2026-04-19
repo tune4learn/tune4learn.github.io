@@ -329,6 +329,56 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-SSPW3HB9F8');
+  // ── GA4 event helpers ──
+  window.t4lTrack = function(name, params){
+    try { gtag('event', name, params || {}); } catch(e) {}
+  };
+  // Auto-track outbound nav links (header/footer) once DOM is ready
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href') || '';
+      // Track internal nav (.html links). YouTube/outbound is handled per-page.
+      if (href.endsWith('.html')) {
+        a.addEventListener('click', function(){
+          window.t4lTrack('nav_click', {
+            link_url: href,
+            link_text: (a.textContent || '').trim().substring(0, 80),
+            page: location.pathname
+          });
+        }, { passive: true });
+      }
+    });
+  });
+</script>
+<!-- Schema.org / JSON-LD for SEO rich results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Tune4Learn Mazes",
+  "url": "https://tune4learn.com/mazes.html",
+  "description": "Free interactive maze games for kids PreK to Grade 2. Solve mazes, learn math with addition & subtraction puzzles, and discover fun facts — paired with real Tune4Learn songs.",
+  "applicationCategory": "GameApplication",
+  "applicationSubCategory": "Educational",
+  "operatingSystem": "Any (web browser)",
+  "browserRequirements": "Requires JavaScript",
+  "isAccessibleForFree": true,
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student",
+    "audienceType": "Children ages 3–8 (PreK to Grade 2)"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Tune4Learn",
+    "url": "https://tune4learn.com",
+    "logo": "https://tune4learn.com/assets/t4l-logo-small.webp"
+  },
+  "educationalUse": ["Game-based learning", "Problem solving", "Computational thinking", "Math practice"],
+  "learningResourceType": ["Game", "Interactive activity"],
+  "typicalAgeRange": "3-8"
+}
 </script>
 </head>
 <body>

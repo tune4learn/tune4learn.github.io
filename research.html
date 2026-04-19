@@ -193,6 +193,53 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-SSPW3HB9F8');
+  // ── GA4 event helpers ──
+  window.t4lTrack = function(name, params){
+    try { gtag('event', name, params || {}); } catch(e) {}
+  };
+  // Auto-track outbound nav links (header/footer) once DOM is ready
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href') || '';
+      // Track internal nav (.html links). YouTube/outbound is handled per-page.
+      if (href.endsWith('.html')) {
+        a.addEventListener('click', function(){
+          window.t4lTrack('nav_click', {
+            link_url: href,
+            link_text: (a.textContent || '').trim().substring(0, 80),
+            page: location.pathname
+          });
+        }, { passive: true });
+      }
+    });
+  });
+</script>
+<!-- Schema.org / JSON-LD for SEO rich results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Research & Blog — Why Music Helps Children Learn",
+  "url": "https://tune4learn.com/research.html",
+  "description": "Research-backed insights on how music supports early childhood learning, social-emotional development, language acquisition, and cognitive growth.",
+  "author": {"@type": "Organization", "name": "Tune4Learn"},
+  "publisher": {
+    "@type": "Organization",
+    "name": "Tune4Learn",
+    "url": "https://tune4learn.com",
+    "logo": {"@type": "ImageObject", "url": "https://tune4learn.com/assets/t4l-logo-small.webp"}
+  },
+  "mainEntityOfPage": "https://tune4learn.com/research.html",
+  "about": [
+    {"@type": "Thing", "name": "Music education research"},
+    {"@type": "Thing", "name": "Early childhood development"},
+    {"@type": "Thing", "name": "Social-emotional learning"}
+  ],
+  "audience": [
+    {"@type": "EducationalAudience", "educationalRole": "teacher"},
+    {"@type": "Audience", "audienceType": "Parent"}
+  ]
+}
 </script>
 </head>
 <body>

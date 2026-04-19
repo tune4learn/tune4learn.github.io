@@ -57,9 +57,9 @@ body{font-family:'Nunito',sans-serif;background:var(--offwhite);color:var(--text
 /* Clouds */
 .cloud{position:absolute;z-index:1;pointer-events:none;}
 .cloud svg{width:100%;height:auto;fill:white;opacity:0.8;}
-.cl1{top:5%;left:32%;width:220px;animation:drift 28s ease-in-out infinite;}
-.cl2{top:14%;right:3%;width:170px;animation:drift 38s ease-in-out infinite reverse;opacity:0.55;}
-.cl3{top:2%;left:55%;width:150px;animation:drift 46s ease-in-out infinite;opacity:0.5;}
+.cl1{top:5%;left:32%;width:220px;animation:drift 60s ease-in-out infinite;}
+.cl2{top:14%;right:3%;width:170px;animation:drift 75s ease-in-out infinite reverse;opacity:0.55;}
+.cl3{top:2%;left:55%;width:150px;animation:drift 90s ease-in-out infinite;opacity:0.5;}
 @keyframes drift{0%,100%{transform:translateX(0)}50%{transform:translateX(32px)}}
 
 /* Rainbow */
@@ -293,9 +293,9 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
 /* Decorative dots / stripes */
 .play-decor{position:absolute;top:0;right:0;width:140px;height:140px;opacity:0.35;pointer-events:none;z-index:-1;}
 .play-decor .dot{position:absolute;border-radius:50%;background:#fff;}
-.play-decor .d1{width:22px;height:22px;top:18px;right:26px;animation:dotBob 2.8s ease-in-out infinite;}
-.play-decor .d2{width:14px;height:14px;top:62px;right:58px;animation:dotBob 3.6s ease-in-out infinite 0.3s;}
-.play-decor .d3{width:30px;height:30px;top:86px;right:14px;animation:dotBob 2.4s ease-in-out infinite 0.6s;opacity:0.6;}
+.play-decor .d1{width:22px;height:22px;top:18px;right:26px;animation:dotBob 4.5s ease-in-out infinite;}
+.play-decor .d2{width:14px;height:14px;top:62px;right:58px;animation:dotBob 5.4s ease-in-out infinite 0.3s;}
+.play-decor .d3{width:30px;height:30px;top:86px;right:14px;animation:dotBob 6s ease-in-out infinite 0.6s;opacity:0.6;}
 @keyframes dotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .play-decor .stripe{position:absolute;height:5px;border-radius:5px;background:#fff;}
 .play-decor .s1{width:60px;top:20px;right:12px;transform:rotate(-18deg);}
@@ -350,9 +350,35 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-SSPW3HB9F8');
+  // ── GA4 event helpers ──
+  window.t4lTrack = function(name, params){
+    try { gtag('event', name, params || {}); } catch(e) {}
+  };
+  // Auto-track outbound nav links (header/footer) once DOM is ready
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('a[href]').forEach(function(a){
+      const href = a.getAttribute('href') || '';
+      // Track internal nav (.html links). YouTube/outbound is handled per-page.
+      if (href.endsWith('.html')) {
+        a.addEventListener('click', function(){
+          window.t4lTrack('nav_click', {
+            link_url: href,
+            link_text: (a.textContent || '').trim().substring(0, 80),
+            page: location.pathname
+          });
+        }, { passive: true });
+      }
+    });
+  });
 </script>
 <style>
 /* ── Accessibility: Reduced motion ── */
+@media (max-width: 700px) {
+  /* Mobile: turn off background floaty decor — saves battery, calmer feel */
+  .cl1, .cl2, .cl3, .deco, .flower { animation: none !important; }
+  .play-decor .d1, .play-decor .d2, .play-decor .d3 { animation: none !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -397,6 +423,44 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
       },
       "about": {
         "@id": "https://tune4learn.com/#org"
+      }
+    }
+  ]
+}
+</script>
+<!-- Schema.org / JSON-LD for SEO rich results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tune4learn.com/#organization",
+      "name": "Tune4Learn",
+      "url": "https://tune4learn.com",
+      "logo": "https://tune4learn.com/assets/t4l-logo-small.webp",
+      "description": "Educational songs, videos and interactive activities for children ages 3–8.",
+      "sameAs": [
+        "https://www.youtube.com/@Tune4Learn"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://tune4learn.com/#website",
+      "url": "https://tune4learn.com",
+      "name": "Tune4Learn",
+      "description": "Where Learning Sings — Educational songs and activities for kids.",
+      "publisher": {"@id": "https://tune4learn.com/#organization"},
+      "inLanguage": "en"
+    },
+    {
+      "@type": "EducationalOrganization",
+      "name": "Tune4Learn",
+      "url": "https://tune4learn.com",
+      "audience": {
+        "@type": "EducationalAudience",
+        "educationalRole": "student",
+        "audienceType": "Children ages 3–8 (PreK to Grade 2)"
       }
     }
   ]
