@@ -965,15 +965,26 @@ function drawMaze(){
   const mob=window.innerWidth<=900;
   const phone=window.innerWidth<=600;
   const isCoding=currentMazeData&&currentMazeData.category==='Coding';
-  // Reserve: header(~52) + diff(~38) + hud(~32) + info(~20) + controls(~38) + padding(~24) = ~204
-  // + either dpad(~170 phone only) OR coding-panel(~200)
-  let reserveH=204;
-  if(isCoding)reserveH+=200;
-  else if(phone)reserveH+=170;
-  const maxW=mob?window.innerWidth-24:492;
-  const maxH=mob?window.innerHeight-reserveH:9999;
+  // Measure actual reserved space from DOM instead of guessing
+  let reserveH=180; // fallback
+  if(mob){
+    const play=document.querySelector('.maze-play');
+    const wrap=document.querySelector('.canvas-wrap');
+    if(play&&wrap){
+      // Sum heights of all siblings inside play-modal, except canvas-wrap itself
+      let used=0;
+      for(const el of play.children){
+        if(el===wrap)continue;
+        if(el.offsetParent===null)continue; // hidden
+        used+=el.offsetHeight;
+      }
+      reserveH=used+12; // small breathing room
+    }
+  }
+  const maxW=mob?window.innerWidth-12:492;
+  const maxH=mob?Math.max(window.innerHeight-reserveH,180):9999;
   let cellSize=Math.floor(Math.min(maxW/cols,maxH/rows));
-  cellSize=Math.max(cellSize,16);cellSize=Math.min(cellSize,mob?64:52);
+  cellSize=Math.max(cellSize,16);cellSize=Math.min(cellSize,mob?72:52);
   const w=cols*cellSize,h=rows*cellSize,dpr=window.devicePixelRatio||1;
   canvas.width=w*dpr;canvas.height=h*dpr;
   canvas.style.width=w+'px';canvas.style.height=h+'px';
@@ -987,27 +998,31 @@ function drawMaze(){
 
   // Coding mazes: more prominent grid so kids can count cells ahead
   if(currentMazeData&&currentMazeData.category==='Coding'){
-    // Alternating cell fill (stronger)
+    // Alternating cell fill (stronger, checkerboard style)
     for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
-      ctx.fillStyle=(x+y)%2===0?'rgba(108,63,160,0.06)':'rgba(35,191,239,0.04)';
+      ctx.fillStyle=(x+y)%2===0?'rgba(108,63,160,0.14)':'rgba(35,191,239,0.10)';
       ctx.fillRect(x*cellSize,y*cellSize,cellSize,cellSize);
     }
-    // Dotted grid lines between cells
+    // Solid grid lines between cells
     ctx.save();
-    ctx.strokeStyle='rgba(108,63,160,0.22)';
-    ctx.lineWidth=1;
-    ctx.setLineDash([3,3]);
+    ctx.strokeStyle='rgba(108,63,160,0.38)';
+    ctx.lineWidth=1.2;
     for(let x=1;x<cols;x++){
-      ctx.beginPath();ctx.moveTo(x*cellSize,0);ctx.lineTo(x*cellSize,h);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x*cellSize+0.5,0);ctx.lineTo(x*cellSize+0.5,h);ctx.stroke();
     }
     for(let y=1;y<rows;y++){
-      ctx.beginPath();ctx.moveTo(0,y*cellSize);ctx.lineTo(w,y*cellSize);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(0,y*cellSize+0.5);ctx.lineTo(w,y*cellSize+0.5);ctx.stroke();
     }
     ctx.restore();
-    // Corner dots for each cell
-    ctx.fillStyle='rgba(108,63,160,0.35)';
+    // Bigger corner dots for each cell intersection
+    ctx.fillStyle='rgba(108,63,160,0.55)';
     for(let y=0;y<=rows;y++)for(let x=0;x<=cols;x++){
-      ctx.beginPath();ctx.arc(x*cellSize,y*cellSize,1.6,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.arc(x*cellSize,y*cellSize,2.6,0,Math.PI*2);ctx.fill();
+    }
+    // Small cell-center markers (tiny dot in middle of each cell)
+    ctx.fillStyle='rgba(108,63,160,0.25)';
+    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+      ctx.beginPath();ctx.arc(x*cellSize+cellSize/2,y*cellSize+cellSize/2,1.6,0,Math.PI*2);ctx.fill();
     }
   }
 
@@ -2063,7 +2078,7 @@ renderFilters();renderGrid();
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="/cdn-cgi/l/email-protection#47783432252d2224337a13322922730b222635296275776a6275770223322426332e2829262b6275771428292034612528233e7a0e6275772128322923627577332f2e3462757720352226336275773522342832352422627577212835627577332226242f223534627577262923627577372635222933347d6275772f333337347d686833322922732b222635296924282a" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="/cdn-cgi/l/email-protection#7c430f091e16191f0841280912194830191d0e12594e4c51594e4c3918091f1d081513121d10594e4c2f13121b0f5a1e1318054135594e4c1a13091218594e4c0814150f594e4c1b0e191d08594e4c0e190f13090e1f19594e4c1a130e594e4c08191d1f14190e0f594e4c1d1218594e4c0c1d0e1912080f46594e4c1408080c0f465353080912194810191d0e12521f1311" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
