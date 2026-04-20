@@ -124,7 +124,41 @@ body{font-family:'Nunito',sans-serif;background:var(--t4l-bg);color:#1E2A3A;min-
 .maze-overlay.active{display:flex;align-items:center;justify-content:center;}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-.maze-play{background:#fff;border-radius:24px;width:min(96vw,540px);max-height:95vh;overflow-y:auto;box-shadow:0 28px 80px rgba(0,0,0,0.32);animation:slideUp 0.32s cubic-bezier(0.16,1,0.3,1);position:relative;}
+.maze-play{background:#fff;border-radius:24px;width:min(96vw,720px);max-height:95vh;display:flex;flex-direction:column;box-shadow:0 28px 80px rgba(0,0,0,0.32);animation:slideUp 0.32s cubic-bezier(0.16,1,0.3,1);position:relative;overflow:hidden;}
+/* Desktop: let the canvas area stay centered and the scrollable stack (controls+coding) be below without pushing canvas off-screen */
+.maze-play > .canvas-wrap{flex-shrink:0;}
+.maze-play > .scrollable-controls{flex:1 1 auto;overflow-y:auto;min-height:0;}
+
+/* ── PRESENTATION MODE — optimized for smartboards / fullscreen ── */
+.maze-play.presentation{
+  width:100vw!important;height:100vh!important;height:100dvh!important;
+  max-width:100vw!important;max-height:100vh!important;max-height:100dvh!important;
+  border-radius:0!important;
+  padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0);
+}
+.maze-play.presentation .play-header{border-radius:0;padding:14px 22px;font-size:1.2em;}
+.maze-play.presentation .play-title{font-size:clamp(17px,1.6vw,22px);}
+.maze-play.presentation .diff-bar{padding:10px 20px 6px;}
+.maze-play.presentation .diff-btn{font-size:15px;padding:8px 20px;}
+.maze-play.presentation .hud{gap:22px;padding:8px 20px;}
+.maze-play.presentation .hud-item{font-size:18px;}
+.maze-play.presentation .h-hint{font-size:16px;padding:6px 16px;}
+.maze-play.presentation .play-info{font-size:15px;padding:4px 20px 8px;}
+.maze-play.presentation .canvas-wrap{flex:1 1 auto;min-height:0;padding:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.maze-play.presentation .scrollable-controls{flex:0 0 auto;overflow:visible;}
+.maze-play.presentation .maze-controls{padding:8px 20px 14px;gap:10px;}
+.maze-play.presentation .maze-controls button{font-size:15px;padding:10px 22px;}
+.maze-play.presentation .coding-panel{margin:6px 16px;padding:12px 18px 14px;}
+.maze-play.presentation .code-arrow{width:56px;height:56px;font-size:26px;}
+.maze-play.presentation .coding-program{min-height:54px;}
+.maze-play.presentation .coding-program .code-step{width:38px;height:38px;font-size:22px;}
+.maze-play.presentation .code-run,.maze-play.presentation .code-undo,.maze-play.presentation .code-clear{font-size:15px;padding:10px 22px;}
+.maze-play.presentation .play-footer{padding:4px 20px 14px;}
+.maze-play.presentation .watch-btn{font-size:14px;padding:10px 24px;}
+/* Hide body scroll underneath */
+body.maze-presentation{overflow:hidden;}
+/* When presentation active: visual hint on button */
+.maze-play.presentation .pres-btn{background:var(--t4l-purple);color:#fff;}
 @keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 /* Sticky header so close-button stays reachable even when scrolling long modals (coding maze, medium-7x7, etc.) */
@@ -421,6 +455,7 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
       <div class="play-title" id="playTitle"></div>
       <div class="hbtns">
         <button class="snd-btn" id="soundToggle" onclick="toggleSound()">🔊</button>
+        <button class="snd-btn pres-btn" id="presBtn" onclick="togglePresentationMode()" title="Presentation mode (fullscreen)" aria-label="Presentation mode">⛶</button>
         <button class="close-btn" onclick="closeMaze()" aria-label="Close">✕</button>
       </div>
     </div>
@@ -1027,13 +1062,14 @@ requestAnimationFrame(animate);
 function drawMaze(){
   const mob=window.innerWidth<=900;
   const phone=window.innerWidth<=600;
+  const play=document.getElementById('mazePlay');
+  const pres=play&&play.classList.contains('presentation');
   const isCoding=currentMazeData&&currentMazeData.category==='Coding';
   // Mobile: give canvas a FIXED share of viewport height so the scrollable
   // controls area below (dpad + coding panel + buttons) always has room.
   // Measure the top chrome (header + diff-bar + hud + play-info) only.
   let topChrome=120;
-  if(mob){
-    const play=document.querySelector('.maze-play');
+  if(mob||pres){
     const wrap=document.querySelector('.canvas-wrap');
     if(play&&wrap){
       let used=0;
@@ -1042,15 +1078,43 @@ function drawMaze(){
         if(el.offsetParent===null)continue;
         used+=el.offsetHeight;
       }
-      topChrome=used+8;
+      // Also account for scrollable-controls height (controls+coding panel+footer)
+      const scrollArea=play.querySelector('.scrollable-controls');
+      let below=0;
+      if(scrollArea){
+        for(const el of scrollArea.children){
+          if(el.offsetParent===null)continue;
+          // Only count visible panels (coding-panel may be display:none)
+          const cs=getComputedStyle(el);
+          if(cs.display==='none')continue;
+          below+=el.offsetHeight;
+        }
+      }
+      topChrome=used+below+16;
     }
   }
-  const maxW=mob?window.innerWidth-12:492;
-  // Canvas gets ~36% of viewport on mobile — leaves room for d-pad + coding panel + buttons
-  const mobileCanvasH=Math.floor(window.innerHeight*0.36);
-  const maxH=mob?mobileCanvasH:9999;
+  // Sizing rules:
+  //  - Presentation: use almost full viewport
+  //  - Mobile: fixed 36% of viewport height
+  //  - Desktop default: allow canvas to grow with modal (was hard-capped at 492)
+  let maxW, maxH, cellMax;
+  if(pres){
+    maxW=window.innerWidth-32;
+    maxH=Math.max(260,window.innerHeight-topChrome);
+    cellMax=90;
+  } else if(mob){
+    maxW=window.innerWidth-12;
+    maxH=Math.floor(window.innerHeight*0.36);
+    cellMax=56;
+  } else {
+    // Desktop non-presentation: fit inside modal (~720px wide, 95vh tall)
+    const modalW=Math.min(window.innerWidth*0.96,720)-24;
+    maxW=modalW;
+    maxH=Math.max(240,window.innerHeight*0.95-topChrome);
+    cellMax=58;
+  }
   let cellSize=Math.floor(Math.min(maxW/cols,maxH/rows));
-  cellSize=Math.max(cellSize,14);cellSize=Math.min(cellSize,mob?56:52);
+  cellSize=Math.max(cellSize,14);cellSize=Math.min(cellSize,cellMax);
   const w=cols*cellSize,h=rows*cellSize,dpr=window.devicePixelRatio||1;
   canvas.width=w*dpr;canvas.height=h*dpr;
   canvas.style.width=w+'px';canvas.style.height=h+'px';
@@ -1971,12 +2035,75 @@ function openMaze(id){
   currentDifficulty=currentMazeData.difficulty;updateDiffUI();startGame();
   document.getElementById('mazeOverlay').classList.add('active');document.body.style.overflow='hidden';document.body.classList.add('maze-locked');
   document.getElementById('floatingClose').classList.add('active');
+  // Restore presentation mode preference (only on desktop/smartboard — not phones)
+  try{
+    const pref=localStorage.getItem('t4l_maze_presentation');
+    if(pref==='1'&&window.innerWidth>=900){
+      // Apply class without re-triggering localStorage write
+      const play=document.getElementById('mazePlay');
+      play.classList.add('presentation');
+      document.body.classList.add('maze-presentation');
+      const btn=document.getElementById('presBtn');
+      if(btn){btn.textContent='⇲';btn.title='Exit presentation mode';}
+      setTimeout(()=>{if(typeof drawMaze==='function')drawMaze();},60);
+    }
+  }catch(e){}
   ensureAudio();
 }
 
-function closeMaze(){document.getElementById('mazeOverlay').classList.remove('active');document.body.style.overflow='';document.body.classList.remove('maze-locked');gameActive=false;stopTimer();currentMazeData=null;mathQuestion=null;mathGates=[];mathFeedback=null;patternSequence=null;patternAnswer=null;patternGates=[];codingProgram=[];codingExecuting=false;codingStep=0;
+function closeMaze(){document.getElementById('mazeOverlay').classList.remove('active');document.body.style.overflow='';document.body.classList.remove('maze-locked');document.body.classList.remove('maze-presentation');document.getElementById('mazePlay').classList.remove('presentation');gameActive=false;stopTimer();currentMazeData=null;mathQuestion=null;mathGates=[];mathFeedback=null;patternSequence=null;patternAnswer=null;patternGates=[];codingProgram=[];codingExecuting=false;codingStep=0;
   document.getElementById('floatingClose').classList.remove('active');
 }
+
+/* ── Presentation / fullscreen mode for smartboards ──
+   Toggles a `.presentation` class on the maze modal that expands it to 100vw×100vh
+   and scales up HUD/controls for far-viewing. Also requests native browser
+   fullscreen so the address bar + OS chrome go away on smartboards. */
+function togglePresentationMode(){
+  const play=document.getElementById('mazePlay');
+  const on=!play.classList.contains('presentation');
+  play.classList.toggle('presentation',on);
+  document.body.classList.toggle('maze-presentation',on);
+  // Try to use native browser fullscreen too (where supported)
+  try{
+    if(on){
+      if(!document.fullscreenElement&&document.documentElement.requestFullscreen){
+        document.documentElement.requestFullscreen().catch(()=>{});
+      }
+    } else {
+      if(document.fullscreenElement&&document.exitFullscreen){
+        document.exitFullscreen().catch(()=>{});
+      }
+    }
+  }catch(e){}
+  // Remember preference
+  try{localStorage.setItem('t4l_maze_presentation',on?'1':'0');}catch(e){}
+  // Button visual state
+  const btn=document.getElementById('presBtn');
+  if(btn){btn.textContent=on?'⇲':'⛶';btn.title=on?'Exit presentation mode':'Presentation mode (fullscreen)';}
+  // Redraw canvas at new size
+  setTimeout(()=>{if(typeof drawMaze==='function'&&currentMazeData)drawMaze();},60);
+  if(window.t4lTrack)window.t4lTrack('maze_presentation',{on:on});
+}
+
+// ESC closes presentation mode (and then the maze on second press)
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    const play=document.getElementById('mazePlay');
+    if(play&&play.classList.contains('presentation')){
+      togglePresentationMode();
+      e.preventDefault();
+    }
+  }
+});
+
+// Redraw canvas when window resizes (esp. after entering/exiting fullscreen)
+window.addEventListener('resize',function(){
+  if(typeof drawMaze==='function'&&currentMazeData&&gameActive){
+    clearTimeout(window._t4lResizeTO);
+    window._t4lResizeTO=setTimeout(drawMaze,120);
+  }
+});
 function resetMaze(){if(!currentMazeData)return;playerPos={x:0,y:0};moveCounter=0;updMovDisp();gameActive=true;hintsLeft=3;hintCells=[];mathFeedback=null;updateHintUI();if(hintTimeout){clearTimeout(hintTimeout);hintTimeout=null;}
   // For coding mazes, reset the program too so the child can rebuild
   if(currentMazeData.codingMaze){codingProgram=[];codingExecuting=false;codingStep=0;renderCodingPanel();}
@@ -2238,7 +2365,7 @@ renderFilters();renderGrid();
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="/cdn-cgi/l/email-protection#a59ad6d0c7cfc0c6d198f1d0cbc091e9c0c4d7cb80979588809795e0c1d0c6c4d1cccacbc4c9809795f6cacbc2d683c7cac1dc98ec809795c3cad0cbc1809795d1cdccd6809795c2d7c0c4d1809795d7c0d6cad0d7c6c0809795c3cad7809795d1c0c4c6cdc0d7d6809795c4cbc1809795d5c4d7c0cbd1d69f809795cdd1d1d5d69f8a8ad1d0cbc091c9c0c4d7cb8bc6cac8" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -2246,7 +2373,7 @@ renderFilters();renderGrid();
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;
