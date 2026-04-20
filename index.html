@@ -222,19 +222,34 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
 .t-link{font-size:0.82rem;font-weight:900;color:var(--sun);margin-top:auto;}
 .aos{opacity:1;transform:translateY(0);}
 @media(max-width:1024px){
-  /* ── TABLET breakpoint (768–1024px: iPad portrait/landscape) ── */
-  .hero{min-height:auto;height:auto;padding-bottom:60px;}
-  .hero-text{
-    width:52%;
-    padding:120px 4vw 80px 2vw;
+  /* ── TABLET breakpoint (768–1024px) — DİKEY düzen ── */
+  .hero{
+    height:auto!important;min-height:0!important;
+    padding:90px 0 0!important;
+    display:flex!important;flex-direction:column!important;
   }
-  .hero-mascot{width:clamp(260px,42vw,440px);left:1%;}
-  .hero-title{font-size:clamp(2.6rem,5.2vw,4rem);}
-  .hero-sub{font-size:1rem;max-width:100%;}
+  .hero-text{
+    position:static!important;
+    width:100%!important;height:auto!important;
+    padding:10px 6vw 20px!important;
+    align-items:center!important;
+    text-align:center!important;
+  }
+  .hero-eyebrow{margin:0 auto 1rem;}
+  .hero-title{font-size:clamp(2.6rem,6vw,4rem)!important;text-align:center!important;}
+  .hero-sub{font-size:1rem;max-width:520px;margin-left:auto;margin-right:auto;text-align:center!important;}
+  .hero-btns{align-items:center!important;}
+  .hero-mascot{
+    display:block!important;
+    position:static!important;
+    width:clamp(220px,38vw,340px)!important;
+    height:auto!important;
+    margin:10px auto -24px!important;
+  }
+  .ground{position:relative!important;height:90px!important;margin-top:-30px!important;}
+  .scroll-hint{display:none;}
 }
 @media(max-width:860px){
-  .hero-mascot{width:clamp(200px,38vw,380px);}
-  .hero-text{width:55%;padding:110px 3vw 80px 1vw;}
   .r-layout{grid-template-columns:1fr;}
   .footer-grid{grid-template-columns:1fr 1fr;}
   .idx-grid{grid-template-columns:1fr 1fr;}
@@ -243,19 +258,27 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1
 @media(max-width:580px){
   .navbar{background:rgba(255,255,255,0.97)!important;backdrop-filter:blur(16px);box-shadow:0 2px 12px rgba(0,0,0,0.08);}
   .nav-links{display:none!important;}
-  /* HERO — telefonda maskot gizle, yazılar ortaya al */
-  .hero-mascot{display:none;}
-  .hero-text{
-    width:100%!important;
-    padding:90px 5vw 80px!important;
-    align-items:center;
-    text-align:center;
-  }
-  .hero-eyebrow{margin:0 auto 1.2rem;}
-  .hero-title{font-size:2.6rem!important;text-align:center;}
-  .hero-sub{text-align:center;margin:0 auto 1.8rem;}
-  .hero-btns{align-items:center;}
+  /* HERO mobil ince ayarlar (yapı zaten 1024px kuralında dikey) */
+  .hero-eyebrow{font-size:0.68rem;padding:5px 13px;}
+  .hero-title{font-size:2.6rem!important;margin-bottom:0.9rem!important;}
+  .hero-sub{font-size:0.95rem;margin-bottom:1.4rem!important;}
+  .hero-btns{width:100%;max-width:340px;}
   .cta-btn{font-size:1rem;padding:12px 22px;width:100%;justify-content:center;}
+  .hero-mascot{width:clamp(180px,55vw,240px)!important;margin:10px auto -20px!important;}
+  .ground{height:70px!important;margin-top:-24px!important;}
+  /* Gökyüzü dekorlarını mobilde küçült */
+  .rainbow{width:160px!important;height:80px!important;top:72px!important;right:-16px!important;opacity:0.4!important;}
+  .rainbow .ra1{width:160px;height:160px;border-width:11px;}
+  .rainbow .ra2{width:142px;height:142px;border-width:11px;bottom:11px;}
+  .rainbow .ra3{width:124px;height:124px;border-width:11px;bottom:22px;}
+  .rainbow .ra4{width:106px;height:106px;border-width:11px;bottom:33px;}
+  .rainbow .ra5{width:88px;height:88px;border-width:11px;bottom:44px;}
+  .rainbow .ra6{width:70px;height:70px;border-width:11px;bottom:55px;}
+  .cl1{width:110px!important;top:80px!important;left:4%!important;}
+  .cl2{width:90px!important;top:110px!important;right:4%!important;}
+  .cl3{display:none;}
+  .de1,.de2,.de3,.de4{font-size:0.95rem!important;}
+  .flower{font-size:1rem!important;}
   /* SECTIONS */
   .sec{padding:3rem 5vw;}
   .idx-grid{grid-template-columns:1fr;}
@@ -968,7 +991,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="/cdn-cgi/l/email-protection#5a65292f38303f392e670e2f343f6e163f3b28347f686a777f686a1f3e2f393b2e3335343b367f686a0935343d297c38353e2367137f686a3c352f343e7f686a2e3233297f686a3d283f3b2e7f686a283f29352f28393f7f686a3c35287f686a2e3f3b39323f28297f686a3b343e7f686a2a3b283f342e29607f686a322e2e2a296075752e2f343f6e363f3b283474393537" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -976,7 +999,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;
