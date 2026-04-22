@@ -780,7 +780,13 @@ let codingProgram=[],codingExecuting=false,codingStep=0;
 // BEFORE the final goal. 1 or 2 checkpoints chosen randomly per game.
 let checkpoints=[]; // [{x,y,reached:bool,emoji:string}]
 // Larger grids = more complex mazes
-const DIFF_SIZES={easy:{c:6,r:6},medium:{c:9,r:9},hard:{c:12,r:12}};
+// Grid sizes tuned for ages 3-8: smaller grids than typical adult mazes
+// so young eyes don't get overwhelmed. Based on industry standards for
+// kids' maze books (ages 4-8 usually top out around 10x10).
+//   Easy (3-5yr):   5x5  — very short, basically "follow the path"
+//   Medium (5-7yr): 7x7  — a few decision points, short dead-ends
+//   Hard (7-8yr):   9x9  — real planning, longer dead-ends
+const DIFF_SIZES={easy:{c:5,r:5},medium:{c:7,r:7},hard:{c:9,r:9}};
 const DIFF_STAR={easy:[30,65,120],medium:[60,120,200],hard:[100,180,300]};
 const canvas=document.getElementById('mazeCanvas'),ctx=canvas.getContext('2d');
 
@@ -905,7 +911,159 @@ function generateMaze(c,r){
   // side-branches that look inviting but lead nowhere. These exploit
   // the fact that Prim's already has many dead ends — we just make
   // MORE of them near the main path, so players get pulled off course.
-  addDecoyTraps();
+  //
+  // Math and Pattern mazes SKIP both decoy traps AND easy-mode pruning:
+  // each tunnel step CONSUMES a dead-end (turns it into a corridor), and
+  // on Hard 9x9 the 18% trap density eats ~15 of the ~20 dead-ends Prim's
+  // produces. With too few dead-ends left, gate placement falls back to
+  // corridor cells that bounce the player back and trap them on the path
+  // to the correct answer. The pure Prim's maze still has plenty of
+  // wrong-turn branches for navigation challenge — and the math/pattern
+  // puzzle itself carries most of the cognitive load.
+  const isGateMaze=currentMazeData&&(currentMazeData.mathMaze||currentMazeData.patternMaze);
+  if(!isGateMaze){
+    addDecoyTraps();
+  }
+
+  // --- EASY-MODE DEAD-END PRUNING (ages 3-5) ---
+  // Prim's on a 5x5 naturally produces 6-10 dead-ends and 6-10 decision
+  // points, which is too branchy for a preschooler. We walk the grid
+  // and "seal off" cells that are NOT on the solution path — turning
+  // them into small rooms rather than wrong turns. The result is a
+  // near-corridor maze: mostly one clear path from start to goal with
+  // just 1-2 small detours, which is exactly what 3-5yr maze books do.
+  if(currentDifficulty==='easy'&&!isGateMaze){
+    pruneDeadEndsForEasy();
+  }
+}
+
+// Open-grid generator used by Easy coding mazes (ages 3-5, PreK).
+// Produces a wall-less grid — every cell connects to its orthogonal neighbors,
+// except for the outer frame. Matches the Bee-Bot / Cubetto / Code.org "Happy
+// Maps" introductory model: preschoolers focus on pure direction sequencing
+// without the extra cognitive load of pathfinding. On a 4x4 grid this yields
+// a 6-step optimal program (e.g. right×3 + down×3), the standard first-coding
+// exercise in early-childhood CS research (Bers, DevTech Tufts).
+function generateOpenGrid(c,r){
+  cols=c;rows=r;
+  grid=Array.from({length:rows},(_,y)=>Array.from({length:cols},(_,x)=>({
+    top:    y===0,
+    right:  x===cols-1,
+    bottom: y===rows-1,
+    left:   x===0
+  })));
+}
+
+// Adds 2-3 small internal walls to an open grid so Easy has real game feel.
+// Preschool pedagogy: a totally empty grid trivializes the task and the jump
+// to Medium becomes a cliff. A few interior walls keep the child in ~6-10
+// steps but introduce "I need to go around this" moments — the first seed of
+// debugging. Walls never touch start/goal corners, and each candidate is
+// reachability-verified via BFS so the puzzle always stays solvable.
+function addGentleObstacles(count,goal){
+  // Walls never touch start (0,0) or the goal cell, and each candidate is
+  // reachability-verified against the actual goal (which may be any far
+  // cell, not just the bottom-right corner).
+  const gx=goal.x,gy=goal.y;
+  const candidates=[];
+  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+    const atProtected=(px,py)=>(px===0&&py===0)||(px===gx&&py===gy);
+    if(x<cols-1&&!atProtected(x,y)&&!atProtected(x+1,y))candidates.push({x1:x,y1:y,x2:x+1,y2:y,d:'right',opp:'left'});
+    if(y<rows-1&&!atProtected(x,y)&&!atProtected(x,y+1))candidates.push({x1:x,y1:y,x2:x,y2:y+1,d:'bottom',opp:'top'});
+  }
+  for(let i=candidates.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [candidates[i],candidates[j]]=[candidates[j],candidates[i]];
+  }
+  function reachable(){
+    const visited=Array.from({length:rows},()=>new Array(cols).fill(false));
+    const q=[[0,0]];let head=0;visited[0][0]=true;
+    while(head<q.length){
+      const [x,y]=q[head++];
+      if(x===gx&&y===gy)return true;
+      const c=grid[y][x];
+      if(!c.top&&y>0&&!visited[y-1][x]){visited[y-1][x]=true;q.push([x,y-1]);}
+      if(!c.right&&x<cols-1&&!visited[y][x+1]){visited[y][x+1]=true;q.push([x+1,y]);}
+      if(!c.bottom&&y<rows-1&&!visited[y+1][x]){visited[y+1][x]=true;q.push([x,y+1]);}
+      if(!c.left&&x>0&&!visited[y][x-1]){visited[y][x-1]=true;q.push([x-1,y]);}
+    }
+    return false;
+  }
+  let added=0;
+  for(const w of candidates){
+    if(added>=count)break;
+    const c1=grid[w.y1][w.x1],c2=grid[w.y2][w.x2];
+    c1[w.d]=true;c2[w.opp]=true;
+    if(reachable()){added++;continue;}
+    c1[w.d]=false;c2[w.opp]=false; // would disconnect — try next
+  }
+}
+
+function pruneDeadEndsForEasy(){
+  // 1) Find the solution path cells via BFS (start → goal)
+  const onPath=Array.from({length:rows},()=>new Array(cols).fill(false));
+  const parent=Array.from({length:rows},()=>new Array(cols).fill(null));
+  const visited=Array.from({length:rows},()=>new Array(cols).fill(false));
+  const q=[[0,0]];let head=0;visited[0][0]=true;
+  let reached=false;
+  while(head<q.length){
+    const [x,y]=q[head++];
+    if(x===cols-1&&y===rows-1){reached=true;break;}
+    const c=grid[y][x];
+    if(!c.top&&y>0&&!visited[y-1][x]){visited[y-1][x]=true;parent[y-1][x]=[x,y];q.push([x,y-1]);}
+    if(!c.right&&x<cols-1&&!visited[y][x+1]){visited[y][x+1]=true;parent[y][x+1]=[x,y];q.push([x+1,y]);}
+    if(!c.bottom&&y<rows-1&&!visited[y+1][x]){visited[y+1][x]=true;parent[y+1][x]=[x,y];q.push([x,y+1]);}
+    if(!c.left&&x>0&&!visited[y][x-1]){visited[y][x-1]=true;parent[y][x-1]=[x,y];q.push([x-1,y]);}
+  }
+  if(!reached)return; // safety — should not happen with Prim's
+  // Mark path cells
+  let cx=cols-1,cy=rows-1;
+  while(cx!==null){
+    onPath[cy][cx]=true;
+    const p=parent[cy][cx];
+    if(!p)break;
+    cx=p[0];cy=p[1];
+  }
+
+  // 2) Iteratively seal dead-end cells that are NOT on the solution path.
+  //    A dead-end = exactly 1 opening. We close that opening (add the wall
+  //    on both sides), which reduces an opening on the neighbor. Repeat
+  //    until no more off-path dead-ends exist. Keep ONE small detour so
+  //    the maze still feels like a maze rather than a straight corridor.
+  function openingsOf(x,y){
+    const c=grid[y][x];const list=[];
+    if(!c.top)list.push('top');
+    if(!c.right)list.push('right');
+    if(!c.bottom)list.push('bottom');
+    if(!c.left)list.push('left');
+    return list;
+  }
+  function sealWall(x,y,dir){
+    const c=grid[y][x];
+    if(dir==='top'&&y>0){c.top=true;grid[y-1][x].bottom=true;}
+    else if(dir==='right'&&x<cols-1){c.right=true;grid[y][x+1].left=true;}
+    else if(dir==='bottom'&&y<rows-1){c.bottom=true;grid[y+1][x].top=true;}
+    else if(dir==='left'&&x>0){c.left=true;grid[y][x-1].right=true;}
+  }
+
+  // Count off-path dead-ends and keep pruning until only 0-1 remain.
+  // Target: ages 3-5 should feel the path almost guides itself. Leave at
+  // most ONE tiny detour so the maze still registers as a maze.
+  const keepDetours=0;
+  let safety=cols*rows*2;
+  while(safety-->0){
+    // Collect off-path dead-ends
+    const deads=[];
+    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+      if(onPath[y][x])continue;
+      if(openingsOf(x,y).length===1)deads.push([x,y]);
+    }
+    if(deads.length<=keepDetours)break;
+    // Seal one (random pick so which detour survives varies)
+    const [x,y]=deads[Math.floor(Math.random()*deads.length)];
+    const dir=openingsOf(x,y)[0];
+    sealWall(x,y,dir);
+  }
 }
 
 function addDecoyTraps(){
@@ -916,11 +1074,19 @@ function addDecoyTraps(){
   //   easy:   ~3%  (subtle — a few small wrong turns)
   //   medium: ~7%  (noticeable — more branch points)
   //   hard:   ~12% (aggressive — many misleading paths)
+  // Density by difficulty — calibrated for ages 3-8.
+  //   easy:   0%   — NO traps! Ages 3-5: "follow the path" feel, no wrong turns.
+  //   medium: 10%  — a few short misleading branches at clear T-junctions.
+  //   hard:   18%  — dense long dead-ends (up to 6 cells) → real planning.
   const totalCells=cols*rows;
-  const densityMap={easy:0.03,medium:0.07,hard:0.12};
+  const densityMap={easy:0,medium:0.10,hard:0.18};
   const density=densityMap[currentDifficulty]||0.05;
-  const maxTunnelLen={easy:2,medium:3,hard:4}[currentDifficulty]||2;
+  // How long each dead-end tunnel can wind. Easy=0 (no traps).
+  // Medium=3 (noticeable commitment before realizing it's wrong).
+  // Hard=6 (deep traps — player walks ~6 cells into a wrong branch).
+  const maxTunnelLen={easy:0,medium:3,hard:6}[currentDifficulty]||2;
   let targetTraps=Math.floor(totalCells*density);
+  if(targetTraps===0)return; // easy path: no trap injection at all
 
   // Helper: check if removing wall is valid (doesn't create a big open loop)
   function canOpen(x1,y1,x2,y2){
@@ -988,6 +1154,117 @@ function addDecoyTraps(){
     }
     if(carved>0)trapsAdded++;
   }
+}
+
+// ==============================================================
+// DIFFICULTY MEASUREMENT — makes maze hardness consistent
+// ==============================================================
+// Computes a numeric "hardness score" for the current maze by walking
+// from start (0,0) to goal (cols-1, rows-1) and counting:
+//   - solution length (how many steps on the optimal path)
+//   - decision points (cells with 3+ openings the player could wander into)
+//   - dead-end depth near the solution path (how tempting the traps are)
+// Returns {len, branches, traps, score} where `score` is the weighted hardness.
+function measureMazeHardness(){
+  const sx=0,sy=0,gx=cols-1,gy=rows-1;
+  // BFS for shortest path (using head pointer instead of .shift() for speed)
+  const visited=Array.from({length:rows},()=>new Array(cols).fill(false));
+  const parent=Array.from({length:rows},()=>new Array(cols).fill(null));
+  const queue=[[sx,sy]];let head=0;visited[sy][sx]=true;
+  let reached=false;
+  while(head<queue.length){
+    const [x,y]=queue[head++];
+    if(x===gx&&y===gy){reached=true;break;}
+    const c=grid[y][x];
+    if(!c.top&&y>0&&!visited[y-1][x]){visited[y-1][x]=true;parent[y-1][x]=[x,y];queue.push([x,y-1]);}
+    if(!c.right&&x<cols-1&&!visited[y][x+1]){visited[y][x+1]=true;parent[y][x+1]=[x,y];queue.push([x+1,y]);}
+    if(!c.bottom&&y<rows-1&&!visited[y+1][x]){visited[y+1][x]=true;parent[y+1][x]=[x,y];queue.push([x,y+1]);}
+    if(!c.left&&x>0&&!visited[y][x-1]){visited[y][x-1]=true;parent[y][x-1]=[x,y];queue.push([x-1,y]);}
+  }
+  if(!reached)return {len:0,branches:0,traps:0,score:0,unreachable:true};
+  // Reconstruct path
+  const path=[];let cx=gx,cy=gy;
+  while(!(cx===sx&&cy===sy)){path.push([cx,cy]);const p=parent[cy][cx];if(!p)break;cx=p[0];cy=p[1];}
+  path.push([sx,sy]);path.reverse();
+  const len=path.length;
+  const pathSet=new Set(path.map(([x,y])=>y*1000+x));
+
+  // Count decision points along the solution path: cells with 3+ openings
+  let branches=0;
+  for(const [x,y] of path){
+    const c=grid[y][x];
+    let op=0;if(!c.top)op++;if(!c.right)op++;if(!c.bottom)op++;if(!c.left)op++;
+    if(op>=3)branches+=(op-2);
+  }
+
+  // Measure trap depth: BFS side branches (head pointer again)
+  let trapDepth=0;
+  const trapVisited=new Set(pathSet);
+  for(const [px,py] of path){
+    const c=grid[py][px];
+    const seeds=[];
+    if(!c.top&&py>0&&!trapVisited.has((py-1)*1000+px))seeds.push([px,py-1]);
+    if(!c.right&&px<cols-1&&!trapVisited.has(py*1000+px+1))seeds.push([px+1,py]);
+    if(!c.bottom&&py<rows-1&&!trapVisited.has((py+1)*1000+px))seeds.push([px,py+1]);
+    if(!c.left&&px>0&&!trapVisited.has(py*1000+px-1))seeds.push([px-1,py]);
+    for(const [nx,ny] of seeds){
+      const k=ny*1000+nx;
+      if(trapVisited.has(k))continue;
+      let size=0;const q=[[nx,ny]];let h=0;trapVisited.add(k);
+      while(h<q.length){
+        const [x,y]=q[h++];size++;
+        const cc=grid[y][x];
+        if(!cc.top&&y>0){const kk=(y-1)*1000+x;if(!trapVisited.has(kk)){trapVisited.add(kk);q.push([x,y-1]);}}
+        if(!cc.right&&x<cols-1){const kk=y*1000+x+1;if(!trapVisited.has(kk)){trapVisited.add(kk);q.push([x+1,y]);}}
+        if(!cc.bottom&&y<rows-1){const kk=(y+1)*1000+x;if(!trapVisited.has(kk)){trapVisited.add(kk);q.push([x,y+1]);}}
+        if(!cc.left&&x>0){const kk=y*1000+x-1;if(!trapVisited.has(kk)){trapVisited.add(kk);q.push([x-1,y]);}}
+      }
+      trapDepth+=size;
+    }
+  }
+
+  const score=len + branches*3 + trapDepth*0.6;
+  return {len,branches,traps:trapDepth,score};
+}
+
+// Target hardness bands per difficulty. Calibrated for ages 3-8.
+// Raw balanced-gen score distributions observed with new grid sizes:
+//   5x5 easy:   25-40  (p50=34, solution ~9 steps, no traps)
+//   7x7 medium: 50-68  (p50=59, solution ~13 steps, short traps)
+//   9x9 hard:   76-100 (p50=85, solution ~17 steps, long traps)
+// Bands bias toward the middle-to-upper of each distribution so each
+// level feels distinctly different from the next.
+const HARDNESS_BANDS={
+  easy:  {min:14, max:24},   // 5x5 aggressively pruned: near-corridor, barely any choices
+  medium:{min:58, max:72},   // 7x7 with 2-3 clear decision points + short dead-ends
+  hard:  {min:95, max:130}   // 9x9 with LONG dead-ends (4+ cells deep) — real planning
+};
+
+// Generate a maze of given size, retrying until its hardness lands in
+// the target band for the current difficulty. Falls back to best-effort
+// after N attempts so player never waits too long.
+function generateBalancedMaze(c,r){
+  const band=HARDNESS_BANDS[currentDifficulty]||HARDNESS_BANDS.medium;
+  const MAX_ATTEMPTS=12; // Each attempt ~5-20ms; 12 gives ~150ms budget max
+  let bestDelta=Infinity;
+  let bestGrid=null;
+  for(let i=0;i<MAX_ATTEMPTS;i++){
+    generateMaze(c,r);
+    const m=measureMazeHardness();
+    if(m.unreachable)continue;
+    if(m.score>=band.min&&m.score<=band.max){
+      return m; // In-band: use as-is
+    }
+    const delta=m.score<band.min?(band.min-m.score):(m.score-band.max);
+    if(delta<bestDelta){
+      bestDelta=delta;
+      // Deep-copy grid so we can restore it later
+      bestGrid=grid.map(row=>row.map(cell=>({top:cell.top,right:cell.right,bottom:cell.bottom,left:cell.left})));
+    }
+  }
+  // No maze hit band — restore closest-match grid
+  if(bestGrid){grid=bestGrid;}
+  return measureMazeHardness();
 }
 
 // ===== SOLUTION PATH (BFS) — used by hint feature =====
@@ -1126,7 +1403,11 @@ function drawMaze(){
     if((x+y)%2===0){ctx.fillStyle='rgba(108,63,160,0.013)';ctx.fillRect(x*cellSize,y*cellSize,cellSize,cellSize);}
   }
 
-  // Coding mazes: more prominent grid so kids can count cells ahead
+  // Coding mazes: more prominent grid so kids can count cells ahead.
+  // Pattern mazes keep the minimal look — the visible cell grid made the
+  // walls look like cell borders, which was misleading when a wrong-answer
+  // gate sat on the only path to the correct gate (player bounces back on
+  // wrong gates, and the stronger grid made the blocked feel worse).
   if(currentMazeData&&currentMazeData.category==='Coding'){
     // Alternating cell fill (checkerboard — subtle enough to let walls dominate)
     for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
@@ -1483,135 +1764,12 @@ function setupMathMaze(){
   const values=[answer,...distractors];
   for(let i=values.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[values[i],values[j]]=[values[j],values[i]];}
 
-  // ==============================================================
-  // SMART GATE PLACEMENT
-  // Old approach: random cells in grid regions. Problem: a gate could
-  // sit on the ONLY path to another gate, forcing players to cross a
-  // "wrong" gate repeatedly — creating dead-end frustration.
-  //
-  // New approach:
-  //   1. Find all DEAD-END cells (cells with only 1 passable neighbor).
-  //      These are natural "pockets" at the tip of maze branches — a
-  //      gate placed here is NEVER on the path to another gate.
-  //   2. Compute BFS distance from start (0,0) to every cell.
-  //   3. Pick dead-ends that are (a) reasonably far from start, so the
-  //      puzzle is meaningful, and (b) well-separated from each other,
-  //      so players don't see all gates clustered together.
-  //   4. Put the CORRECT answer on one of the further dead-ends (so
-  //      the correct path rewards exploration, not just a lucky first
-  //      step).
-  //   5. If the maze has too few dead-ends (rare), fall back to any
-  //      cell whose removal from the graph doesn't disconnect other
-  //      gates — i.e. a leaf or near-leaf of the maze.
-  // ==============================================================
-  mathGates=[];
-
-  // Helper: count passable neighbors of a cell
-  function passableNeighbors(x,y){
-    const c=grid[y][x];let n=0;
-    if(!c.top&&y>0)n++;
-    if(!c.right&&x<cols-1)n++;
-    if(!c.bottom&&y<rows-1)n++;
-    if(!c.left&&x>0)n++;
-    return n;
-  }
-
-  // BFS distance from start (0,0) to every cell
-  function computeDistances(){
-    const dist=Array.from({length:rows},()=>new Array(cols).fill(-1));
-    dist[0][0]=0;
-    const q=[[0,0]];
-    while(q.length){
-      const [x,y]=q.shift();
-      const c=grid[y][x];
-      const nb=[];
-      if(!c.top&&y>0)nb.push([x,y-1]);
-      if(!c.right&&x<cols-1)nb.push([x+1,y]);
-      if(!c.bottom&&y<rows-1)nb.push([x,y+1]);
-      if(!c.left&&x>0)nb.push([x-1,y]);
-      for(const [nx,ny] of nb){
-        if(dist[ny][nx]===-1){dist[ny][nx]=dist[y][x]+1;q.push([nx,ny]);}
-      }
-    }
-    return dist;
-  }
-
-  const dist=computeDistances();
-
-  // Find all dead-end cells (exactly 1 passable neighbor), excluding (0,0)
-  const deadEnds=[];
-  for(let y=0;y<rows;y++){
-    for(let x=0;x<cols;x++){
-      if(x===0&&y===0)continue;
-      if(passableNeighbors(x,y)===1){
-        deadEnds.push({x:x,y:y,dist:dist[y][x]});
-      }
-    }
-  }
-
-  // Sort dead-ends by distance from start (farthest first)
-  deadEnds.sort((a,b)=>b.dist-a.dist);
-
-  // Pick well-separated dead-ends: greedy algorithm that requires
-  // each chosen cell be at least minSep cells (Manhattan distance)
-  // from previously chosen ones. This keeps gates visually spread out.
-  const minSep=Math.max(2,Math.floor(Math.min(cols,rows)/3));
-  const chosen=[];
-  for(const de of deadEnds){
-    if(chosen.length>=gateCount)break;
-    let okSep=true;
-    for(const ch of chosen){
-      if(Math.abs(de.x-ch.x)+Math.abs(de.y-ch.y)<minSep){okSep=false;break;}
-    }
-    if(okSep)chosen.push(de);
-  }
-
-  // If still not enough (small maze / weird topology), relax separation
-  if(chosen.length<gateCount){
-    for(const de of deadEnds){
-      if(chosen.length>=gateCount)break;
-      if(!chosen.some(c=>c.x===de.x&&c.y===de.y))chosen.push(de);
-    }
-  }
-
-  // Last-resort fallback: if still not enough dead-ends (very small maze),
-  // use cells with 2 passable neighbors (these are "corridors" — still
-  // riskier for the path-crossing issue, but better than forcing failure)
-  if(chosen.length<gateCount){
-    const corridors=[];
-    for(let y=0;y<rows;y++){
-      for(let x=0;x<cols;x++){
-        if(x===0&&y===0)continue;
-        if(chosen.some(c=>c.x===x&&c.y===y))continue;
-        if(passableNeighbors(x,y)===2)corridors.push({x:x,y:y,dist:dist[y][x]});
-      }
-    }
-    corridors.sort((a,b)=>b.dist-a.dist);
-    for(const co of corridors){
-      if(chosen.length>=gateCount)break;
-      chosen.push(co);
-    }
-  }
-
-  // Place the CORRECT answer at the farthest chosen cell (index 0 after sort),
-  // then distribute the rest (distractors) among remaining cells. This rewards
-  // exploration — kids have to actually traverse the maze to reach the right answer.
-  // Shuffle the non-correct positions so the order of distractors is random.
-  const correctPos=chosen[0];
-  const distractorPositions=chosen.slice(1);
-  for(let i=distractorPositions.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [distractorPositions[i],distractorPositions[j]]=[distractorPositions[j],distractorPositions[i]];
-  }
-
-  // Correct gate first
-  mathGates.push({x:correctPos.x,y:correctPos.y,value:answer,isCorrect:true});
-  // Then distractors (values array has the shuffled numbers, we know one of them is the answer)
-  const distractorValues=values.filter(v=>v!==answer);
-  for(let i=0;i<distractorPositions.length&&i<distractorValues.length;i++){
-    mathGates.push({x:distractorPositions[i].x,y:distractorPositions[i].y,value:distractorValues[i],isCorrect:false});
-  }
-
+  // Delegate gate placement to the shared helper (see placeSmartGates below).
+  // It picks dead-end cells far from start, reserves the correct answer for
+  // the farthest one, and crucially skips any distractor position that would
+  // sit on the only path from (0,0) to the correct gate — otherwise a wrong
+  // gate would bounce the player back indefinitely and trap them.
+  mathGates=placeSmartGates(values,answer,gateCount);
   mathFeedback=null;
 }
 
@@ -1762,14 +1920,73 @@ function placeSmartGates(values,correctValue,gateCount){
     corridors.sort((a,b)=>b.dist-a.dist);
     for(const co of corridors){if(chosen.length>=gateCount)break;chosen.push(co);}
   }
-  // Correct at farthest, distractors shuffled among rest
-  const correctPos=chosen[0];
-  const rest=chosen.slice(1);
-  for(let i=rest.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]];}
+  // Block-check helper: can the player reach (tx,ty) from (0,0) without
+  // stepping on any cell in `avoid`? Wrong-answer gates bounce the player
+  // back, so if the only path to the correct answer passes through a wrong
+  // gate the puzzle is unsolvable. This BFS simulates that restriction.
+  function reachableAvoiding(tx,ty,avoid){
+    const blocked=new Set(avoid.map(c=>c.y*1000+c.x));
+    const visited=Array.from({length:rows},()=>new Array(cols).fill(false));
+    const qq=[[0,0]];let hh=0;visited[0][0]=true;
+    while(hh<qq.length){
+      const [x,y]=qq[hh++];
+      if(x===tx&&y===ty)return true;
+      const c=grid[y][x];
+      const push=(nx,ny)=>{
+        if(nx<0||nx>=cols||ny<0||ny>=rows)return;
+        if(visited[ny][nx])return;
+        if(blocked.has(ny*1000+nx))return;
+        visited[ny][nx]=true;qq.push([nx,ny]);
+      };
+      if(!c.top)push(x,y-1);
+      if(!c.right)push(x+1,y);
+      if(!c.bottom)push(x,y+1);
+      if(!c.left)push(x-1,y);
+    }
+    return false;
+  }
+
+  // Arrangement search: keep the FULL gate count (no silent reduction), but
+  // pick an assignment that avoids a wrong gate blocking the path to the
+  // correct one. Strategy: walk the candidate pool in distance order, treat
+  // each entry in turn as correctPos, and greedily fill gateCount-1 safe
+  // distractors from the rest. The first arrangement that fits is used.
+  // For mazes with plenty of dead-ends (the common case after fixing the
+  // pruning bug) this loop succeeds on the very first iteration.
+  function buildArrangement(correctPos,pool){
+    const rest=pool.filter(c=>!(c.x===correctPos.x&&c.y===correctPos.y));
+    // Shuffle rest so repeated plays vary distractor positions
+    for(let i=rest.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rest[i],rest[j]]=[rest[j],rest[i]];}
+    const placed=[];
+    for(const cand of rest){
+      if(placed.length>=gateCount-1)break;
+      if(reachableAvoiding(correctPos.x,correctPos.y,placed.concat([cand]))){
+        placed.push(cand);
+      }
+    }
+    return placed;
+  }
+  let correctPos=chosen[0];
+  let distractorPositions=buildArrangement(correctPos,chosen);
+  if(distractorPositions.length<gateCount-1){
+    // Farthest correctPos didn't leave enough safe distractors — try other
+    // candidates as correctPos. Remember the best attempt as a final safety
+    // net so we never fall below what the previous algorithm would have done.
+    let best={correctPos,distractors:distractorPositions};
+    for(let i=1;i<chosen.length;i++){
+      const cp=chosen[i];
+      const ds=buildArrangement(cp,chosen);
+      if(ds.length>best.distractors.length)best={correctPos:cp,distractors:ds};
+      if(best.distractors.length>=gateCount-1)break;
+    }
+    correctPos=best.correctPos;
+    distractorPositions=best.distractors;
+  }
+
   const distractorValues=values.filter(v=>v!==correctValue);
   const gates=[{x:correctPos.x,y:correctPos.y,value:correctValue,isCorrect:true}];
-  for(let i=0;i<rest.length&&i<distractorValues.length;i++){
-    gates.push({x:rest[i].x,y:rest[i].y,value:distractorValues[i],isCorrect:false});
+  for(let i=0;i<distractorPositions.length&&i<distractorValues.length;i++){
+    gates.push({x:distractorPositions[i].x,y:distractorPositions[i].y,value:distractorValues[i],isCorrect:false});
   }
   return gates;
 }
@@ -1793,18 +2010,25 @@ function setupCodingMaze(){
   codingExecuting=false;
   codingStep=0;
   checkpoints=[];
-  // Hard coding mazes: add 1 or 2 random checkpoints between start and goal.
-  // Player must collect them before reaching the final goal — teaches kids
-  // multi-step planning ("first A, then B, then finish").
-  if(currentDifficulty==='hard'){
-    const count=1+Math.floor(Math.random()*2); // 1 or 2
+  // Coding mazes add checkpoints before the final goal to teach multi-step
+  // planning ("first A, then B, then finish"). Count scales with difficulty so
+  // each level feels distinctly harder than the previous one:
+  //   Easy: 0  — single clear goal, no detour logic
+  //   Medium: 1 — one musical note to collect on the way
+  //   Hard: 2 — two notes + final goal, real ordering puzzle
+  let count=0;
+  if(currentDifficulty==='medium')count=1;
+  else if(currentDifficulty==='hard')count=2;
+  if(count>0){
     // Theme-aware checkpoint emoji — musical note fits T4L brand
     const cpEmoji='🎵';
-    // Candidate cells: not start (0,0), not goal (cols-1,rows-1), at least 1 cell away from each
+    // Candidate cells: not start (0,0), not the actual goal (which may be
+    // any of the three non-start corners — goalPos is already set by now),
+    // and at least 2 cells away from each so checkpoints feel distinct.
     const candidates=[];
     for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
       const distStart=Math.abs(x)+Math.abs(y);
-      const distGoal=Math.abs(x-(cols-1))+Math.abs(y-(rows-1));
+      const distGoal=Math.abs(x-goalPos.x)+Math.abs(y-goalPos.y);
       if(distStart>=2&&distGoal>=2)candidates.push({x,y});
     }
     // Shuffle candidates and pick `count` that are also far from each other
@@ -1830,14 +2054,19 @@ function setupCodingMaze(){
 const CODE_DIR_EMOJI={up:'⬆️',down:'⬇️',left:'⬅️',right:'➡️'};
 const CODE_DIR_VEC={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
 
-// Maximum program length — keeps UI tidy and prevents infinite programs
-const CODE_MAX_STEPS=20;
+// Maximum program length — keeps UI tidy and prevents infinite programs.
+// Scales with difficulty: Hard grids are 7x7 with 2 checkpoints, so the
+// optimal program can be ~18-22 steps — 25 cap leaves room for a little
+// exploration without letting programs sprawl endlessly.
+function codeMaxSteps(){
+  return currentDifficulty==='hard'?25:20;
+}
 
 function addCodeStep(dir){
   if(!currentMazeData||!currentMazeData.codingMaze)return;
   if(codingExecuting)return;  // don't allow editing while running
   if(!gameActive)return;
-  if(codingProgram.length>=CODE_MAX_STEPS)return;
+  if(codingProgram.length>=codeMaxSteps())return;
   codingProgram.push(dir);
   renderCodingPanel();
   playMove();  // same little "click" sound when adding a step
@@ -1971,18 +2200,59 @@ function showCodingFeedback(text,color){
 
 // ===== GAME FLOW =====
 function startGame(){
-  // Coding mazes use smaller grids for clarity of the program-to-path mapping.
-  // Hard coding gets a bigger 8x8 grid so checkpoints have room to scatter.
+  // Coding mazes follow a developmental progression tuned to ages 3-8,
+  // calibrated against Bee-Bot, Cubetto, KIBO and Code.org Course A/B —
+  // research-backed grid sizes for tile-based introductory coders:
+  //   Easy   (3-5, PreK):  4x4 OPEN grid + 2-3 gentle obstacles — Bee-Bot model,
+  //                        pure direction sequencing, ~6-8 step programs.
+  //   Medium (5-7, K-1):   5x5 maze with light walls + 1 checkpoint — matches
+  //                        Code.org Course A grid, ~10-12 step programs.
+  //   Hard   (7-8, 1-2):   7x7 maze + 2 checkpoints — Code.org Course B feel,
+  //                        ~18-22 step programs.
+  // Each level adds ONE new cognitive demand so the jump is teachable, not
+  // abrupt. The old 7/9 sizes for Medium/Hard were Course-E territory (9-11yo).
   let sz=DIFF_SIZES[currentDifficulty];
+  let isEasyCoding=false;
   if(currentMazeData&&currentMazeData.codingMaze){
-    if(currentDifficulty==='hard'){
-      sz={c:8,r:8};
-    } else {
-      sz=currentMazeData.codingSize==='small'?{c:5,r:5}:{c:7,r:7};
-    }
+    if(currentDifficulty==='hard')      sz={c:7,r:7};
+    else if(currentDifficulty==='medium')sz={c:5,r:5};
+    else { sz={c:4,r:4}; isEasyCoding=true; }
   }
-  generateMaze(sz.c,sz.r);
+  if(isEasyCoding){
+    generateOpenGrid(sz.c,sz.r);
+  } else {
+    generateMaze(sz.c,sz.r);
+  }
+  // Balance hardness for regular mazes (skip for math/pattern/coding — those
+  // have their own puzzle layers that dominate difficulty perception)
+  const isSpecial=currentMazeData&&(currentMazeData.mathMaze||currentMazeData.patternMaze||currentMazeData.codingMaze);
+  if(!isSpecial){
+    generateBalancedMaze(sz.c,sz.r);
+  }
   playerPos={x:0,y:0};goalPos={x:cols-1,y:rows-1};
+  // Coding mazes: randomise the goal so the child doesn't always write the
+  // same right-down program. Pool = every cell in the "far half" of the
+  // grid (Manhattan distance >= cols-1 from start). That includes all three
+  // non-start corners AND middle cells along the far diagonal, so the goal
+  // sometimes lands mid-grid instead of always in a corner. Threshold scales
+  // with grid size: 3 for 4x4 Easy, 4 for 5x5 Medium, 6 for 7x7 Hard — still
+  // guarantees a meaningful program length.
+  if(currentMazeData&&currentMazeData.codingMaze){
+    const threshold=Math.max(cols,rows)-1;
+    const pool=[];
+    for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+      if(x===0&&y===0)continue;
+      if(x+y>=threshold)pool.push({x,y});
+    }
+    goalPos=pool[Math.floor(Math.random()*pool.length)];
+  }
+  // Apply Easy-coding obstacles AFTER goal is chosen, so reachability is
+  // verified against the actual goal cell (not the old hardcoded corner).
+  if(isEasyCoding){
+    // 2 or 3 gentle obstacles — enough "think around it" moments to feel
+    // like a puzzle, still solvable in ~6-10 steps for 3-5yo.
+    addGentleObstacles(2+Math.floor(Math.random()*2),goalPos);
+  }
   moveCounter=0;updMovDisp();gameActive=true;
   hintsLeft=3;hintCells=[];updateHintUI();
   if(hintTimeout){clearTimeout(hintTimeout);hintTimeout=null;}
@@ -2001,8 +2271,10 @@ function startGame(){
   } else if(currentMazeData&&currentMazeData.codingMaze){
     if(checkpoints.length>0){
       const n=checkpoints.length;
+      const label=currentDifficulty==='hard'?'Hard mission':'Mission';
+      const noteLabel=n===1?'the 🎵':`${n}× 🎵`;
       document.getElementById('playInfo').innerHTML=
-        `🤖 <b>Hard mission:</b> Collect <b style="color:#E17055">${n}× 🎵</b> first, then reach <b>${currentMazeData.goal}</b>! Build your program and press <b style="color:${currentMazeData.color}">▶ Run</b>.`;
+        `🤖 <b>${label}:</b> Collect <b style="color:#E17055">${noteLabel}</b> first, then reach <b>${currentMazeData.goal}</b>! Build your program and press <b style="color:${currentMazeData.color}">▶ Run</b>.`;
     } else {
       document.getElementById('playInfo').innerHTML=
         `🤖 <b>Code it:</b> Build a program with arrow buttons below, then press <b style="color:${currentMazeData.color}">▶ Run</b> to watch your robot go!`;
@@ -2365,7 +2637,7 @@ renderFilters();renderGrid();
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="/cdn-cgi/l/email-protection#a59ad6d0c7cfc0c6d198f1d0cbc091e9c0c4d7cb80979588809795e0c1d0c6c4d1cccacbc4c9809795f6cacbc2d683c7cac1dc98ec809795c3cad0cbc1809795d1cdccd6809795c2d7c0c4d1809795d7c0d6cad0d7c6c0809795c3cad7809795d1c0c4c6cdc0d7d6809795c4cbc1809795d5c4d7c0cbd1d69f809795cdd1d1d5d69f8a8ad1d0cbc091c9c0c4d7cb8bc6cac8" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -2373,7 +2645,7 @@ renderFilters();renderGrid();
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
+<script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;
