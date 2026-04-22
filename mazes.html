@@ -120,6 +120,18 @@ img.emoji{height:1em;width:1em;margin:0 .05em 0 .1em;vertical-align:-0.125em;}
 /* Card main emoji — scales up with the 52px font-size of .card-emoji */
 .card-emoji img.emoji{height:1em;width:1em;margin:0;vertical-align:middle;}
 
+/* Read-to-me button — always visible (kids 3-5 can't read, so the "🗣️" is
+   their primary way in). Pink to differentiate from the purple play-cta.
+   Pulses while TTS is speaking, clickable to stop. */
+.card-read-btn{position:absolute;top:10px;left:10px;width:34px;height:34px;border-radius:50%;background:#fff;color:var(--t4l-pink);display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 10px rgba(232,67,147,0.25);z-index:3;border:none;cursor:pointer;padding:0;transition:transform 0.2s,box-shadow 0.2s;}
+.card-read-btn:hover{transform:scale(1.1);box-shadow:0 5px 14px rgba(232,67,147,0.4);}
+.card-read-btn.speaking{animation:speakPulse 1.2s ease-in-out infinite;background:var(--t4l-pink);color:#fff;}
+@keyframes speakPulse{0%,100%{transform:scale(1);box-shadow:0 3px 10px rgba(232,67,147,0.5);}50%{transform:scale(1.12);box-shadow:0 6px 18px rgba(232,67,147,0.7);}}
+/* Read button inside the play modal header */
+.play-read-btn{width:36px;height:36px;border-radius:50%;border:none;background:#FFE8F0;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t4l-pink);transition:all 0.2s;font-weight:700;}
+.play-read-btn:hover{background:var(--t4l-pink);color:#fff;transform:scale(1.1);}
+.play-read-btn.speaking{animation:speakPulse 1.2s ease-in-out infinite;background:var(--t4l-pink);color:#fff;}
+
 /* Play CTA — hidden until hover/focus, then pops in. Gives kids a clear
    "this is clickable, tap here to play" affordance without cluttering the
    resting state of the card. */
@@ -476,7 +488,8 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
     <div class="play-header">
       <div class="play-title" id="playTitle"></div>
       <div class="hbtns">
-        <button class="snd-btn" id="soundToggle" onclick="toggleSound()">🔊</button>
+        <button class="play-read-btn" id="playReadBtn" onclick="readCurrentMazeAloud(this)" title="Read to me" aria-label="Read the story aloud">🗣️</button>
+        <button class="snd-btn" id="soundToggle" onclick="toggleSound()" title="Game sound effects" aria-label="Toggle game sounds">🔊</button>
         <button class="snd-btn pres-btn" id="presBtn" onclick="togglePresentationMode()" title="Presentation mode (fullscreen)" aria-label="Presentation mode">⛶</button>
         <button class="close-btn" onclick="closeMaze()" aria-label="Close">✕</button>
       </div>
@@ -560,6 +573,87 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
 </div>
 
 <script>
+// ===== READ-TO-ME (Web Speech API) =====
+// Kids 3-5 can't read yet — a 🗣️ button on each card (and the play modal)
+// reads the title + story aloud. Voice picking is best-effort across OSes:
+// neural voices first (Microsoft Aria/Jenny on Win11, Samantha Enhanced on
+// macOS, Google US English in Chrome), then other known-good named voices,
+// then any English voice, finally any voice. We tune pitch slightly up and
+// rate slightly down so the delivery feels warm and understandable.
+let t4lVoice=null;
+function t4lLoadVoices(){
+  if(!window.speechSynthesis)return [];
+  return speechSynthesis.getVoices();
+}
+function t4lPickVoice(voices){
+  if(!voices||!voices.length)return null;
+  const en=voices.filter(v=>v.lang&&v.lang.toLowerCase().startsWith('en'));
+  const pool=en.length?en:voices;
+  // Neural/premium voices first — they sound noticeably more human
+  const preferPatterns=[
+    /Microsoft Aria.*Natural/i, /Microsoft Jenny.*Natural/i,
+    /Microsoft Aria/i, /Microsoft Jenny/i,
+    /Samantha.*Enhanced/i, /Karen.*Enhanced/i,
+    /Google US English/i, /Google UK English Female/i,
+    /Samantha/i, /Microsoft Zira/i, /Karen/i, /Moira/i, /Fiona/i, /Tessa/i,
+  ];
+  for(const p of preferPatterns){
+    const m=pool.find(v=>p.test(v.name));
+    if(m)return m;
+  }
+  // Heuristic: anything that sounds female by name
+  const female=pool.find(v=>/female|girl|aria|samantha|zira|jenny|sara|emma|hazel|lily/i.test(v.name));
+  if(female)return female;
+  return pool[0];
+}
+function t4lInitVoice(){
+  if(!window.speechSynthesis)return;
+  const voices=t4lLoadVoices();
+  if(voices.length){t4lVoice=t4lPickVoice(voices);}
+  // Voices on Chrome load asynchronously; listen once and re-pick
+  speechSynthesis.onvoiceschanged=function(){t4lVoice=t4lPickVoice(t4lLoadVoices());};
+}
+window.addEventListener('load',t4lInitVoice);
+
+function t4lReadAloud(text,btnEl){
+  if(!window.speechSynthesis||!text)return;
+  // Cancel anything currently speaking and clear speaking state on all buttons
+  speechSynthesis.cancel();
+  document.querySelectorAll('.card-read-btn.speaking,.play-read-btn.speaking').forEach(b=>b.classList.remove('speaking'));
+  const u=new SpeechSynthesisUtterance(text);
+  if(t4lVoice)u.voice=t4lVoice;
+  u.lang='en-US';
+  u.pitch=1.15; // slightly higher = friendlier/younger feel
+  u.rate=0.95;  // slightly slower = easier for young listeners
+  u.volume=1.0;
+  if(btnEl){
+    btnEl.classList.add('speaking');
+    u.onend=function(){btnEl.classList.remove('speaking');};
+    u.onerror=function(){btnEl.classList.remove('speaking');};
+  }
+  speechSynthesis.speak(u);
+}
+function readCardAloud(mazeId,btnEl){
+  // Toggle: if THIS button is already speaking, stop.
+  if(btnEl&&btnEl.classList.contains('speaking')){
+    speechSynthesis.cancel();
+    btnEl.classList.remove('speaking');
+    return;
+  }
+  const m=MAZES.find(x=>x.id===mazeId);
+  if(!m)return;
+  t4lReadAloud(`${m.title}. ${m.story}`,btnEl);
+}
+function readCurrentMazeAloud(btnEl){
+  if(btnEl&&btnEl.classList.contains('speaking')){
+    speechSynthesis.cancel();
+    btnEl.classList.remove('speaking');
+    return;
+  }
+  if(!currentMazeData)return;
+  t4lReadAloud(`${currentMazeData.title}. ${currentMazeData.story}`,btnEl);
+}
+
 // ===== AUDIO =====
 const AudioCtx=window.AudioContext||window.webkitAudioContext;
 let audioCtx=null,soundOn=true;
@@ -900,6 +994,7 @@ function renderGrid(){
     const ariaLabel=`${m.title}. ${m.story}. Difficulty: ${m.difficulty}. Category: ${m.category}.`;
     const commonAttrs=`tabindex="0" role="button" aria-label="${ariaLabel.replace(/"/g,'&quot;')}" onclick="openMaze(${m.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMaze(${m.id});}"`;
     return`<div class="maze-card" ${commonAttrs}>
+      <button class="card-read-btn" aria-label="Read the card aloud" title="Read to me" onclick="event.stopPropagation();readCardAloud(${m.id},this)" onkeydown="event.stopPropagation()">🗣️</button>
       <div class="card-play-cta" aria-hidden="true">▶</div>
       <div class="card-top" style="background:linear-gradient(135deg,${m.color}1A,${m.color}38)">
         <div class="card-emoji">${m.emoji}</div>
@@ -2395,6 +2490,9 @@ function openMaze(id){
 }
 
 function closeMaze(){document.getElementById('mazeOverlay').classList.remove('active');document.body.style.overflow='';document.body.classList.remove('maze-locked');document.body.classList.remove('maze-presentation');document.getElementById('mazePlay').classList.remove('presentation');gameActive=false;stopTimer();currentMazeData=null;mathQuestion=null;mathGates=[];mathFeedback=null;patternSequence=null;patternAnswer=null;patternGates=[];codingProgram=[];codingExecuting=false;codingStep=0;
+  // Stop any ongoing text-to-speech and clear speaking-state on all read buttons
+  if(window.speechSynthesis)speechSynthesis.cancel();
+  document.querySelectorAll('.card-read-btn.speaking,.play-read-btn.speaking').forEach(b=>b.classList.remove('speaking'));
   document.getElementById('floatingClose').classList.remove('active');
 }
 
