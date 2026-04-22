@@ -26,6 +26,11 @@
 <!-- Favicon (uses musical note emoji as a data URI so no extra file needed) -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧩%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<!-- Twemoji: Twitter's open-source emoji library (CC-BY 4.0). Converts plain
+     emoji text into consistent, friendly, illustrated SVGs across all devices
+     — Windows default emojis are flat and dated, Twemoji is rounded and kid-
+     friendly. Loaded via jsdelivr CDN, parsed after each render pass. -->
+<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@latest/dist/twemoji.min.js" crossorigin="anonymous" defer></script>
 <script>window.T4L_MASCOT_URI=(document.createElement("canvas").toDataURL("image/webp").indexOf("webp")>-1?"assets/t4l-mascot-small.webp":"assets/t4l-mascot-small.png");</script>
 <style>
 :root {
@@ -106,6 +111,20 @@ body{font-family:'Nunito',sans-serif;background:var(--t4l-bg);color:#1E2A3A;min-
 .card-top::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,0.055) 100%);}
 .card-emoji{font-size:52px;z-index:1;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.1));animation:bob 3s ease-in-out infinite;}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* Twemoji — the library swaps emoji text for <img class="emoji"> tags.
+   Default CSS makes them height:1em which scales with parent font-size,
+   so one rule handles every context (hero, badges, cards, filters).
+   Key rule: vertical-align:-0.125em to line up with surrounding text. */
+img.emoji{height:1em;width:1em;margin:0 .05em 0 .1em;vertical-align:-0.125em;}
+/* Card main emoji — scales up with the 52px font-size of .card-emoji */
+.card-emoji img.emoji{height:1em;width:1em;margin:0;vertical-align:middle;}
+
+/* Play CTA — hidden until hover/focus, then pops in. Gives kids a clear
+   "this is clickable, tap here to play" affordance without cluttering the
+   resting state of the card. */
+.card-play-cta{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:#fff;color:var(--t4l-purple);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;padding-left:2px;opacity:0;transform:scale(0.6) translateY(-4px);transition:all 0.28s cubic-bezier(0.68,-0.55,0.265,1.55);box-shadow:0 4px 12px rgba(108,63,160,0.28);z-index:3;pointer-events:none;}
+.maze-card:hover .card-play-cta,.maze-card:focus-visible .card-play-cta{opacity:1;transform:scale(1) translateY(0);}
 .card-mascot-wrap{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;height:100%;width:100%;}
 .card-mascot-img{height:98px;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.18));}
 
@@ -440,6 +459,9 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
     <div class="hero-stat">🎵 Real Tune4Learn Songs</div>
     <div class="hero-stat">🌍 PreK – Grade 2</div>
   </div>
+  <!-- Mascot — src injected at boot (needs-mascot class). CSS already positions
+       it bottom-right with a bob animation and purple glow. -->
+  <img class="hero-mascot needs-mascot" alt="" aria-hidden="true">
 </section>
 
 <!-- FILTERS -->
@@ -553,17 +575,17 @@ function toggleSound(){soundOn=!soundOn;document.getElementById('soundToggle').t
 // mmdd = month*100+day, used for calendar sorting from today
 const MAZES=[
   // T4L mascot card — uses the same rendering as regular cards now
-  {id:0,emoji:'💕',title:"T4L Finds Mama!",category:'Values',story:"Help T4L reach her mom for Mother's Day! 💐",char:'T4L',goal:'👩',difficulty:'easy',color:'#E84393',mmdd:511,
+  {id:0,emoji:'💕',title:"T4L Finds Mama!",category:'Values',story:"Help T4L reach her mom for Mother's Day! 💐",char:'T4L',goal:'👩🏻',difficulty:'easy',color:'#E84393',mmdd:511,
     fact:"<b>T4L says:</b> Mamas make every day brighter — just like music! Happy Mother's Day from all of us at Tune4Learn 💕",yt:'https://www.youtube.com/watch?v=D1Miijxgc6o'},
 
   // ── April ──
-  {id:1,emoji:'🎨',title:'Mona Lisa, Why Are You Smiling?',category:'Art',story:'Help Leonardo find the Mona Lisa!',char:'🧑‍🎨',goal:'🖼️',difficulty:'easy',color:'#E17055',mmdd:415,
+  {id:1,emoji:'🎨',title:'Mona Lisa, Why Are You Smiling?',category:'Art',story:'Help Leonardo find the Mona Lisa!',char:'🧑🏽‍🎨',goal:'🖼️',difficulty:'easy',color:'#E17055',mmdd:415,
     fact:'<b>Fun Fact:</b> The Mona Lisa is only 30 inches tall — smaller than a pizza box!',yt:'https://www.youtube.com/watch?v=b0gZtSLmw4M'},
   {id:24,emoji:'🌍',title:'Hello Earth Day!',category:'Environment',story:'Plant the seed, grow the forest!',char:'🌱',goal:'🌳',difficulty:'medium',color:'#2ED573',mmdd:422,
     fact:'<b>Fun Fact:</b> One tree can absorb about 48 pounds of CO₂ per year!',yt:'https://www.youtube.com/watch?v=foJWDSjK9kA'},
 
   // ── May ──
-  {id:29,emoji:'🧼',title:'Wash Your Hands!',category:'Health',story:'Help the hands reach the soap!',char:'🙌🏿',goal:'🧼',difficulty:'easy',color:'#00CEC9',mmdd:505,
+  {id:29,emoji:'🧼',title:'Wash Your Hands!',category:'Health',story:'Help the hands reach the soap!',char:'🙌🏻',goal:'🧼',difficulty:'easy',color:'#00CEC9',mmdd:505,
     fact:'<b>Fun Fact:</b> Washing hands for 20 seconds removes 99% of germs — that\'s two rounds of Happy Birthday!',yt:'https://www.youtube.com/watch?v=HPO3FSgBE9c'},
   {id:27,emoji:'💖',title:'My Mother My Sunshine!',category:'Values',story:'Bring the flowers to Mom!',char:'💐',goal:'👩🏽',difficulty:'easy',color:'#FF6B81',mmdd:511,
     fact:'<b>Fun Fact:</b> Mother\'s Day is one of the most widely celebrated holidays in the world!',yt:'https://www.youtube.com/watch?v=D1Miijxgc6o'},
@@ -575,7 +597,7 @@ const MAZES=[
     fact:"<b>Fun Fact:</b> Father's Day is celebrated in over 70 countries around the world!",yt:'https://www.youtube.com/watch?v=c8ztV2r547s'},
 
   // ── September ──
-  {id:22,emoji:'🎒',title:'Back to School Dance!',category:'Seasonal',story:'Help the student get to school!',char:'🧒🏽',goal:'🏫',difficulty:'easy',color:'#0984E3',mmdd:901,
+  {id:22,emoji:'🎒',title:'Back to School Dance!',category:'Seasonal',story:'Help the student get to school!',char:'👦🏽',goal:'🏫',difficulty:'easy',color:'#0984E3',mmdd:901,
     fact:'<b>Fun Fact:</b> Kids in Japan clean their own classrooms every day — teamwork!',yt:'https://www.youtube.com/watch?v=3BJKJOod96Q'},
   {id:21,emoji:'🌿',title:'World Cleanup Day!',category:'Environment',story:'Clean up! Get to the green park!',char:'🧹',goal:'🏞️',difficulty:'medium',color:'#00B894',mmdd:920,
     fact:'<b>Fun Fact:</b> If everyone picked up just one piece of trash, that\'s 8 billion pieces cleaned up!',yt:'https://www.youtube.com/watch?v=WiDmPsvnAA8'},
@@ -585,11 +607,11 @@ const MAZES=[
     fact:'<b>Fun Fact:</b> Leaves change color because they stop making green chlorophyll in autumn!',yt:'https://www.youtube.com/watch?v=f2YXfj56YII'},
 
   // ── October ──
-  {id:28,emoji:'👩‍🏫',title:"World Teachers' Day Dance!",category:'Values',story:'Help the student reach the teacher!',char:'🧒🏾',goal:'👩🏿‍🏫',difficulty:'easy',color:'#FF7675',mmdd:1005,
+  {id:28,emoji:'👩🏼‍🏫',title:"World Teachers' Day Dance!",category:'Values',story:'Help the student reach the teacher!',char:'🧒🏾',goal:'👩🏼‍🏫',difficulty:'easy',color:'#FF7675',mmdd:1005,
     fact:"<b>Fun Fact:</b> World Teachers' Day has been celebrated every October 5 since 1994!",yt:'https://www.youtube.com/watch?v=ir8wiwSBv3o'},
   {id:16,emoji:'🦴',title:'Hickory Dickory Rock!',category:'Science',story:'Help the bone reach the dinosaur!',char:'🦴',goal:'🦖',difficulty:'easy',color:'#FDCB6E',mmdd:1006,
     fact:"<b>Fun Fact:</b> Rocks tell Earth's amazing story — from ancient dinosaur bones to sparkling crystals, our planet is full of geological wonders! 🌍",yt:'https://www.youtube.com/watch?v=L-k2IL-2_Ds'},
-  {id:14,emoji:'👧',title:'International Girls Day Power!',category:'Inclusion',story:'Help her reach the stars!',char:'👧🏿',goal:'🌟',difficulty:'easy',color:'#FF6B81',mmdd:1011,
+  {id:14,emoji:'👧🏻',title:'International Girls Day Power!',category:'Inclusion',story:'Help her reach the stars!',char:'👧🏻',goal:'🌟',difficulty:'easy',color:'#FF6B81',mmdd:1011,
     fact:'<b>Fun Fact:</b> Girls and women from every country have won over 60 Nobel Prizes in science and peace!',yt:'https://www.youtube.com/watch?v=RzXV94EhO4g'},
   {id:13,emoji:'💻',title:'World Coding Day Fun!',category:'STEM',story:'Help the robot reach the code!',char:'🤖',goal:'💻',difficulty:'medium',color:'#00B894',mmdd:1029,
     fact:'<b>Fun Fact:</b> The first computer programmer was Ada Lovelace — in the 1840s!',yt:'https://www.youtube.com/watch?v=pOHMN2IY9T8'},
@@ -599,13 +621,13 @@ const MAZES=[
   // ── November ──
   {id:7,emoji:'❤️',title:"My Day, My Rights!",category:'Values',story:'Help the child reach the rights star!',char:'🧒🏾',goal:'⭐',difficulty:'easy',color:'#00B894',mmdd:1120,
     fact:'<b>Fun Fact:</b> Every child has the right to play, learn, and be safe — it\'s in the UN Convention on the Rights of the Child!',yt:'https://www.youtube.com/watch?v=-BRgbQrGc5s'},
-  {id:12,emoji:'🛡️',title:'No Bully!',category:'SEL',story:'Be a hero — reach the kindness shield!',char:'🦸',goal:'🛡️',difficulty:'medium',color:'#E84393',mmdd:1120,
+  {id:12,emoji:'🛡️',title:'No Bully!',category:'SEL',story:'Be a hero — reach the kindness shield!',char:'🦸🏾',goal:'🛡️',difficulty:'medium',color:'#E84393',mmdd:1120,
     fact:'<b>Fun Fact:</b> Being kind to someone can change their whole day — kindness is contagious!',yt:'https://www.youtube.com/watch?v=2iuzNiVTqto'},
-  {id:9,emoji:'👋',title:'Say Hello Dance!',category:'SEL',story:'Say hello around the world!',char:'👋🏾',goal:'🌍',difficulty:'easy',color:'#FF7675',mmdd:1121,
+  {id:9,emoji:'👋🏽',title:'Say Hello Dance!',category:'SEL',story:'Say hello around the world!',char:'👋🏽',goal:'🌍',difficulty:'easy',color:'#FF7675',mmdd:1121,
     fact:'<b>Fun Fact:</b> There are over 7,000 languages in the world — every hello sounds different!',yt:'https://www.youtube.com/watch?v=F09Kz6SDhpI'},
 
   // ── December ──
-  {id:8,emoji:'🤝',title:'We All Move Together',category:'Inclusion',story:'Help the wheelchair dancer join the party!',char:'🧑‍🦽',goal:'🎉',difficulty:'easy',color:'#A29BFE',mmdd:1203,
+  {id:8,emoji:'🤝',title:'We All Move Together',category:'Inclusion',story:'Help the wheelchair dancer join the party!',char:'🧑🏾‍🦽',goal:'🎉',difficulty:'easy',color:'#A29BFE',mmdd:1203,
     fact:'<b>Fun Fact:</b> Inclusion means everyone belongs — wheelchair users dance, play sports, and celebrate just like anyone else! 🕺🪩',yt:'https://www.youtube.com/watch?v=smToX54V-lI'},
   {id:15,emoji:'🌍',title:'Human Rights Day Song',category:'Values',story:'Guide the dove of peace to the world!',char:'🕊️',goal:'🌍',difficulty:'easy',color:'#6C3FA0',mmdd:1210,
     fact:'<b>Fun Fact:</b> The Universal Declaration of Human Rights was signed in 1948 — all 30 rights belong to everyone!',yt:'https://www.youtube.com/watch?v=L4wkp_vJggg'},
@@ -617,7 +639,7 @@ const MAZES=[
   // ── January ──
   {id:37,emoji:'✨',title:'My New Year Wish',category:'Seasonal',story:'Help the wish reach the new year star!',char:'🌠',goal:'🎆',difficulty:'easy',color:'#FDCB6E',mmdd:101,
     fact:'<b>Fun Fact:</b> New Year is celebrated on different dates around the world!',yt:'https://www.youtube.com/watch?v=OltNBXnKv6Q'},
-  {id:26,emoji:'🖐️',title:'Six Little Dots',category:'Inclusion',story:'Help the finger find the Braille book!',char:'🖐🏼',goal:'📖',difficulty:'medium',color:'#0984E3',mmdd:104,
+  {id:26,emoji:'🖐🏼',title:'Six Little Dots',category:'Inclusion',story:'Help the finger find the Braille book!',char:'🖐🏼',goal:'📖',difficulty:'medium',color:'#0984E3',mmdd:104,
     fact:'<b>Fun Fact:</b> Louis Braille invented Braille when he was only 15 years old!',yt:'https://www.youtube.com/watch?v=mY6tfeNutLQ'},
 
   // ── February ──
@@ -639,7 +661,7 @@ const MAZES=[
     fact:'<b>Fun Fact:</b> The world\'s largest waffle weighed over 110 pounds!',yt:'https://www.youtube.com/watch?v=76mujwgF98E'},
 
   // ── April (wraparound — shown after March, before today's date) ──
-  {id:3,emoji:'💙',title:'Blue Light Sammy',category:'Inclusion',story:'Help Sammy reach his friends!',char:'🧒🏼',goal:'💙',difficulty:'easy',color:'#74B9FF',mmdd:402,
+  {id:3,emoji:'💙',title:'Blue Light Sammy',category:'Inclusion',story:'Help Sammy reach his friends!',char:'👦🏼',goal:'💙',difficulty:'easy',color:'#74B9FF',mmdd:402,
     fact:'<b>Fun Fact:</b> Everyone\'s brain works differently — and that\'s what makes each of us amazing! Blue lights shine on World Autism Day.',yt:'https://www.youtube.com/watch?v=BwUGbZgWr2Y'},
   {id:30,emoji:'💚',title:"Lily's Health Glow",category:'Health',story:'Help Lily find her healthy foods!',char:'👧🏾',goal:'🥦',difficulty:'easy',color:'#00B894',mmdd:407,
     fact:'<b>Fun Fact:</b> Eating colorful fruits and vegetables gives your body different vitamins — eat the rainbow!',yt:'https://www.youtube.com/watch?v=b8O_dVbvI0w'},
@@ -679,11 +701,11 @@ const MAZES=[
   // Player drags/taps arrow commands into a program, then presses "Run" to
   // watch their robot execute the moves. Core pedagogy: breaking a goal into
   // ordered steps, predicting outcomes, debugging when wrong.
-  {id:300,emoji:'🤖',title:'Code the Path',category:'Coding',story:'Program the robot to reach the flag!',char:'🤖',goal:'🚩',difficulty:'easy',color:'#00B894',mmdd:9999,codingMaze:true,codingSize:'small',
+  {id:300,emoji:'🐢',title:'Code the Path',category:'Coding',story:'Program the turtle to reach the flag!',char:'🐢',goal:'🚩',difficulty:'easy',color:'#00B894',mmdd:9999,codingMaze:true,codingSize:'small',
     fact:"<b>Coding Tip:</b> A code is just a list of steps in order. Programmers break big problems into tiny steps! 💻",yt:'https://www.youtube.com/watch?v=pOHMN2IY9T8'},
   {id:301,emoji:'🕹️',title:'Robot Dance Code',category:'Coding',story:"Code the robot's path to the disco ball!",char:'🤖',goal:'🪩',difficulty:'medium',color:'#A29BFE',mmdd:9999,codingMaze:true,codingSize:'medium',
     fact:"<b>Coding Tip:</b> When your code doesn't work, don't give up — debug it! Every programmer makes mistakes. 🔧",yt:'https://www.youtube.com/watch?v=pOHMN2IY9T8'},
-  {id:302,emoji:'🚀',title:'Code the Adventure',category:'Coding',story:'Program the path to the treasure!',char:'🤖',goal:'💎',difficulty:'medium',color:'#E84393',mmdd:9999,codingMaze:true,codingSize:'medium',
+  {id:302,emoji:'💎',title:'Code the Adventure',category:'Coding',story:'Program the climber to the treasure!',char:'🧗🏾',goal:'💎',difficulty:'medium',color:'#E84393',mmdd:9999,codingMaze:true,codingSize:'medium',
     fact:"<b>Coding Tip:</b> Real code runs step by step — just like following a recipe. Each step matters! 📜",yt:'https://www.youtube.com/watch?v=pOHMN2IY9T8'},
 ];
 
@@ -796,6 +818,51 @@ mascotImg.src=window.T4L_MASCOT_URI;
 // Redraw canvas once mascot is loaded (in case user opens a maze before image is ready)
 mascotImg.onload=function(){if(currentMazeData&&gameActive)drawMaze();};
 
+// ──────────────────────────────────────────────────────────────
+// Twemoji on canvas
+// ──────────────────────────────────────────────────────────────
+// DOM emojis were already upgraded to Twemoji SVGs via twemoji.parse. The
+// canvas draws through ctx.fillText which uses the system emoji font — so
+// in-game characters stayed Windows-flat while the rest of the UI was cute.
+// This helper closes that gap: it resolves an emoji to its Twemoji SVG URL
+// (via twemoji.convert.toCodePoint), caches the HTMLImageElement, and draws
+// it with drawImage. While the image is still loading we fall back to
+// fillText so nothing ever renders blank.
+const TWEMOJI_BASE='https://cdn.jsdelivr.net/gh/jdecked/twemoji@latest/assets/svg/';
+const emojiImageCache={};
+function getCanvasEmojiImage(emoji){
+  if(emoji in emojiImageCache)return emojiImageCache[emoji];
+  if(!window.twemoji||!twemoji.convert||!twemoji.convert.toCodePoint){
+    // Library hasn't finished loading — don't cache null, just skip so the
+    // next draw can retry once twemoji is available.
+    return null;
+  }
+  const codepoint=twemoji.convert.toCodePoint(emoji);
+  const img=new Image();
+  img.crossOrigin='anonymous';
+  img.src=TWEMOJI_BASE+codepoint+'.svg';
+  img.onload=function(){if(currentMazeData&&gameActive)drawMaze();};
+  img.onerror=function(){emojiImageCache[emoji]=null;}; // mark failed to stop retrying
+  emojiImageCache[emoji]=img;
+  return img;
+}
+function drawCanvasEmoji(emoji,x,y,size,opacity){
+  const img=getCanvasEmojiImage(emoji);
+  const alpha=(opacity===undefined)?1:opacity;
+  if(img&&img.complete&&img.naturalWidth>0){
+    if(alpha<1){ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(img,x-size/2,y-size/2,size,size);ctx.restore();}
+    else ctx.drawImage(img,x-size/2,y-size/2,size,size);
+  } else {
+    // Text fallback — system emoji font, same look as before Twemoji
+    ctx.save();
+    if(alpha<1)ctx.globalAlpha=alpha;
+    ctx.font=size+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(emoji,x,y+1);
+    ctx.restore();
+  }
+}
+
 // ===== FILTERS & GRID =====
 // Category emoji map for filter buttons (consistent visual identity)
 const CAT_EMOJI={
@@ -808,7 +875,19 @@ function renderFilters(){
   document.getElementById('filters').innerHTML=
     '<span class="filter-label">Filter:</span>'+
     allCats.map(c=>`<button class="filter-btn ${c===activeFilter?'active':''}" onclick="setFilter('${c}')">${(CAT_EMOJI[c]||'🎯')} ${c}</button>`).join('');
+  twemojify(document.getElementById('filters'));
 }
+
+// Twemoji helper — safely upgrade emoji text to Twemoji SVGs whenever we
+// re-render a section. No-op if the script hasn't loaded yet (defer means it
+// may still be fetching on first call); twemojifyAll() runs once after the
+// main script finishes to catch anything missed.
+function twemojify(root){
+  if(!root)return;
+  if(window.twemoji){twemoji.parse(root,{folder:'svg',ext:'.svg'});}
+}
+function twemojifyAll(){twemojify(document.body);}
+window.addEventListener('load',twemojifyAll);
 function setFilter(cat){activeFilter=cat;renderFilters();renderGrid();}
 
 function renderGrid(){
@@ -821,6 +900,7 @@ function renderGrid(){
     const ariaLabel=`${m.title}. ${m.story}. Difficulty: ${m.difficulty}. Category: ${m.category}.`;
     const commonAttrs=`tabindex="0" role="button" aria-label="${ariaLabel.replace(/"/g,'&quot;')}" onclick="openMaze(${m.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMaze(${m.id});}"`;
     return`<div class="maze-card" ${commonAttrs}>
+      <div class="card-play-cta" aria-hidden="true">▶</div>
       <div class="card-top" style="background:linear-gradient(135deg,${m.color}1A,${m.color}38)">
         <div class="card-emoji">${m.emoji}</div>
       </div>
@@ -834,6 +914,7 @@ function renderGrid(){
       </div>
     </div>`;
   }).join('');
+  twemojify(document.getElementById('mazeGrid'));
 }
 
 // ===== DIFFICULTY =====
@@ -1475,9 +1556,7 @@ function drawMaze(){
       // Value (number or emoji)
       if(isEmojiMode){
         const emFontSize=Math.max(Math.floor(cellSize*0.55),14);
-        ctx.font=`${emFontSize}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
-        ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText(String(gate.value),gx,gy+1);
+        drawCanvasEmoji(String(gate.value),gx,gy,emFontSize);
       } else {
         const numFontSize=Math.max(Math.floor(cellSize*0.5),11);
         ctx.fillStyle=wc;
@@ -1517,8 +1596,7 @@ function drawMaze(){
     const gr=ctx.createRadialGradient(gx,gy,cellSize*0.06,gx,gy,cellSize*0.55);
     gr.addColorStop(0,wc+'50');gr.addColorStop(1,'transparent');
     ctx.fillStyle=gr;ctx.beginPath();ctx.arc(gx,gy,cellSize*0.55,0,Math.PI*2);ctx.fill();
-    ctx.font=es+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(currentMazeData.goal,gx,gy+1);
+    drawCanvasEmoji(currentMazeData.goal,gx,gy,es);
     ctx.strokeStyle=wc+'55';ctx.lineWidth=1.8;ctx.beginPath();ctx.arc(gx,gy,cellSize*0.44,0,Math.PI*2);ctx.stroke();
   }
 
@@ -1532,9 +1610,7 @@ function drawMaze(){
         // Reached — subtle green check background
         ctx.fillStyle='rgba(0,184,148,0.22)';
         ctx.beginPath();ctx.arc(cx,cy,cellSize*0.4,0,Math.PI*2);ctx.fill();
-        ctx.font=`bold ${Math.floor(cellSize*0.5)}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
-        ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText('✓',cx,cy+1);
+        drawCanvasEmoji('✅',cx,cy,Math.floor(cellSize*0.5));
       } else {
         // Not yet reached — pulsing gold halo with note emoji
         const rad=ctx.createRadialGradient(cx,cy,cellSize*0.08,cx,cy,cellSize*0.5);
@@ -1542,9 +1618,7 @@ function drawMaze(){
         rad.addColorStop(1,'rgba(253,203,110,0)');
         ctx.fillStyle=rad;
         ctx.beginPath();ctx.arc(cx,cy,cellSize*0.5,0,Math.PI*2);ctx.fill();
-        ctx.font=`bold ${Math.floor(cellSize*0.65)}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
-        ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText(cp.emoji,cx,cy+1);
+        drawCanvasEmoji(cp.emoji,cx,cy,Math.floor(cellSize*0.65));
       }
     });
   }
@@ -1557,10 +1631,7 @@ function drawMaze(){
       const alpha=pulse*(1-i*0.2);
       ctx.fillStyle=`rgba(253,203,110,${alpha})`;
       ctx.beginPath();ctx.arc(hx,hy,cellSize*0.35,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle=`rgba(225,112,85,${alpha})`;
-      ctx.font=`bold ${Math.floor(cellSize*0.5)}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText('✨',hx,hy+1);
+      drawCanvasEmoji('✨',hx,hy,Math.floor(cellSize*0.5),alpha);
     });
   }
 
@@ -1582,15 +1653,13 @@ function drawMaze(){
     } else {
       // Fallback while image is loading
       ctx.fillStyle='rgba(255,255,255,0.92)';ctx.beginPath();ctx.arc(px,py,cellSize*0.35,0,Math.PI*2);ctx.fill();
-      ctx.font=es+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
-      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🎵',px,py+1);
+      drawCanvasEmoji('🎵',px,py,es);
     }
   } else {
     // Non-T4L: white disc background + emoji character
     ctx.fillStyle='rgba(255,255,255,0.92)';ctx.beginPath();ctx.arc(px,py,cellSize*0.35,0,Math.PI*2);ctx.fill();
     ctx.strokeStyle='rgba(108,63,160,0.15)';ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(px,py,cellSize*0.35,0,Math.PI*2);ctx.stroke();
-    ctx.font=es+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(currentMazeData.char,px,py+1);
+    drawCanvasEmoji(currentMazeData.char,px,py,es);
   }
 }
 
@@ -2295,6 +2364,7 @@ function startGame(){
   document.getElementById('winModal').classList.remove('active');
   document.getElementById('hudTimer').classList.remove('warn');
   showBest();startTimer();drawMaze();
+  twemojify(document.getElementById('playInfo'));
 }
 
 function openMaze(id){
@@ -2306,6 +2376,7 @@ function openMaze(id){
   document.getElementById('playFooter').innerHTML=`<a class="watch-btn" href="${currentMazeData.yt}" target="_blank" rel="noopener">▶ Watch the Song</a>`;
   currentDifficulty=currentMazeData.difficulty;updateDiffUI();startGame();
   document.getElementById('mazeOverlay').classList.add('active');document.body.style.overflow='hidden';document.body.classList.add('maze-locked');
+  twemojify(document.getElementById('mazePlay')); // swap play-modal emojis to Twemoji SVGs
   document.getElementById('floatingClose').classList.add('active');
   // Restore presentation mode preference (only on desktop/smartboard — not phones)
   try{
@@ -2409,6 +2480,7 @@ function showWin(){
   const ytBtn=document.getElementById('winWatchBtn');
   if(ytBtn&&currentMazeData.yt){ytBtn.href=currentMazeData.yt;}
   document.getElementById('winModal').classList.add('active');
+  twemojify(document.getElementById('winModal'));
   launchConfetti();
 }
 
