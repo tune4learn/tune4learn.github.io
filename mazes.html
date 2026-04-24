@@ -651,7 +651,26 @@ function readCurrentMazeAloud(btnEl){
     return;
   }
   if(!currentMazeData)return;
-  t4lReadAloud(`${currentMazeData.title}. ${currentMazeData.story}`,btnEl);
+  // Read title + story as the base; then add the type-specific puzzle so the
+  // child actually hears what they need to solve (math equation, the pattern
+  // sequence, or coding instructions). Emoji-based patterns can't be read by
+  // TTS directly — we describe them instead of spelling out each emoji.
+  const parts=[currentMazeData.title,currentMazeData.story];
+  if(currentMazeData.mathMaze&&mathQuestion){
+    const opWord=mathQuestion.op==='add'?'plus':'minus';
+    parts.push(`Here is your problem: ${mathQuestion.a} ${opWord} ${mathQuestion.b}. Walk to the right answer.`);
+  } else if(currentMazeData.patternMaze&&patternSequence){
+    const type=currentMazeData.patternType;
+    if(type==='numbers2'||type==='numbers10'){
+      const nums=patternSequence.filter(s=>s!=='?').join(', ');
+      parts.push(`Look at this number pattern: ${nums}. What comes next?`);
+    } else {
+      parts.push(`Look at the picture pattern on the screen. What comes next?`);
+    }
+  } else if(currentMazeData.codingMaze){
+    parts.push(`Build a program with the arrow buttons, then press Run to watch your character go.`);
+  }
+  t4lReadAloud(parts.join('. '),btnEl);
 }
 
 // ===== AUDIO =====
@@ -2219,11 +2238,12 @@ const CODE_DIR_EMOJI={up:'⬆️',down:'⬇️',left:'⬅️',right:'➡️'};
 const CODE_DIR_VEC={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
 
 // Maximum program length — keeps UI tidy and prevents infinite programs.
-// Scales with difficulty: Hard grids are 7x7 with 2 checkpoints, so the
-// optimal program can be ~18-22 steps — 25 cap leaves room for a little
-// exploration without letting programs sprawl endlessly.
+// Scales with difficulty: Hard grids are 7x7 with 2 checkpoints. An optimal
+// route is ~18-22 steps, but kids often backtrack or take slightly indirect
+// paths — a tight cap blocks legitimate wins. 35 is generous enough for
+// imperfect routing while still preventing runaway programs.
 function codeMaxSteps(){
-  return currentDifficulty==='hard'?25:20;
+  return currentDifficulty==='hard'?35:20;
 }
 
 function addCodeStep(dir){
