@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="google-site-verification" content="AOgua7hyE2HhpsE_xLOZ-EpkVnEpRsf8wqdqk8Sj-CQ">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Online Coloring Book for Kids | Tune4Learn</title>
 <meta name="description" content="Free online coloring pages for kids — 16+ interactive designs including space, animals, seasons and songs. Paint in your browser, no download needed.">
@@ -286,6 +287,26 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dk);overfl
   "typicalAgeRange": "3-8"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tune4learn.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Coloring",
+      "item": "https://tune4learn.com/coloring.html"
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
@@ -298,6 +319,17 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dk);overfl
     <button class="hb" onclick="resetPage()">&#128465; Clear</button>
   </div>
 </header>
+
+<!-- SEO: Internal navigation (visually hidden but accessible to crawlers & screen readers) -->
+<nav aria-label="Tune4Learn site navigation" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;">
+  <ul>
+    <li><a href="index.html">Tune4Learn Home</a></li>
+    <li><a href="videos.html">Educational Songs &amp; Videos for Kids</a></li>
+    <li><a href="mazes.html">Interactive Maze Games for Kids</a></li>
+    <li><a href="teachers.html">Resources for Teachers &amp; Parents</a></li>
+    <li><a href="research.html">Research &amp; Blog on Music-Based Learning</a></li>
+  </ul>
+</nav>
 <div class="main">
   <aside class="side" id="sidebar"><h3>&#128397; Coloring Pages</h3><p class="sub">Pick a page to color!</p><div class="filters" id="filters"></div><div id="pageList"></div></aside>
   <main class="cv-area" id="main">
@@ -910,7 +942,7 @@ window.addEventListener("resize",function(){if(curPg)loadPage(curPg)});
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="/cdn-cgi/l/email-protection#d4eba7a1b6beb1b7a0e980a1bab1e098b1b5a6baf1e6e4f9f1e6e491b0a1b7b5a0bdbbbab5b8f1e6e487bbbab3a7f2b6bbb0ade99df1e6e4b2bba1bab0f1e6e4a0bcbda7f1e6e4b3a6b1b5a0f1e6e4a6b1a7bba1a6b7b1f1e6e4b2bba6f1e6e4a0b1b5b7bcb1a6a7f1e6e4b5bab0f1e6e4a4b5a6b1baa0a7eef1e6e4bca0a0a4a7eefbfba0a1bab1e0b8b1b5a6bafab7bbb9" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -918,7 +950,7 @@ window.addEventListener("resize",function(){if(curPg)loadPage(curPg)});
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js" defer></script><script>
+<script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;
