@@ -237,7 +237,13 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
       "logo": "https://tune4learn.com/assets/t4l-logo.png",
       "description": "Educational music platform for children ages 3–8. Songs, coloring books and games that support global awareness and early childhood education.",
       "sameAs": [
-        "https://www.youtube.com/@Tune4Learn"
+        "https://www.youtube.com/@Tune4Learn",
+        "https://music.youtube.com/channel/UC-Tune4Learn",
+        "https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh",
+        "https://music.apple.com/us/artist/tune4learn/1781419056",
+        "https://www.instagram.com/Tune4Learn",
+        "https://www.tiktok.com/@tune4learn",
+        "https://www.teacherspayteachers.com/store/tune4learn"
       ]
     },
     {
@@ -503,8 +509,9 @@ footer{background:var(--dark);padding:5rem 4vw 2.5rem;}
 ===================================================== */
 
 const PREVIEW_IDS = {
-  "Our Power, Our Planet – Earth Day Song 🆕": "18DOA0vT_mx1QTT2JDLr2CsMMNbEgxFNV",
-  "Hello Earth Day – Intro Video 🆕": "18DOA0vT_mx1QTT2JDLr2CsMMNbEgxFNV",
+  "Wash Your Hands! – World Hand Hygiene Day 🆕": "17h0XaPKVvAbivHz1u8yXqD3nrQU-BMc7",
+  "Our Power, Our Planet – Earth Day Song": "18DOA0vT_mx1QTT2JDLr2CsMMNbEgxFNV",
+  "Hello Earth Day – Intro Video": "18DOA0vT_mx1QTT2JDLr2CsMMNbEgxFNV",
   "Drip Drip Drip": "1ZaNrlcDenzl-YcnxAabb1d9kBSkZc7pl",
   "International Day of Mathematics": "14l-fbSbc72FXutlVgsnOfJiOdHRjsftj",
   "World Engineering Day": "11_Ocijbk2kkGP4CkJPAkEPJMsS3JjGDY",
@@ -527,13 +534,19 @@ const PREVIEW_IDS = {
 };
 
 const PACKS = [
-  { title:"Our Power, Our Planet – Earth Day Song 🆕", emoji:"🌍", cat:"science", label:"Earth Day", age:"Pre-K · K–2", subtitle:"Earth Day Song · Apr 22", vid:"8xI5c50MrEA",
+  { title:"Wash Your Hands! – World Hand Hygiene Day 🆕", emoji:"💚", cat:"science", label:"Health", age:"Pre-K · K–2", subtitle:"World Hand Hygiene Day · May 5", vid:"HPO3FSgBE9c",
+    drive:"https://drive.google.com/uc?export=download&id=17h0XaPKVvAbivHz1u8yXqD3nrQU-BMc7",
+    extra:[
+      {label:"Activity Book", previewId:"17h0XaPKVvAbivHz1u8yXqD3nrQU-BMc7"}
+    ]
+  },
+  { title:"Our Power, Our Planet – Earth Day Song", emoji:"🌍", cat:"science", label:"Earth Day", age:"Pre-K · K–2", subtitle:"Earth Day Song · Apr 22", vid:"8xI5c50MrEA",
     drive:"https://drive.google.com/uc?export=download&id=18DOA0vT_mx1QTT2JDLr2CsMMNbEgxFNV"
   },
-  { title:"Hello Earth Day – Intro Video 🆕", emoji:"🌎", cat:"science", label:"Earth Day", age:"Pre-K · K–2", subtitle:"Earth Day Intro · Apr 22", vid:"foJWDSjK9kA",
+  { title:"Hello Earth Day – Intro Video", emoji:"🌎", cat:"science", label:"Earth Day", age:"Pre-K · K–2", subtitle:"Earth Day Intro · Apr 22", vid:"foJWDSjK9kA",
     drive:"https://drive.google.com/uc?export=download&id=18DOA0vT_mx1QTT2JDLr2CsMMNbEgxFNV"
   },
-  { title:"My Very Excellent Mother – Planet Song 🆕", emoji:"🚀", cat:"science", label:"Science", age:"Pre-K · K–2", subtitle:"Space Flight Day · Apr 12", vid:"ERDCuvvseD8",
+  { title:"My Very Excellent Mother – Planet Song", emoji:"🚀", cat:"science", label:"Science", age:"Pre-K · K–2", subtitle:"Space Flight Day · Apr 12", vid:"ERDCuvvseD8",
     drive:"https://drive.google.com/drive/folders/1HDB4mO8JlW7Tv9-54IjAvtzTFfwBqu7J",
     extra:[
       {label:"Activity Book", previewId:"1HDB4mO8JlW7Tv9-54IjAvtzTFfwBqu7J"},

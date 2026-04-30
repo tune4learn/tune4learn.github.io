@@ -240,7 +240,13 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
       "logo": "https://tune4learn.com/assets/t4l-logo.png",
       "description": "Educational music platform for children ages 3–8. Songs, coloring books and games that support global awareness and early childhood education.",
       "sameAs": [
-        "https://www.youtube.com/@Tune4Learn"
+        "https://www.youtube.com/@Tune4Learn",
+        "https://music.youtube.com/channel/UC-Tune4Learn",
+        "https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh",
+        "https://music.apple.com/us/artist/tune4learn/1781419056",
+        "https://www.instagram.com/Tune4Learn",
+        "https://www.tiktok.com/@tune4learn",
+        "https://www.teacherspayteachers.com/store/tune4learn"
       ]
     },
     {
@@ -277,7 +283,15 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
     "name": "Tune4Learn",
     "url": "https://tune4learn.com",
     "logo": "https://tune4learn.com/assets/t4l-logo-small.webp",
-    "sameAs": ["https://www.youtube.com/@Tune4Learn"]
+    "sameAs": [
+        "https://www.youtube.com/@Tune4Learn",
+        "https://music.youtube.com/channel/UC-Tune4Learn",
+        "https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh",
+        "https://music.apple.com/us/artist/tune4learn/1781419056",
+        "https://www.instagram.com/Tune4Learn",
+        "https://www.tiktok.com/@tune4learn",
+        "https://www.teacherspayteachers.com/store/tune4learn"
+      ]
   },
   "about": [
     {"@type": "Thing", "name": "Educational songs"},
@@ -764,14 +778,14 @@ document.addEventListener('keydown', function(e) {
 // VIDEO OYNAT
 document.addEventListener("DOMContentLoaded", function() {
   const VIDEOS = [
-    { vid:"b0gZtSLmw4M", title:"Mona Lisa, Why Are You Smiling?", subtitle:"World Art Day · Apr 15", emoji:"🎨", label:"Art", cat:"art", age:"prek k2 k3", date:"Apr 15", new:true },
+    { vid:"b0gZtSLmw4M", title:"Mona Lisa, Why Are You Smiling?", subtitle:"World Art Day · Apr 15", emoji:"🎨", label:"Art", cat:"art", age:"prek k2 k3", date:"Apr 15" },
     { vid:"Ym44okqehWM", title:"Drip Drip Drip", subtitle:"World Day for Glaciers · Mar 21", emoji:"🧊", label:"Science", cat:"science", age:"prek k2", date:"Mar 21" },
     { vid:"_gxOLYe7Kp8", title:"Math and Hope", subtitle:"International Day of Mathematics · Mar 14", emoji:"🔢", label:"Math", cat:"math", age:"prek k2", date:"Mar 14" },
     { vid:"a1KlR2jL4mY", title:"The Engineers Dance", subtitle:"World Engineering Day · Mar 4", emoji:"🛠️", label:"STEM", cat:"science", age:"k2", date:"Mar 4" },
     { vid:"-BRgbQrGc5s", title:"My Day, My Rights!", subtitle:"World Children's Day · Nov 20", emoji:"❤️", label:"Values", cat:"values", age:"k2", date:"Nov 20" },
     { vid:"smToX54V-lI", title:"We All Move Together", subtitle:"Inclusion & Diversity", emoji:"🤝", label:"Inclusion", cat:"inclusion", age:"prek k2" },
-    { vid:"HPO3FSgBE9c", title:"Wash Your Hands!", subtitle:"World Hand Hygiene Day", emoji:"💚", label:"Health", cat:"health", age:"prek k2", date:"May 5" },
-    { vid:"8xI5c50MrEA", title:"Our Power, Our Planet", subtitle:"Earth Day Song · Apr 22", emoji:"🌍", label:"Earth Day", cat:"science", age:"prek k2", date:"Apr 22", new:true },
+    { vid:"HPO3FSgBE9c", title:"Wash Your Hands!", subtitle:"World Hand Hygiene Day · May 5", emoji:"💚", label:"Health", cat:"health", age:"prek k2", date:"May 5", new:true },
+    { vid:"8xI5c50MrEA", title:"Our Power, Our Planet", subtitle:"Earth Day Song · Apr 22", emoji:"🌍", label:"Earth Day", cat:"science", age:"prek k2", date:"Apr 22" },
     { vid:"foJWDSjK9kA", title:"Hello Earth Day", subtitle:"Earth Day · April 22", emoji:"🌍", label:"Nature", cat:"science", age:"prek k2", date:"Apr 22" },
     { vid:"Nrp-bJxOs8U", title:"Buzz Buzz Busy Bee!", subtitle:"World Bee Day · May 20", emoji:"🐝", label:"Nature", cat:"science", age:"prek k2", date:"May 20" },
     { vid:"DItuuTXwd6s", title:"Science Girls Can!", subtitle:"Women & Girls in Science · Feb 11", emoji:"🔬", label:"Science", cat:"science", age:"k2", date:"Feb 11" },
@@ -796,7 +810,7 @@ document.addEventListener("DOMContentLoaded", function() {
     { vid:"VcIOGzFAaQI", title:"Animated April Kids Songs", subtitle:"April 2025 Full Collection", emoji:"🌸", label:"Seasonal", cat:"seasonal", age:"prek k2" },
     { vid:"zxBJ54lD04Q", title:"Spring Boogie Dance", subtitle:"Spring Song for Kids", emoji:"🌱", label:"Seasonal", cat:"seasonal", age:"prek k2" },
     { vid:"b8O_dVbvI0w", title:"Lily's Health Glow", subtitle:"World Health Day · April 7", emoji:"💚", label:"Health", cat:"health", age:"prek k2", date:"Apr 7" },
-    { vid:"ERDCuvvseD8", title:"My Very Excellent Mother", subtitle:"Space Flight Day · Apr 12", emoji:"🚀", label:"Science", cat:"science", age:"prek k2", date:"Apr 12", new:true },
+    { vid:"ERDCuvvseD8", title:"My Very Excellent Mother", subtitle:"Space Flight Day · Apr 12", emoji:"🚀", label:"Science", cat:"science", age:"prek k2", date:"Apr 12" },
     { vid:"BwUGbZgWr2Y", title:"Blue Light Sammy", subtitle:"World Autism Awareness Day · April 2", emoji:"💙", label:"Inclusion", cat:"inclusion", age:"prek k2", date:"Apr 2" },
     { vid:"djJQRka-Qbw", title:"Read Across America Day", subtitle:"Celebrate Books & Reading!", emoji:"📖", label:"Literacy", cat:"literacy", age:"prek k2" },
     { vid:"cTWsZngya9Q", title:"Snowman Parade!", subtitle:"Fun Winter Song for Kids", emoji:"⛄", label:"Seasonal", cat:"seasonal", age:"prek" },
