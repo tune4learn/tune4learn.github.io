@@ -784,7 +784,7 @@ document.addEventListener("DOMContentLoaded", function() {
     { vid:"a1KlR2jL4mY", title:"The Engineers Dance", subtitle:"World Engineering Day · Mar 4", emoji:"🛠️", label:"STEM", cat:"science", age:"k2", date:"Mar 4" },
     { vid:"-BRgbQrGc5s", title:"My Day, My Rights!", subtitle:"World Children's Day · Nov 20", emoji:"❤️", label:"Values", cat:"values", age:"k2", date:"Nov 20" },
     { vid:"smToX54V-lI", title:"We All Move Together", subtitle:"Inclusion & Diversity", emoji:"🤝", label:"Inclusion", cat:"inclusion", age:"prek k2" },
-    { vid:"HPO3FSgBE9c", title:"Wash Your Hands!", subtitle:"World Hand Hygiene Day · May 5", emoji:"💚", label:"Health", cat:"health", age:"prek k2", date:"May 5", new:true },
+    { vid:"HPO3FSgBE9c", title:"Wash Your Hands!", subtitle:"World Hand Hygiene Day · May 5", emoji:"💚", label:"Health", cat:"health", age:"prek k2", date:"May 5" },
     { vid:"8xI5c50MrEA", title:"Our Power, Our Planet", subtitle:"Earth Day Song · Apr 22", emoji:"🌍", label:"Earth Day", cat:"science", age:"prek k2", date:"Apr 22" },
     { vid:"foJWDSjK9kA", title:"Hello Earth Day", subtitle:"Earth Day · April 22", emoji:"🌍", label:"Nature", cat:"science", age:"prek k2", date:"Apr 22" },
     { vid:"Nrp-bJxOs8U", title:"Buzz Buzz Busy Bee!", subtitle:"World Bee Day · May 20", emoji:"🐝", label:"Nature", cat:"science", age:"prek k2", date:"May 20" },
@@ -828,32 +828,19 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!grid) return;
     const M = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
     const today = new Date();
-    const todayMonth = today.getMonth();
-    const todayDay = today.getDate();
-    // Sıralama için 2 anahtar döndürür: [grupSırası, ayIçiSırası]
-    // Grup 0 = bu ay, 1 = bir sonraki ay, ..., 11 = önceki ay (en uzak)
-    // Ay içi: yaklaşanlar önce (küçük pozitif sayı), geçmişler sonra (küçük negatif sayı → büyük değer)
+    const todayY = today.getFullYear();
+    const todayStart = new Date(todayY, today.getMonth(), today.getDate());
+    // Sıralama: önce yaklaşanlar (bugün dahil) yakından uzağa,
+    // sonra geçmiş günler bugüne yakından uzağa (Apr → Mar → Feb → ...)
     function getSortKey(dateStr) {
-      if (!dateStr) return [99, 99];  // tarihsiz videolar en sona
+      if (!dateStr) return [9999, 9999];  // tarihsiz videolar en sona
       const p = dateStr.split(" ");
       const vMonth = M[p[0]];
       const vDay = parseInt(p[1]);
-      // Ay grubu: bu aydan kaç ay sonra? (0-11 arası)
-      let monthOffset = vMonth - todayMonth;
-      if (monthOffset < 0) monthOffset += 12;
-      // Ay içi sıralama: bu aydaysa özel mantık, değilse tarih sırası
-      if (monthOffset === 0) {
-        // Bu ay: yaklaşanlar önce (tarih artarak), geçmişler sonra (bugüne yakın önce)
-        if (vDay >= todayDay) {
-          // Yaklaşan veya bugün: 0'dan başlayan pozitif sıra
-          return [0, vDay - todayDay];
-        } else {
-          // Geçmiş: 1000+ (yaklaşanlardan sonra), bugüne yakın önce
-          return [0, 1000 + (todayDay - vDay)];
-        }
-      }
-      // Diğer aylar: sadece ay içi tarih artışı
-      return [monthOffset, vDay];
+      const t = new Date(todayY, vMonth, vDay);
+      const diffDays = Math.round((t - todayStart) / 86400000);
+      if (diffDays >= 0) return [0, diffDays];
+      return [1, -diffDays];
     }
     const sorted = [...VIDEOS].sort((a,b) => {
       // NEW olanlar her zaman en başta
