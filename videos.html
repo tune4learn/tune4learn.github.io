@@ -722,7 +722,7 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="/cdn-cgi/l/email-protection#ebd4989e89818e889fd6bf9e858edfa78e8a9985ced9dbc6ced9dbae8f9e888a9f8284858a87ced9dbb884858c98cd89848f92d6a2ced9db8d849e858fced9db9f838298ced9db8c998e8a9fced9db998e98849e99888eced9db8d8499ced9db9f8e8a88838e9998ced9db8a858fced9db9b8a998e859f98d1ced9db839f9f9b98d1c4c49f9e858edf878e8a9985c5888486" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -730,7 +730,7 @@ footer{background:var(--dark);padding:4rem 4vw 2rem;}
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;
@@ -885,6 +885,23 @@ document.addEventListener("DOMContentLoaded", function() {
   // Google'ın video küçük resimleri ve zengin sonuçlar göstermesi için
   // ============================================
   (function injectVideoSchema(){
+    // ISO 8601 uploadDate: video'nun "date" alanından (örn. "Apr 22") + akıllı yıl
+    // Bugünden gelecekteki tarihler bir önceki yıl, geçmiş tarihler bu yıl varsayılır.
+    const MONTHS = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    function buildUploadDate(dateStr){
+      const m = (dateStr || "").match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2})/);
+      if (!m) return "2025-01-01T10:00:00+00:00";
+      const monthIdx = MONTHS[m[1]];
+      const day = parseInt(m[2], 10);
+      const today = new Date();
+      const todayY = today.getFullYear();
+      // Bu yılın aynı ay/günü bugünden sonraysa, geçen yıl yüklenmiş varsay
+      const candidate = new Date(todayY, monthIdx, day);
+      const year = (candidate > today) ? (todayY - 1) : todayY;
+      const mm = String(monthIdx + 1).padStart(2, '0');
+      const dd = String(day).padStart(2, '0');
+      return year + "-" + mm + "-" + dd + "T10:00:00+00:00";
+    }
     const items = VIDEOS.map((v, i) => ({
       "@type": "ListItem",
       "position": i + 1,
@@ -896,7 +913,7 @@ document.addEventListener("DOMContentLoaded", function() {
           "https://i.ytimg.com/vi/" + v.vid + "/hqdefault.jpg",
           "https://i.ytimg.com/vi/" + v.vid + "/maxresdefault.jpg"
         ],
-        "uploadDate": "2025-01-01",
+        "uploadDate": buildUploadDate(v.date),
         "contentUrl": "https://www.youtube.com/watch?v=" + v.vid,
         "embedUrl": "https://www.youtube.com/embed/" + v.vid,
         "publisher": {
