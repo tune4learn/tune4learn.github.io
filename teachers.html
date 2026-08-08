@@ -536,6 +536,12 @@ const PREVIEW_IDS = {
 };
 
 const PACKS = [
+  { title:"Back to School Math Fun 🆕", emoji:"🔢", cat:"math", label:"Math", age:"Pre-K · K–2", subtitle:"Back to School Week · EN + ES", pin:true, vid:"WfCNdKO7QdA",
+    drive:"https://drive.google.com/drive/folders/1o17S_wNSdfQBt0ClfEFMi404J7zwNO8J",
+    extra:[
+      {label:"Activity Books (EN + ES)", url:"https://drive.google.com/drive/folders/1o17S_wNSdfQBt0ClfEFMi404J7zwNO8J"}
+    ]
+  },
   { title:"Goal! Soccer Champions 🆕", emoji:"⚽", cat:"seasonal", label:"Sports", age:"Pre-K · K–2", subtitle:"Soccer Celebration · Summer 2026", pin:true, vid:"F0mTCTG1dBM",
     drive:"https://drive.google.com/uc?export=download&id=19ltXbNdWL522K7yL2PdgTe9g7PKhhKLj",
     extra:[
@@ -663,6 +669,9 @@ function renderPacks() {
       if (p.extra) {
         // Birden fazla dosya — her biri için ayrı buton
         packBtns = p.extra.map(function(e) {
+          if (e.url) {
+            return `<a href="${e.url}" target="_blank" rel="noopener noreferrer" class="pack-btn" style="font-size:0.75rem;">📁 ${e.label}</a>`;
+          }
           return `<button onclick="openPdfModal('${e.label}', '${e.previewId}')" class="pack-btn" style="border:none;cursor:pointer;font-size:0.75rem;">👁 ${e.label}</button>`;
         }).join('');
       } else if (previewId) {
@@ -1043,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
       <div class="support-share-row">
         <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="/cdn-cgi/l/email-protection#dbe4a8aeb9b1beb8afe68faeb5beef97bebaa9b5fee9ebf6fee9eb9ebfaeb8baafb2b4b5bab7fee9eb88b4b5bca8fdb9b4bfa2e692fee9ebbdb4aeb5bffee9ebafb3b2a8fee9ebbca9bebaaffee9eba9bea8b4aea9b8befee9ebbdb4a9fee9ebafbebab8b3bea9a8fee9ebbab5bffee9ebabbaa9beb5afa8e1fee9ebb3afafaba8e1f4f4afaeb5beefb7bebaa9b5f5b8b4b6" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
+        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
         <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
       </div>
     </div>
@@ -1051,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 function copyT4LLink(btn) {
   const url = 'https://tune4learn.com';
   const original = btn.innerHTML;
