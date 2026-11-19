@@ -107,9 +107,49 @@
       <span class="k-thumb"><img src="${thumb(v.id)}" width="320" height="180" alt="" loading="lazy">${badge}<span class="k-play" aria-hidden="true"></span></span>
       <span class="k-title">${esc(v.t)}</span></button></li>`;
   }
-  const songs = S.VIDEOS.filter(v => v.series === 'routines' || v.series === 'songs');
-  $('#songsGrid').innerHTML = songs.slice(0, 8).map(v => card(v)).join('');
-  $('#mathGrid').innerHTML = S.VIDEOS.filter(v => v.series === 'math').map(v => card(v)).join('');
+  /* songs by topic (each topic led by its character, Ben Tıkır style) */
+  const TOPICS = [
+    { k: 'all', who: 't4l', label: 'All', test: () => true },
+    { k: 'day', who: 'timza', label: 'My Day', test: v => v.series === 'routines' || v.cat === 'health' },
+    { k: 'num', who: 'clacka', label: 'Numbers', test: v => v.cat === 'math' },
+    { k: 'sci', who: 'labba', label: 'Science', test: v => v.cat === 'science' },
+    { k: 'feel', who: 'hugza', label: 'Feelings', test: v => (v.cat === 'values' && v.series !== 'routines') || v.cat === 'inclusion' },
+    { k: 'move', who: 'jigla', label: 'Move & Dance', test: v => v.cat === 'seasonal' },
+    { k: 'read', who: 'abza', label: 'Read & Art', test: v => v.cat === 'literacy' || v.cat === 'art' }
+  ];
+  const ORDER = { routines: 0, songs: 1, math: 2, days: 3 };
+  const songs = S.VIDEOS.slice().sort((a, b) => (ORDER[a.series] ?? 9) - (ORDER[b.series] ?? 9));
+  const face = who => who === 't4l' ? 'assets/t4l/t4l_face.webp' : `assets/cast/${who}_face.webp`;
+  $('#topics').innerHTML = TOPICS.map((t, i) => `<button class="k-topic" type="button" role="tab" data-topic="${t.k}" data-who="${t.who}" aria-selected="${i === 0}">
+      <span class="k-tface"><img src="${face(t.who)}" alt="" loading="lazy"></span><span class="k-tl">${esc(t.label)}</span></button>`).join('');
+  function showTopic(k) {
+    const t = TOPICS.find(x => x.k === k) || TOPICS[0];
+    document.querySelectorAll('.k-topic').forEach(b => b.setAttribute('aria-selected', b.dataset.topic === t.k));
+    const row = $('#songsRow'); row.innerHTML = songs.filter(t.test).map(v => card(v)).join(''); row.scrollLeft = 0; if (typeof arrows === 'function') setTimeout(arrows, 50);
+  }
+  $('#topics').addEventListener('click', e => { const b = e.target.closest('.k-topic'); if (b) showTopic(b.dataset.topic); });
+  showTopic('all');
+
+  /* cartoons: fill S.CARTOONS with {id, t} when episodes are ready */
+  const CART = S.CARTOONS || [];
+  $('#cartoonsRow').innerHTML = CART.length ? CART.map(v => card(v)).join('')
+    : `<li class="k-cwide"><div class="k-soonbox"><div class="k-soonpals">${['clacka', 'labba', 'hugza'].map(w => `<img src="assets/cast/${w}_sevinc.webp" alt="" loading="lazy">`).join('')}<img class="k-soont4l" src="assets/t4l/t4l_logo.webp" alt="" loading="lazy">${['jigla', 'abza', 'timza'].map(w => `<img src="assets/cast/${w}_sevinc.webp" alt="" loading="lazy">`).join('')}</div>
+      <p><b>T4L &amp; Friends cartoons</b><span>Coming soon!</span></p></div></li>`;
+
+  /* row arrows: shown only when the row can scroll that way */
+  document.querySelectorAll('.k-rarr').forEach(b => b.addEventListener('click', () => {
+    const r = document.getElementById(b.dataset.row); if (!r) return;
+    r.scrollBy({ left: (b.classList.contains('k-rl') ? -1 : 1) * Math.max(260, r.clientWidth * 0.8), behavior: 'smooth' });
+  }));
+  function arrows() {
+    document.querySelectorAll('.k-row').forEach(r => {
+      const w = r.parentElement, max = r.scrollWidth - r.clientWidth - 4;
+      w.querySelector('.k-rl').hidden = r.scrollLeft <= 4;
+      w.querySelector('.k-rr').hidden = r.scrollLeft >= max;
+    });
+  }
+  document.querySelectorAll('.k-row').forEach(r => r.addEventListener('scroll', arrows, { passive: true }));
+  addEventListener('resize', arrows); setTimeout(arrows, 300); arrows();
 
   /* special days: upcoming first */
   const today = new Date(); today.setHours(0, 0, 0, 0);
@@ -120,7 +160,7 @@
     return diff;
   }
   const days = S.VIDEOS.filter(v => v.date).map(v => ({ v, d: daysAway(v.date) })).sort((a, b) => a.d - b.d);
-  $('#daysGrid').innerHTML = days.slice(0, 6).map(x => card(x.v, { date: true })).join('');
+  $('#daysRow').innerHTML = days.map(x => card(x.v, { date: true })).join('');
   const near = days.find(x => x.d >= -1 && x.d <= 6);
   if (near) {
     const t = $('#today'), when = near.d === 0 ? 'Today' : near.d === 1 ? 'Tomorrow' : near.d < 0 ? 'Yesterday' : near.v.date;
@@ -131,7 +171,6 @@
   /* ---------- shelves ---------- */
   const shelf = $('#shelf');
   const SHELVES = {
-    songs: { t: 'All songs', who: 'jigla', c: '#F58A82', list: () => songs.map(v => card(v)) },
     days: { t: 'All special days', who: 'hugza', c: '#F9B7D3', list: () => days.map(x => card(x.v, { date: true })) }
   };
   document.querySelectorAll('[data-shelf]').forEach(b => b.addEventListener('click', () => {
