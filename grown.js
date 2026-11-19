@@ -92,11 +92,12 @@
 
   /* ---------- free printables ---------- */
   $('#featured').innerHTML = (S.FEATURED || []).map(f => `<li class="feat"><span class="ic">${esc(f.e)}</span><div>
-      <span class="free-badge">FREE on TPT</span><h3>${esc(f.t)}</h3><p>${esc(f.s)}</p>
-      <div class="acts"><a class="btn btn-red btn-sm" href="${esc(f.url || S.TPT)}" target="_blank" rel="noopener">Get it free</a>
+      <span class="free-badge">FREE</span><h3>${esc(f.t)}</h3><p>${esc(f.s)}</p>
+      <div class="acts">${f.files ? fileBtns(f.files) : ''}<a class="btn btn-red btn-sm" href="${esc(f.url || S.TPT)}" target="_blank" rel="noopener">Get it free on TPT</a>
       ${f.vid ? `<button class="btn btn-ink btn-sm" type="button" data-vid="${esc(f.vid)}" data-t="${esc(f.t)}">▶ Song</button>` : ''}</div></div></li>`).join('');
 
-  const packs = (S.PACKS || []).filter(p => p.files);
+  const featVids = (S.FEATURED || []).map(f => f.vid);
+  const packs = (S.PACKS || []).filter(p => p.files && !featVids.includes(p.vid));
   const pc = $('#pChips');
   const P_SUBJ = [['', 'All'], ['math', 'Math'], ['science', 'Science'], ['values', 'Values'], ['seasonal', 'Seasons & Fun']];
   pc.innerHTML = P_SUBJ.map(([k, l]) => `<button class="chip" type="button" data-k="${k}" aria-pressed="${k === ''}">${l}</button>`).join('');

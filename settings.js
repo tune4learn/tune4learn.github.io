@@ -23,7 +23,9 @@ window.T4L = {
 
   /* Featured free TPT products (shown at the top of Free Printables). */
   FEATURED: [
-    { t:"World Children's Day FREE Bundle", s:"97 pages · use it with the song My Day, My Rights, My Future!, without it, or both", e:"🌍", vid:"urN70lClFOI", url:"" }
+    { t:"World Children's Day FREE Bundle", s:"97 pages for Pre-K to Grade 2 · Part 1 goes with the song My Day, My Rights, My Future!, Part 2 works without it", e:"🌍", vid:"urN70lClFOI",
+      url:"https://www.teacherspayteachers.com/Product/FREE-World-Childrens-Day-Activities-Song-Bundle-Childrens-Rights-PreK-2-18420709",
+      files:[{ id:"1V7D4kQkYRvfQ81rKeZEu_98pvs8DzqLY", label:"Part 1 · Song Kit" }, { id:"1hPiiEfQ1coOM9AkN95e7I9j8d4zCKk5_", label:"Part 2 · Activity Pack" }] }
   ],
 
   /* character voices: file n plays with line n of that character (kids.js LINES) */
@@ -107,6 +109,7 @@ window.T4L = {
   ],
 
   PACKS: [
+    {"t": "World Children's Day FREE Bundle", "e": "🌍", "cat": "values", "label": "Values", "age": "Pre-K · K · Gr 1–2", "s": "Nov 20 · My Day, My Rights, My Future!", "vid": "urN70lClFOI", "files": [{"id": "1V7D4kQkYRvfQ81rKeZEu_98pvs8DzqLY", "label": "Part 1 · Song Kit"}, {"id": "1hPiiEfQ1coOM9AkN95e7I9j8d4zCKk5_", "label": "Part 2 · Activity Pack"}]},
     {"t": "What's the Weather?", "e": "☀️", "cat": "values", "label": "SEL", "age": "Pre-K · K–2", "s": "Classroom Routine · Look Outside Song · Weather & Seasons Circle Time", "vid": "L2FuS6K9W30"},
     {"t": "Are You Here?", "e": "🙋", "cat": "values", "label": "SEL", "age": "Pre-K · K–2", "s": "Classroom Routine · Morning Attendance Song · Count Your Friends", "vid": "hmRgj73ulZQ"},
     {"t": "How Are You Feeling?", "e": "💛", "cat": "values", "label": "SEL", "age": "Pre-K · K–2", "s": "Classroom Routine · Feelings Check-In Song · Calm Down Strategies", "vid": "SMF7CvnOzKg"},
