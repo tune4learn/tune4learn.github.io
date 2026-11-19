@@ -1,1177 +1,202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="google-site-verification" content="AOgua7hyE2HhpsE_xLOZ-EpkVnEpRsf8wqdqk8Sj-CQ">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Tune4Learn — Where Learning Sings</title>
-<meta name="description" content="Educational songs and animated videos for children ages 3–8. Learn numbers, letters, science and values through joyful music — plus free coloring pages and maze puzzles.">
-<meta name="keywords" content="educational songs, kids videos, learning songs, preschool music, kindergarten, ABC songs, number songs, Tune4Learn, kids coloring pages, math mazes">
-<meta name="author" content="Tune4Learn">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tune4Learn | Learning songs, games and special days for kids</title>
+<meta name="description" content="Tune4Learn: learning songs for Pre-K to Grade 2. Sing, move and play with T4L: math songs, classroom routines, special days, mazes and coloring.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tune4Learn · Where Learning Sings">
+<meta property="og:description" content="Learning songs, games and special days for Pre-K to Grade 2.">
+<meta property="og:url" content="https://tune4learn.com/">
+<meta property="og:image" content="https://tune4learn.com/assets/og-default.png">
 <meta name="theme-color" content="#23BFEF">
 <link rel="canonical" href="https://tune4learn.com/">
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="Tune4Learn — Where Learning Sings">
-<meta property="og:description" content="Educational songs and animated videos for children ages 3–8. Learn through the power of music.">
-<meta property="og:url" content="https://tune4learn.com/">
-<meta property="og:site_name" content="Tune4Learn">
-<meta property="og:image" content="https://tune4learn.com/assets/og-default.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Tune4Learn — Where Learning Sings">
-<meta name="twitter:description" content="Educational songs and animated videos for children ages 3–8. Learn through music.">
-<meta name="twitter:image" content="https://tune4learn.com/assets/og-default.png">
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="assets/t4l-apple-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root {
-  --sky:#23BFEF; --sun:#FFD93D; --red:#FF4757;
-  --green:#2ED573; --purple:#9B59B6; --orange:#FF6B35;
-  --dark:#1E2A3A; --text:#2C3E50; --muted:#7F8C8D; --offwhite:#F7F9FC;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'Nunito',sans-serif;background:var(--offwhite);color:var(--text);overflow-x:hidden;}
-
-/* ── NAVBAR ── */
-.navbar{position:fixed;top:0;left:0;right:0;z-index:999;height:70px;display:flex;align-items:center;padding:0 4vw;gap:2rem;transition:background 0.3s,box-shadow 0.3s;}.navbar.scrolled{background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);box-shadow:0 2px 20px rgba(0,0,0,0.08);}
-.navbar.scrolled{background:rgba(255,255,255,0.96);backdrop-filter:blur(16px);box-shadow:0 2px 20px rgba(0,0,0,0.08);}
-.nav-logo img{height:44px;width:auto;filter:drop-shadow(0 2px 10px rgba(0,0,0,0.25));}
-.nav-links{display:flex;align-items:center;gap:4px;list-style:none;margin-left:auto;}
-.nav-links a{text-decoration:none;color:#1a2e44;font-weight:900;font-size:0.88rem;padding:8px 14px;border-radius:30px;transition:all 0.2s;text-shadow:0 1px 0 rgba(255,255,255,0.9);}
-.navbar.scrolled .nav-links a{color:var(--text);text-shadow:none;}
-.nav-links a:hover{background:rgba(255,255,255,0.25);}
-.navbar.scrolled .nav-links a:hover{background:var(--offwhite);color:var(--sky);}
-.nav-cta{background:var(--red)!important;color:#fff!important;text-shadow:none!important;box-shadow:0 4px 16px rgba(255,71,87,0.4);}
-
-/* ── HERO ── */
-.hero{
-  position:relative;width:100vw;height:100vh;min-height:620px;overflow:hidden;
-  /* Sky gradient */
-  background:linear-gradient(150deg,#A8D8F0 0%,#C5EAFA 20%,#DDF5FB 40%,#EAF9E8 65%,#C4EFA0 85%,#A0E070 100%);
-}
-
-/* Clouds */
-.cloud{position:absolute;z-index:1;pointer-events:none;}
-.cloud svg{width:100%;height:auto;fill:white;opacity:0.8;}
-.cl1{top:5%;left:32%;width:220px;animation:drift 60s ease-in-out infinite;}
-.cl2{top:14%;right:3%;width:170px;animation:drift 75s ease-in-out infinite reverse;opacity:0.55;}
-.cl3{top:2%;left:55%;width:150px;animation:drift 90s ease-in-out infinite;opacity:0.5;}
-@keyframes drift{0%,100%{transform:translateX(0)}50%{transform:translateX(32px)}}
-
-/* Rainbow */
-.rainbow{position:absolute;z-index:1;top:8%;right:1%;width:320px;height:160px;overflow:hidden;opacity:0.55;border-radius:160px 160px 0 0;}
-.ra{position:absolute;bottom:0;left:50%;transform:translateX(-50%);border-radius:50%;border-style:solid;border-color:transparent;}
-.ra1{width:320px;height:320px;border-top-color:#FF6B6B;border-width:18px;}
-.ra2{width:284px;height:284px;border-top-color:#FFA94D;border-width:18px;bottom:18px;}
-.ra3{width:248px;height:248px;border-top-color:#FFD93D;border-width:18px;bottom:36px;}
-.ra4{width:212px;height:212px;border-top-color:#51CF66;border-width:18px;bottom:54px;}
-.ra5{width:176px;height:176px;border-top-color:#339AF0;border-width:18px;bottom:72px;}
-.ra6{width:140px;height:140px;border-top-color:#CC5DE8;border-width:18px;bottom:90px;}
-
-/* Deco floaters */
-.deco{position:absolute;z-index:2;pointer-events:none;animation:decoFloat 4s ease-in-out infinite;font-size:1.5rem;opacity:0.85;}
-.de1{top:10%;left:32%;color:#FF4757;animation-delay:0s;}
-.de2{top:18%;left:42%;font-size:1.1rem;color:#FFD93D;animation-delay:1s;}
-.de3{top:7%; left:50%;color:#2ED573;font-size:1.2rem;animation-delay:2s;}
-.de4{top:13%;right:20%;animation-delay:0.5s;font-size:1.1rem;}
-@keyframes decoFloat{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-14px) rotate(6deg)}}
-
-/* Ground */
-.ground{position:absolute;bottom:0;left:0;right:0;z-index:2;height:130px;background:linear-gradient(180deg,#8FD46A 0%,#6CC044 55%,#52A830 100%);border-radius:65% 65% 0 0/25% 25% 0 0;}
-.flower{position:absolute;z-index:3;font-size:1.3rem;animation:sway 4s ease-in-out infinite;}
-.fl1{bottom:65px;left:32%;animation-delay:0s;}
-.fl2{bottom:58px;left:37%;font-size:1rem;animation-delay:.5s;}
-.fl3{bottom:68px;right:4%;animation-delay:1s;}
-.fl4{bottom:60px;right:10%;font-size:1.1rem;animation-delay:.3s;}
-@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
-
-/* ── MASCOT — Sol taraf ── */
-.hero-mascot{
-  position:absolute;
-  left:3%;
-  bottom:12%;
-  z-index:3;
-  width:clamp(260px,36vw,500px);
-  height:auto;
-  pointer-events:none;
-  filter:drop-shadow(0 8px 24px rgba(0,0,0,0.12));
-  animation:mascotFloat 3.8s ease-in-out infinite;
-}
-@keyframes mascotFloat{
-  0%,100%{transform:translateY(0) rotate(-1deg);}
-  50%{transform:translateY(-18px) rotate(1deg);}
-}
-
-/* ── TEXT — Right half ── */
-.hero-text{
-  position:absolute;
-  right:0;top:0;
-  width:50%;height:100%;
-  z-index:5;
-  display:flex;flex-direction:column;
-  justify-content:center;
-  padding:80px 5vw 120px 1vw;
-}
-.hero-eyebrow{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,0.72);
-  border:1.5px solid rgba(35,191,239,0.3);
-  color:#006699;font-weight:900;font-size:0.74rem;
-  text-transform:uppercase;letter-spacing:2px;
-  padding:6px 16px;border-radius:30px;
-  margin-bottom:1.4rem;backdrop-filter:blur(8px);width:fit-content;
-  animation:fadeUp 0.5s ease both;
-}
-.hero-title{
-  font-family:'Fredoka One',cursive;
-  font-size:clamp(3rem,5vw,5rem);
-  line-height:1.0;margin-bottom:1.2rem;
-  animation:fadeUp 0.6s 0.08s ease both;
-  filter:drop-shadow(0 2px 8px rgba(255,255,255,0.7));
-}
-.ht1{display:block;color:#E63329;}
-.ht2{display:block;color:#1a7a00;}
-.ht3{display:block;color:#0066aa;}
-
-.hero-sub{
-  font-size:1.05rem;font-weight:700;color:#2C3E50;line-height:1.75;
-  max-width:370px;margin-bottom:2.2rem;
-  animation:fadeUp 0.6s 0.15s ease both;
-  background:rgba(255,255,255,0.6);padding:10px 16px;
-  border-radius:14px;backdrop-filter:blur(6px);
-}
-.hero-btns{display:flex;flex-direction:column;gap:12px;animation:fadeUp 0.6s 0.22s ease both;}
-.cta-btn{
-  display:inline-flex;align-items:center;gap:12px;
-  padding:15px 32px;border-radius:60px;
-  font-family:'Fredoka One',cursive;font-size:1.2rem;
-  text-decoration:none;border:none;cursor:pointer;
-  transition:transform 0.18s,box-shadow 0.18s;
-  white-space:nowrap;width:fit-content;
-  box-shadow:0 6px 0 rgba(0,0,0,0.2),0 10px 28px rgba(0,0,0,0.14);
-}
-.cta-btn:hover{transform:translateY(-4px);box-shadow:0 10px 0 rgba(0,0,0,0.2),0 18px 36px rgba(0,0,0,0.2);}
-.cta-btn:active{transform:translateY(2px);box-shadow:0 3px 0 rgba(0,0,0,0.18);}
-.cb-blue  {background:#2196F3;color:white;}
-.cb-green {background:#43A840;color:white;}
-.cb-yellow{background:#FFC107;color:#1E2A3A;}
-
-.scroll-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:0.7rem;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:rgba(30,42,58,0.38);animation:hintBounce 2.5s ease-in-out infinite;}
-@keyframes hintBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(5px)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-
-/* ── REST OF PAGE (unchanged) ── */
-.platform-bar{background:var(--dark);padding:13px 4vw;display:flex;align-items:center;overflow:hidden;}
-.pb-label{color:rgba(255,255,255,0.3);font-size:0.68rem;font-weight:900;text-transform:uppercase;letter-spacing:2.5px;white-space:nowrap;padding-right:2rem;flex-shrink:0;}
-.pb-track{display:flex;gap:3rem;width:max-content;animation:ticker 24s linear infinite;}
-.pb-item{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,0.5);font-weight:800;font-size:0.82rem;white-space:nowrap;}
-.pb-sep{width:4px;height:4px;border-radius:50%;background:var(--sun);flex-shrink:0;}
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-.sec{padding:5.5rem 4vw;}.sec-inner{max-width:1280px;margin:0 auto;}
-.sec-label{font-size:0.7rem;font-weight:900;text-transform:uppercase;letter-spacing:3px;color:var(--sky);margin-bottom:0.5rem;}
-.sec-title{font-family:'Fredoka One',cursive;font-size:clamp(2rem,3.5vw,2.8rem);color:var(--text);margin-bottom:0.5rem;}
-.sec-sub{font-size:0.97rem;color:var(--muted);font-weight:600;line-height:1.7;max-width:560px;}
-.row-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:2rem;}
-.see-all{display:inline-flex;align-items:center;gap:5px;font-weight:900;font-size:0.85rem;color:var(--sky);text-decoration:none;transition:gap 0.2s;flex-shrink:0;margin-left:1rem;}
-.see-all:hover{gap:9px;}
-.h-scroll{display:flex;gap:1.2rem;overflow-x:auto;padding-bottom:1rem;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.h-scroll::-webkit-scrollbar{display:none;}.h-scroll>*{flex-shrink:0;scroll-snap-align:start;}
-.vid-card{width:268px;border-radius:18px;overflow:hidden;text-decoration:none;color:var(--text);background:white;box-shadow:0 4px 20px rgba(0,0,0,0.08);transition:transform 0.25s,box-shadow 0.25s;}
-.vid-card:hover{transform:translateY(-7px) scale(1.02);box-shadow:0 18px 48px rgba(0,0,0,0.14);}
-.vid-thumb{aspect-ratio:16/9;position:relative;display:flex;align-items:center;justify-content:center;font-size:3.5rem;overflow:hidden;}
-.vid-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;align-items:center;justify-content:center;transition:background 0.25s;}
-.vid-card:hover .vid-overlay{background:rgba(0,0,0,0.2);}
-.play-btn{width:52px;height:52px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:1.1rem;opacity:0;transform:scale(0.5);transition:all 0.25s;box-shadow:0 4px 16px rgba(0,0,0,0.2);}
-.vid-card:hover .play-btn{opacity:1;transform:scale(1);}
-.vid-tag{position:absolute;top:10px;left:10px;font-size:0.65rem;font-weight:900;padding:3px 10px;border-radius:30px;text-transform:uppercase;letter-spacing:1px;backdrop-filter:blur(8px);}
-.vid-info{padding:1.1rem 1.2rem;}.vid-info h4{font-size:0.9rem;font-weight:800;line-height:1.4;margin-bottom:0.3rem;}.vid-info p{font-size:0.75rem;color:var(--muted);font-weight:600;}
-.cat-chip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;width:148px;aspect-ratio:1;border-radius:22px;cursor:pointer;text-decoration:none;color:var(--text);transition:transform 0.25s,box-shadow 0.25s;box-shadow:0 4px 16px rgba(0,0,0,0.07);}
-.cat-chip:hover{transform:translateY(-6px) scale(1.05);box-shadow:0 16px 36px rgba(0,0,0,0.13);}.cat-chip span{font-size:2.8rem;}.cat-chip h4{font-size:0.82rem;font-weight:900;text-align:center;}
-.day-card{width:196px;background:white;border-radius:18px;padding:1.3rem;box-shadow:0 4px 20px rgba(0,0,0,0.07);border:1.5px solid rgba(0,0,0,0.05);transition:transform 0.25s,box-shadow 0.25s;}
-.day-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,0.12);}.day-date{font-size:0.66rem;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;color:var(--red);margin-bottom:0.5rem;}.day-emoji{font-size:2.2rem;display:block;margin-bottom:0.5rem;}.day-card h4{font-size:0.87rem;font-weight:800;line-height:1.35;margin-bottom:0.3rem;}.day-card p{font-size:0.74rem;color:var(--muted);font-weight:600;}.day-pill{display:inline-block;margin-top:0.6rem;font-size:0.65rem;font-weight:900;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;}.dp-new{background:#d4ffd4;color:#1a8a1a;}.dp-soon{background:#fff3cd;color:#856404;}
-.teachers-bg{background:linear-gradient(135deg,#1E2A3A 0%,#0f1e30 100%);padding:5.5rem 4vw;}.teachers-inner{max-width:1280px;margin:0 auto;}.teachers-bg .sec-label{color:var(--sun);}.teachers-bg .sec-title{color:white;}.teachers-bg .sec-sub{color:rgba(255,255,255,0.55);}
-.t-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-top:2.5rem;}
-.t-card{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;color:white;display:flex;flex-direction:column;gap:0.7rem;transition:all 0.25s;position:relative;overflow:hidden;}
-.t-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transform:scaleX(0);transition:transform 0.3s;}
-.tc1::before{background:linear-gradient(90deg,var(--sky),var(--green));}.tc2::before{background:linear-gradient(90deg,var(--sun),var(--orange));}.tc3::before{background:linear-gradient(90deg,var(--green),var(--sky));}.tc4::before{background:linear-gradient(90deg,var(--red),var(--purple));}
-.t-card:hover::before{transform:scaleX(1);}.t-card:hover{background:rgba(255,255,255,0.1);transform:translateY(-5px);}.t-icon{font-size:2.6rem;}.t-card h3{font-size:1.1rem;font-weight:900;}.t-card p{font-size:0.88rem;color:rgba(255,255,255,0.6);line-height:1.7;flex:1;font-weight:600;}
-.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.2rem;}
-.res-card{background:white;border:1.5px solid rgba(0,0,0,0.06);border-radius:18px;padding:1.5rem;text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:0.5rem;box-shadow:0 4px 18px rgba(0,0,0,0.06);transition:all 0.25s;}.res-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,0.11);}.res-emoji{font-size:2rem;}.res-card h4{font-size:0.92rem;font-weight:800;line-height:1.3;}.res-card p{font-size:0.76rem;color:var(--muted);font-weight:600;}.res-pill{display:inline-block;font-size:0.66rem;font-weight:900;padding:3px 10px;border-radius:20px;width:fit-content;text-transform:uppercase;letter-spacing:1px;}.rp-free{background:#d4ffd4;color:#1a8a1a;}.rp-paid{background:#ddeeff;color:#1a55aa;}
-.research-bg{background:linear-gradient(135deg,#F0FFF8 0%,#E8F4FF 100%);padding:5.5rem 4vw;}.research-inner{max-width:1280px;margin:0 auto;}
-.r-layout{display:grid;grid-template-columns:1fr 360px;gap:3rem;align-items:start;margin-top:2.5rem;}.r-stack{display:flex;flex-direction:column;gap:1rem;}
-.r-card{background:white;border-radius:18px;padding:1.6rem;border:1.5px solid rgba(0,0,0,0.06);box-shadow:0 4px 18px rgba(0,0,0,0.06);transition:all 0.25s;cursor:pointer;}.r-card:hover{transform:translateX(6px);box-shadow:0 10px 32px rgba(0,0,0,0.1);}
-.r-tag{display:inline-block;font-size:0.66rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:20px;margin-bottom:0.7rem;}.rt1{background:rgba(35,191,239,0.15);color:#0077aa;}.rt2{background:rgba(255,217,61,0.3);color:#8a6000;}.rt3{background:rgba(46,213,115,0.2);color:#1a7a3a;}
-.r-card h4{font-size:0.97rem;font-weight:800;line-height:1.45;margin-bottom:0.4rem;}.r-card p{font-size:0.82rem;color:var(--muted);line-height:1.65;font-weight:600;}.r-meta{font-size:0.7rem;color:#bbb;margin-top:0.6rem;font-weight:700;}
-.r-sidebar{background:white;border-radius:22px;padding:2rem;border:1.5px solid rgba(0,0,0,0.07);box-shadow:0 8px 32px rgba(0,0,0,0.08);position:sticky;top:90px;}.r-sidebar h3{font-family:'Fredoka One',cursive;font-size:1.4rem;margin-bottom:0.8rem;line-height:1.3;}.r-sidebar p{font-size:0.87rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem;font-weight:600;}.r-list{list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem;}.r-list li{display:flex;align-items:center;gap:9px;font-size:0.87rem;font-weight:700;}.r-list li::before{content:"✦";color:var(--sun);font-size:0.7rem;}
-.nl-wrap{background:linear-gradient(135deg,var(--sky) 0%,#0099cc 50%,var(--purple) 100%);padding:5.5rem 4vw;position:relative;overflow:hidden;}.nl-wrap::before{content:'🎵';position:absolute;top:30px;left:5%;font-size:5rem;opacity:0.1;}.nl-wrap::after{content:'🎶';position:absolute;bottom:30px;right:5%;font-size:5rem;opacity:0.1;}
-.nl-box{max-width:680px;margin:0 auto;text-align:center;position:relative;z-index:1;}.nl-box h2{font-family:'Fredoka One',cursive;font-size:2.6rem;color:white;margin-bottom:0.8rem;}.nl-box p{color:rgba(255,255,255,0.85);font-size:1.05rem;margin-bottom:2rem;font-weight:600;}
-.nl-checks{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.8rem;}.nl-check{display:flex;align-items:center;gap:6px;color:white;font-size:0.88rem;font-weight:800;cursor:pointer;}.nl-check input{width:16px;height:16px;accent-color:white;}
-.nl-form{display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap;}.nl-input{padding:1rem 1.6rem;border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-size:0.97rem;font-weight:700;width:290px;max-width:100%;outline:none;}.nl-submit{padding:1rem 2rem;background:var(--dark);color:white;border:none;border-radius:50px;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;transition:transform 0.2s;white-space:nowrap;}.nl-submit:hover{transform:scale(1.05);}
-.blog-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.4rem;}
-.blog-card{background:white;border:1.5px solid rgba(0,0,0,0.06);border-radius:20px;overflow:hidden;text-decoration:none;color:var(--text);box-shadow:0 4px 18px rgba(0,0,0,0.06);transition:all 0.25s;display:flex;flex-direction:column;}.blog-card:hover{transform:translateY(-6px);box-shadow:0 18px 46px rgba(0,0,0,0.12);}.blog-accent{height:5px;}.blog-body{padding:1.5rem;flex:1;}.blog-label{display:inline-block;font-size:0.66rem;font-weight:900;padding:3px 10px;border-radius:20px;margin-bottom:0.7rem;text-transform:uppercase;letter-spacing:1px;}.blog-card h3{font-size:1rem;font-weight:800;line-height:1.5;}.blog-foot{padding:1rem 1.5rem;border-top:1.5px solid rgba(0,0,0,0.05);display:flex;justify-content:space-between;align-items:center;}.blog-date{font-size:0.74rem;color:var(--muted);font-weight:700;}.blog-read{font-size:0.78rem;font-weight:900;color:var(--sky);}
-footer{background:var(--dark);padding:5rem 4vw 2.5rem;}.footer-inner{max-width:1280px;margin:0 auto;}.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3.5rem;}.footer-logo{height:50px;margin-bottom:1.2rem;}.footer-brand,.footer-brand p{color:rgba(255,255,255,0.75);font-size:0.92rem;line-height:1.7;font-weight:600;max-width:34ch;}.soc-row{display:flex;gap:0.6rem;margin-top:1.2rem;}.soc-btn{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:0.95rem;transition:all 0.2s;border:1px solid rgba(255,255,255,0.1);}.soc-btn:hover{background:rgba(255,255,255,0.16);transform:translateY(-2px);}.footer-col h5{font-size:0.68rem;font-weight:900;text-transform:uppercase;letter-spacing:2.5px;color:var(--sun);margin-bottom:1.2rem;}.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.65rem;}.footer-col a{color:rgba(255,255,255,0.45);text-decoration:none;font-size:0.86rem;font-weight:700;transition:color 0.2s;}.footer-col a:hover{color:white;}.footer-bottom{border-top:1px solid rgba(255,255,255,0.07);padding-top:1.5rem;text-align:center;color:rgba(255,255,255,0.2);font-size:0.8rem;font-weight:700;}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:900;font-size:0.95rem;text-decoration:none;border:none;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;line-height:1;}.btn:hover{transform:translateY(-3px);}.btn-sky{background:var(--sky);color:white;box-shadow:0 8px 24px rgba(35,191,239,0.4);}.btn-sun{background:var(--sun);color:var(--dark);box-shadow:0 8px 24px rgba(255,217,61,0.4);}.btn-dark{background:var(--dark);color:white;box-shadow:0 8px 24px rgba(0,0,0,0.2);}
-
-.teaser-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-top:2rem;}
-.teaser-grid .t-card{text-decoration:none;color:white;}
-.t-link{font-size:0.82rem;font-weight:900;color:var(--sun);margin-top:auto;}
-.aos{opacity:1;transform:translateY(0);}
-@media(max-width:1024px){
-  /* ── TABLET breakpoint (768–1024px) — DİKEY düzen ── */
-  .hero{
-    height:auto!important;min-height:0!important;
-    padding:90px 0 0!important;
-    display:flex!important;flex-direction:column!important;
-  }
-  .hero-text{
-    position:static!important;
-    width:100%!important;height:auto!important;
-    padding:10px 6vw 20px!important;
-    align-items:center!important;
-    text-align:center!important;
-  }
-  .hero-eyebrow{margin:0 auto 1rem;}
-  .hero-title{font-size:clamp(2.6rem,6vw,4rem)!important;text-align:center!important;}
-  .hero-sub{font-size:1rem;max-width:520px;margin-left:auto;margin-right:auto;text-align:center!important;}
-  .hero-btns{align-items:center!important;}
-  .hero-mascot{
-    display:block!important;
-    position:static!important;
-    width:clamp(220px,38vw,340px)!important;
-    height:auto!important;
-    margin:10px auto -24px!important;
-  }
-  .ground{position:relative!important;height:90px!important;margin-top:-30px!important;}
-  .scroll-hint{display:none;}
-}
-@media(max-width:860px){
-  .r-layout{grid-template-columns:1fr;}
-  .footer-grid{grid-template-columns:1fr 1fr;}
-  .idx-grid{grid-template-columns:1fr 1fr;}
-  .t-grid{grid-template-columns:1fr 1fr;}
-}
-@media(max-width:580px){
-  .navbar{background:rgba(255,255,255,0.97)!important;backdrop-filter:blur(16px);box-shadow:0 2px 12px rgba(0,0,0,0.08);}
-  .nav-links{display:none!important;}
-  /* HERO mobil ince ayarlar (yapı zaten 1024px kuralında dikey) */
-  .hero-eyebrow{font-size:0.68rem;padding:5px 13px;}
-  .hero-title{font-size:2.6rem!important;margin-bottom:0.9rem!important;}
-  .hero-sub{font-size:0.95rem;margin-bottom:1.4rem!important;}
-  .hero-btns{width:100%;max-width:340px;}
-  .cta-btn{font-size:1rem;padding:12px 22px;width:100%;justify-content:center;}
-  .hero-mascot{width:clamp(180px,55vw,240px)!important;margin:10px auto -20px!important;}
-  .ground{height:70px!important;margin-top:-24px!important;}
-  /* Gökyüzü dekorlarını mobilde küçült */
-  .rainbow{width:160px!important;height:80px!important;top:72px!important;right:-16px!important;opacity:0.4!important;}
-  .rainbow .ra1{width:160px;height:160px;border-width:11px;}
-  .rainbow .ra2{width:142px;height:142px;border-width:11px;bottom:11px;}
-  .rainbow .ra3{width:124px;height:124px;border-width:11px;bottom:22px;}
-  .rainbow .ra4{width:106px;height:106px;border-width:11px;bottom:33px;}
-  .rainbow .ra5{width:88px;height:88px;border-width:11px;bottom:44px;}
-  .rainbow .ra6{width:70px;height:70px;border-width:11px;bottom:55px;}
-  .cl1{width:110px!important;top:80px!important;left:4%!important;}
-  .cl2{width:90px!important;top:110px!important;right:4%!important;}
-  .cl3{display:none;}
-  .de1,.de2,.de3,.de4{font-size:0.95rem!important;}
-  .flower{font-size:1rem!important;}
-  /* SECTIONS */
-  .sec{padding:3rem 5vw;}
-  .idx-grid{grid-template-columns:1fr;}
-  .t-grid{grid-template-columns:1fr;}
-  .teaser-grid{grid-template-columns:1fr;}
-  .footer-grid{grid-template-columns:1fr;gap:2rem;}
-  .footer-inner{padding:3rem 5vw 2rem;}
-  .r-layout{grid-template-columns:1fr;}
-  .nl-box h2{font-size:1.8rem;}
-  .nl-form{flex-direction:column;align-items:center;}
-  .nl-input{width:100%;}
-}
-
-/* INDEX TEASER CARDS */
-.idx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:2rem;}
-
-/* ── PLAY & CREATE ── */
-.play-sec{background:linear-gradient(180deg,#FFF8FB 0%,#F0F4FF 100%);}
-
-/* Teacher teaser — subtle bridge between platform-bar and sections */
-.teacher-teaser{display:flex;align-items:center;gap:14px;max-width:760px;margin:32px auto 0;padding:14px 22px 14px 18px;background:linear-gradient(135deg,#FFF5E6 0%,#FFE8CC 100%);border:2px solid #FFB84D;border-radius:100px;text-decoration:none;color:#6B4423;box-shadow:0 6px 18px rgba(255,184,77,0.22);transition:transform 0.25s,box-shadow 0.25s;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.98rem;}
-.teacher-teaser:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(255,184,77,0.35);border-color:#FF9500;}
-.teacher-teaser .tt-emoji{font-size:1.9rem;line-height:1;flex-shrink:0;animation:ttBob 3s ease-in-out infinite;}
-@keyframes ttBob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-3px) rotate(4deg);}}
-.teacher-teaser .tt-text{flex:1;line-height:1.35;}
-.teacher-teaser .tt-text strong{color:#C2410C;font-weight:900;margin-right:3px;}
-.teacher-teaser .tt-arrow{font-family:'Fredoka One',cursive;font-size:1.4rem;color:#FF9500;flex-shrink:0;transition:transform 0.25s;}
-.teacher-teaser:hover .tt-arrow{transform:translateX(5px);}
-@media(max-width:620px){
-  .teacher-teaser{margin:22px 16px 0;padding:12px 18px 12px 14px;font-size:0.88rem;gap:10px;border-radius:22px;}
-  .teacher-teaser .tt-emoji{font-size:1.6rem;}
-  .teacher-teaser .tt-arrow{font-size:1.2rem;}
-}
-
-.play-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.4rem;}
-.play-card{position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr;gap:1.2rem;align-items:center;padding:2rem 2rem 2rem 1.6rem;border-radius:28px;text-decoration:none;color:#fff;background:var(--bg,#E84393);box-shadow:0 14px 36px rgba(232,67,147,0.28);transition:transform 0.32s cubic-bezier(0.22,1,0.36,1),box-shadow 0.32s;cursor:pointer;isolation:isolate;}
-.play-mazes{--bg:linear-gradient(135deg,#6C3FA0 0%,#E84393 100%);box-shadow:0 14px 36px rgba(108,63,160,0.32);}
-.play-coloring{--bg:linear-gradient(135deg,#23BFEF 0%,#00B894 100%);box-shadow:0 14px 36px rgba(0,184,148,0.3);}
-.play-card:hover{transform:translateY(-6px) scale(1.012);box-shadow:0 22px 52px rgba(108,63,160,0.42);}
-.play-card:active{transform:scale(0.99);}
-.play-card:focus-visible{outline:3px solid #fff;outline-offset:4px;}
-.play-emoji{font-size:4.6rem;line-height:1;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.22));animation:playFloat 3.2s ease-in-out infinite;flex-shrink:0;}
-@keyframes playFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
-.play-card:hover .play-emoji{animation-duration:1.4s;}
-.play-body{min-width:0;}
-.play-badge{display:inline-block;font-family:'Fredoka',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:rgba(255,255,255,0.22);padding:4px 12px;border-radius:20px;margin-bottom:0.6rem;border:1.2px solid rgba(255,255,255,0.3);}
-.play-card h3{font-family:'Fredoka One',cursive;font-size:1.7rem;margin:0 0 0.4rem;line-height:1.1;}
-.play-card p{font-family:'Nunito',sans-serif;font-weight:700;font-size:0.95rem;opacity:0.92;margin:0 0 0.9rem;line-height:1.45;}
-.play-cta{display:inline-flex;align-items:center;gap:5px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.95rem;background:rgba(255,255,255,0.22);padding:8px 18px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.35);transition:all 0.25s;}
-.play-card:hover .play-cta{background:#fff;color:#1E2A3A;transform:translateX(4px);}
-/* Decorative dots / stripes */
-.play-decor{position:absolute;top:0;right:0;width:140px;height:140px;opacity:0.35;pointer-events:none;z-index:-1;}
-.play-decor .dot{position:absolute;border-radius:50%;background:#fff;}
-.play-decor .d1{width:22px;height:22px;top:18px;right:26px;animation:dotBob 4.5s ease-in-out infinite;}
-.play-decor .d2{width:14px;height:14px;top:62px;right:58px;animation:dotBob 5.4s ease-in-out infinite 0.3s;}
-.play-decor .d3{width:30px;height:30px;top:86px;right:14px;animation:dotBob 6s ease-in-out infinite 0.6s;opacity:0.6;}
-@keyframes dotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.play-decor .stripe{position:absolute;height:5px;border-radius:5px;background:#fff;}
-.play-decor .s1{width:60px;top:20px;right:12px;transform:rotate(-18deg);}
-.play-decor .s2{width:40px;top:50px;right:30px;transform:rotate(-18deg);}
-.play-decor .s3{width:80px;top:84px;right:-8px;transform:rotate(-18deg);opacity:0.7;}
-@media(max-width:820px){
-  .play-grid{grid-template-columns:1fr;gap:1.1rem;}
-  .play-card{padding:1.6rem 1.5rem;}
-  .play-emoji{font-size:3.8rem;}
-  .play-card h3{font-size:1.45rem;}
-}
-.idx-card{border-radius:20px;padding:1.8rem;text-decoration:none;color:white;display:flex;flex-direction:column;gap:0.6rem;transition:all 0.25s;box-shadow:0 6px 24px rgba(0,0,0,0.12);}
-.idx-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,0.18);}
-.idx-icon{font-size:2.2rem;}
-.idx-card h3{font-family:'Fredoka One',cursive;font-size:1.2rem;}
-.idx-card p{font-size:0.85rem;opacity:0.88;line-height:1.55;font-weight:600;flex:1;}
-.idx-arrow{font-size:0.82rem;font-weight:900;opacity:0.9;}
-
-
-/* HAMBURGER MENU */
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;z-index:1000;}@media(max-width:1100px){.hamburger{display:flex!important;}.nav-links{display:none!important;}} 
-.hamburger span{display:block;width:24px;height:2.5px;background:var(--text);border-radius:2px;transition:all 0.3s;}
-.mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(16px);border-bottom:2px solid #eee;z-index:998;padding:1rem 5%;flex-direction:column;gap:4px;box-shadow:0 8px 24px rgba(0,0,0,0.1);}
-.mobile-menu.open{display:flex;}
-
-.mobile-menu a{text-decoration:none;color:var(--text);font-weight:900;font-size:1rem;padding:12px 16px;border-radius:12px;transition:all 0.2s;}
-.mobile-menu a:hover,.mobile-menu a.active{background:var(--sky);color:white;}
-.mobile-menu .mob-tpt{background:var(--red);color:white;text-align:center;margin-top:4px;}
-
-
-
-.new-badge{display:inline-block;background:#FF4757;color:white;font-size:0.6rem;font-weight:900;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;vertical-align:middle;margin-left:6px;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
-
-.nav-link-color{text-decoration:none;color:var(--text);font-weight:900;font-size:0.88rem;padding:8px 14px;border-radius:30px;background:linear-gradient(135deg,#FF6B35,#FFD93D);color:white!important;transition:all 0.2s;}
-.nav-link-color:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,107,53,0.4);}
-
-/* ── HOMEPAGE FAQ ── */
-.faq-bg{background:linear-gradient(180deg,#FFFCF5 0%,#FFF7E8 100%);padding:5rem 4vw;position:relative;overflow:hidden;}
-.faq-bg::before{content:'❓';position:absolute;top:2rem;left:5%;font-size:5rem;opacity:0.08;animation:faqFloat 6s ease-in-out infinite;}
-.faq-bg::after{content:'💡';position:absolute;bottom:2rem;right:6%;font-size:4rem;opacity:0.1;animation:faqFloat 7s ease-in-out infinite reverse;}
-@keyframes faqFloat{0%,100%{transform:translateY(0) rotate(-6deg);}50%{transform:translateY(-12px) rotate(6deg);}}
-.faq-inner{max-width:880px;margin:0 auto;position:relative;z-index:2;}
-.faq-bg .sec-label{color:var(--orange);}
-.faq-bg .sec-title{color:var(--dark);}
-.faq-bg .sec-sub{color:var(--text);}
-.faq-list{margin-top:2.5rem;display:flex;flex-direction:column;gap:0.75rem;}
-.faq-item{background:white;border:1.5px solid rgba(0,0,0,0.07);border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.04);overflow:hidden;transition:all 0.25s;}
-.faq-item[open]{border-color:rgba(255,107,53,0.4);box-shadow:0 8px 28px rgba(255,107,53,0.12);}
-.faq-q{display:flex;align-items:center;gap:14px;padding:1.15rem 1.5rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:1.02rem;color:var(--dark);list-style:none;line-height:1.4;}
-.faq-q::-webkit-details-marker{display:none;}
-.faq-q:hover{background:rgba(255,107,53,0.04);}
-.faq-num{font-family:'Fredoka One',cursive;font-size:0.92rem;color:var(--orange);background:rgba(255,107,53,0.1);padding:4px 10px;border-radius:20px;flex-shrink:0;letter-spacing:0.5px;}
-.faq-q-text{flex:1;}
-.faq-icon{font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--muted);transition:transform 0.3s;flex-shrink:0;line-height:1;}
-.faq-item[open] .faq-icon{transform:rotate(45deg);color:var(--red);}
-.faq-a{padding:0 1.5rem 1.3rem 1.5rem;border-top:1.5px dashed rgba(0,0,0,0.07);padding-top:1.1rem;}
-.faq-a p{font-size:0.95rem;line-height:1.7;color:#3a4a5c;font-weight:600;margin-bottom:0.7rem;}
-.faq-a p:last-child{margin-bottom:0;}
-.faq-a a{color:var(--orange);font-weight:800;text-decoration:none;border-bottom:1.5px dotted var(--orange);}
-.faq-a a:hover{color:var(--red);border-color:var(--red);}
-.faq-all-btn{display:inline-flex;align-items:center;gap:8px;margin-top:1.8rem;padding:14px 28px;background:var(--orange);color:white;border-radius:50px;text-decoration:none;font-weight:900;font-size:0.96rem;box-shadow:0 4px 16px rgba(255,107,53,0.4);transition:all 0.2s;}
-.faq-all-btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(255,107,53,0.55);}
-.faq-all-wrap{text-align:center;}
-@media(max-width:580px){
-  .faq-bg{padding:3.5rem 5vw;}
-  .faq-q{padding:1rem 1.1rem;font-size:0.94rem;gap:10px;}
-  .faq-num{font-size:0.78rem;padding:3px 8px;}
-  .faq-a{padding:1rem 1.1rem 1.1rem 1.1rem;}
-  .faq-a p{font-size:0.9rem;}
-}
-</style>
-<style>
-  @font-face {font-display:block;font-family:Roboto;src:url(https://assets.brevo.com/font/Roboto/Latin/normal/normal/7529907e9eaf8ebb5220c5f9850e3811.woff2) format("woff2")}
-  @font-face {font-display:fallback;font-family:Roboto;font-weight:700;src:url(https://assets.brevo.com/font/Roboto/Latin/bold/normal/3ef7cf158f310cf752d5ad08cd0e7e60.woff2) format("woff2")}
-  #sib-container input::placeholder {text-align:left;font-family:Helvetica,sans-serif;color:#c0ccda;}
-  #sib-container a {text-decoration:underline;color:#2BB2FC;}
-</style>
-<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
-<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
-<link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,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">
-<link rel="apple-touch-icon" href="assets/t4l-apple-icon.png">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SSPW3HB9F8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-SSPW3HB9F8');
-  // ── GA4 event helpers ──
-  window.t4lTrack = function(name, params){
-    try { gtag('event', name, params || {}); } catch(e) {}
-  };
-  // Auto-track outbound nav links (header/footer) once DOM is ready
-  document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('a[href]').forEach(function(a){
-      const href = a.getAttribute('href') || '';
-      // Track internal nav (.html links). YouTube/outbound is handled per-page.
-      if (href.endsWith('.html')) {
-        a.addEventListener('click', function(){
-          window.t4lTrack('nav_click', {
-            link_url: href,
-            link_text: (a.textContent || '').trim().substring(0, 80),
-            page: location.pathname
-          });
-        }, { passive: true });
-      }
-    });
-  });
-</script>
-<style>
-/* ── Accessibility: Reduced motion ── */
-@media (max-width: 700px) {
-  /* Mobile: turn off background floaty decor — saves battery, calmer feel */
-  .cl1, .cl2, .cl3, .deco, .flower { animation: none !important; }
-  .play-decor .d1, .play-decor .d2, .play-decor .d3 { animation: none !important; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-</style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "EducationalOrganization",
-      "@id": "https://tune4learn.com/#org",
-      "name": "Tune4Learn",
-      "url": "https://tune4learn.com",
-      "logo": "https://tune4learn.com/assets/t4l-logo.png",
-      "description": "Educational music platform for children ages 3–8. Songs, coloring books and games that support global awareness and early childhood education.",
-      "sameAs": [
-        "https://www.youtube.com/@Tune4Learn",
-        "https://music.youtube.com/channel/UC-Tune4Learn",
-        "https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh",
-        "https://music.apple.com/us/artist/tune4learn/1781419056",
-        "https://www.instagram.com/Tune4Learn",
-        "https://www.tiktok.com/@tune4learn",
-        "https://www.teacherspayteachers.com/store/tune4learn"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://tune4learn.com/#website",
-      "url": "https://tune4learn.com",
-      "name": "Tune4Learn",
-      "publisher": {
-        "@id": "https://tune4learn.com/#org"
-      },
-      "inLanguage": "en"
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://tune4learn.com/#home",
-      "url": "https://tune4learn.com/",
-      "name": "Tune4Learn — Educational Music for Children",
-      "isPartOf": {
-        "@id": "https://tune4learn.com/#website"
-      },
-      "about": {
-        "@id": "https://tune4learn.com/#org"
-      }
-    }
-  ]
-}
-</script>
-<!-- Schema.org / JSON-LD for SEO rich results -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://tune4learn.com/#organization",
-      "name": "Tune4Learn",
-      "url": "https://tune4learn.com",
-      "logo": "https://tune4learn.com/assets/t4l-logo-small.webp",
-      "description": "Educational songs, videos and interactive activities for children ages 3–8.",
-      "sameAs": [
-        "https://www.youtube.com/@Tune4Learn",
-        "https://music.youtube.com/channel/UC-Tune4Learn",
-        "https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh",
-        "https://music.apple.com/us/artist/tune4learn/1781419056",
-        "https://www.instagram.com/Tune4Learn",
-        "https://www.tiktok.com/@tune4learn",
-        "https://www.teacherspayteachers.com/store/tune4learn"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://tune4learn.com/#website",
-      "url": "https://tune4learn.com",
-      "name": "Tune4Learn",
-      "description": "Where Learning Sings — Educational songs and activities for kids.",
-      "publisher": {"@id": "https://tune4learn.com/#organization"},
-      "inLanguage": "en"
-    },
-    {
-      "@type": "EducationalOrganization",
-      "name": "Tune4Learn",
-      "url": "https://tune4learn.com",
-      "audience": {
-        "@type": "EducationalAudience",
-        "educationalRole": "student",
-        "audienceType": "Children ages 3–8 (PreK to Grade 2)"
-      }
-    }
-  ]
-}
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kids.css?v=2">
 </head>
-<body>
-<a href="#main" class="skip-link">Skip to content</a>
+<body class="kid">
 
-<nav class="navbar" id="navbar">
-  <a href="index.html" class="nav-logo"><picture><source srcset="assets/t4l-logo.webp" type="image/webp"><img src="assets/t4l-logo.png" alt="Tune4Learn" width="44" height="44" decoding="async"></picture></a>
-  <ul class="nav-links">
-    <li><a href="videos.html">For Kids</a></li>
-    <li><a href="teachers.html">For Teachers &amp; Parents</a></li>
-    <li><a href="research.html">Research &amp; Blog</a></li>
-    <li><a href="coloring.html" class="nav-link-color">🖍️ Color</a></li>
-    <li><a href="mazes.html" class="nav-link-color">🌀 Mazes</a></li>
-    <li><a href="faq.html">FAQ</a>
-    <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" class="nav-cta" rel="noopener noreferrer">TPT Store ↗</a></li>
+<header class="k-top">
+  <a class="k-logo" href="index.html" aria-label="Tune4Learn home"><img src="assets/t4l-logo.webp" alt="Tune4Learn" width="96" height="96"></a>
+  <a class="k-adult" href="teachers.html">For Families &amp; Teachers <span aria-hidden="true">→</span></a>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="k-hero" aria-label="Say hi to T4L">
+  <div class="k-stage">
+    <nav class="k-doors k-doors-l" aria-label="Sections">
+      <a class="k-door d-songs" href="#songs"><span class="k-door-c"><svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M24 12.5 54 6v34.5a9.5 8 0 1 1-6-7.4V17.2l-18 3.9v25.4a9.5 8 0 1 1-6-7.4z"/></svg></span><span class="k-door-t">Songs</span></a>
+      <a class="k-door d-math" href="#math"><span class="k-door-c"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="5" y="5" width="54" height="54" rx="13" fill="currentColor"/><path d="M19 22h12M25 16v12M35 23h12M19 43l12 0M35 39h12M35 47h12" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg></span><span class="k-door-t">Math</span></a>
+    </nav>
+    <button class="k-star k-talker" type="button" data-who="t4l" aria-label="Tap T4L">
+      <span class="k-bubble k-say" aria-live="polite">Hi! I'm T4L!</span>
+      <img src="assets/t4l/t4l_logo.webp" alt="T4L, the Tune4Learn music note" width="347" height="520">
+    </button>
+    <nav class="k-doors k-doors-r" aria-label="Sections">
+      <a class="k-door d-games" href="#games"><span class="k-door-c"><svg viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M18 15h28c9.4 0 15 7.6 15 17.5V36c0 7-4.6 12-10.5 12-4.2 0-6.6-2.4-8.6-5H22.1c-2 2.6-4.4 5-8.6 5C7.6 48 3 43 3 36v-3.5C3 22.6 8.6 15 18 15z"/><path d="M18 24v12M12 30h12" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/><circle cx="43" cy="26" r="3.6" fill="#fff"/><circle cx="50" cy="33" r="3.6" fill="#fff"/></svg></span><span class="k-door-t">Games</span></a>
+      <a class="k-door d-days" href="#days"><span class="k-door-c"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="5" y="11" width="54" height="48" rx="11" fill="currentColor"/><rect x="16" y="4" width="7" height="15" rx="3.5" fill="currentColor" stroke="#fff" stroke-width="3"/><rect x="41" y="4" width="7" height="15" rx="3.5" fill="currentColor" stroke="#fff" stroke-width="3"/><path d="M32 27l4 8.1 9 1.3-6.5 6.3 1.5 8.9-8-4.2-8 4.2 1.5-8.9-6.5-6.3 9-1.3z" fill="#fff"/></svg></span><span class="k-door-t">Special Days</span></a>
+    </nav>
+  </div>
+  <button class="k-today" id="today" type="button" hidden></button>
+</section>
+
+<!-- ============ T4L & FRIENDS ============ -->
+<section class="k-pals" aria-label="T4L and friends">
+  <button class="k-arrow k-prev" type="button" data-for="strip" aria-label="Back"><span aria-hidden="true">‹</span></button>
+  <ul class="k-strip" id="strip">
+    <li><button class="k-pal k-talker" type="button" style="--c:#FFDF6E" data-who="timza" data-slug="timza" aria-label="Timza, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/cast/timza_on.webp" alt="" loading="lazy"><span class="k-pn">Timza</span>
+    </button></li>
+    <li><button class="k-pal k-talker" type="button" style="--c:#FFB867" data-who="clacka" data-slug="clacka" aria-label="Clacka, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/cast/clacka_on.webp" alt="" loading="lazy"><span class="k-pn">Clacka</span>
+    </button></li>
+    <li><button class="k-pal k-talker" type="button" style="--c:#A6E07A" data-who="labba" data-slug="labba" aria-label="Labba, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/cast/labba_on.webp" alt="" loading="lazy"><span class="k-pn">Labba</span>
+    </button></li>
+    <li><button class="k-pal k-talker" type="button" style="--c:#F9B7D3" data-who="hugza" data-slug="hugza" aria-label="Hugza, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/cast/hugza_on.webp" alt="" loading="lazy"><span class="k-pn">Hugza</span>
+    </button></li>
+    <li><button class="k-pal k-talker" type="button" style="--c:#F58A82" data-who="jigla" data-slug="jigla" aria-label="Jigla, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/cast/jigla_on.webp" alt="" loading="lazy"><span class="k-pn">Jigla</span>
+    </button></li>
+    <li><button class="k-pal k-talker" type="button" style="--c:#C8B3F6" data-who="abza" data-slug="abza" aria-label="Abza, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/cast/abza_on.webp" alt="" loading="lazy"><span class="k-pn">Abza</span>
+    </button></li>
   </ul>
-  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-<div class="mobile-menu" id="mobileMenu">
-    <a href="index.html" class="active">🏠 Home</a>
-    <a href="videos.html">🎬 For Kids</a>
-    <a href="teachers.html">📚 For Teachers & Parents</a>
-    <a href="research.html">🔬 Research & Blog</a>
-    <a href="coloring.html">🖍️ Color Online</a>
-    <a href="mazes.html">🌀 Mazes</a>
-    <a href="faq.html">❓ FAQ</a>
-    <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" class="mob-tpt" rel="noopener noreferrer">TPT Store ↗</a>
-  </div>
-
-<section class="hero" id="main">
-  <!-- Clouds -->
-  <div class="cloud cl1"><svg viewBox="0 0 220 88"><ellipse cx="110" cy="66" rx="100" ry="30"/><ellipse cx="76" cy="50" rx="56" ry="42"/><ellipse cx="148" cy="52" rx="50" ry="36"/></svg></div>
-  <div class="cloud cl2"><svg viewBox="0 0 170 68"><ellipse cx="85" cy="52" rx="76" ry="24"/><ellipse cx="58" cy="38" rx="44" ry="34"/><ellipse cx="122" cy="40" rx="38" ry="28"/></svg></div>
-  <div class="cloud cl3"><svg viewBox="0 0 150 60"><ellipse cx="75" cy="46" rx="66" ry="22"/><ellipse cx="50" cy="34" rx="36" ry="28"/><ellipse cx="106" cy="36" rx="32" ry="24"/></svg></div>
-
-  <!-- Rainbow -->
-  <div class="rainbow"><div class="ra ra1"></div><div class="ra ra2"></div><div class="ra ra3"></div><div class="ra ra4"></div><div class="ra ra5"></div><div class="ra ra6"></div></div>
-
-  <!-- Deco -->
-  <div class="deco de1">🎵</div><div class="deco de2">⭐</div><div class="deco de3">🎶</div><div class="deco de4">✨</div>
-
-  <!-- Ground + flowers -->
-  <div class="ground"></div>
-  <div class="flower fl1">🌸</div><div class="flower fl2">🌼</div><div class="flower fl3">🌺</div><div class="flower fl4">🌸</div>
-
-  <!-- Mascot -->
-  <picture><source srcset="assets/t4l-mascot.webp" type="image/webp"><img class="hero-mascot" src="assets/t4l-mascot.png" alt="T4L Mascot" width="500" height="500" decoding="async"></picture>
-
-  <div class="hero-text">
-    <div class="hero-eyebrow">🎵 Educational Music · Ages 3–8</div>
-    <h1 class="hero-title">
-      <span class="ht1">Sing.</span>
-      <span class="ht2">Learn.</span>
-      <span class="ht3">Play!</span>
-    </h1>
-    <p class="hero-sub">Animated songs &amp; classroom resources that make learning joyful. Trusted by teachers in 50+ countries.</p>
-    <div class="hero-btns">
-      <a href="videos.html" class="cta-btn cb-blue">▶ Watch Songs</a>
-      <a href="teachers.html" class="cta-btn cb-green">📚 Activity Books</a>
-      <a href="coloring.html" class="cta-btn cb-yellow">🖍 Coloring Pages</a>
-    </div>
-  </div>
-
-  <div class="scroll-hint">↓ explore ↓</div>
+  <button class="k-arrow k-next" type="button" data-for="strip" aria-label="Next"><span aria-hidden="true">›</span></button>
 </section>
 
-<div class="platform-bar"><span class="pb-label">Find us on</span><div class="pb-track"><div class="pb-item"><div class="pb-sep"></div>YouTube</div><div class="pb-item"><div class="pb-sep"></div>Spotify</div><div class="pb-item"><div class="pb-sep"></div>Apple Music</div><div class="pb-item"><div class="pb-sep"></div>TikTok</div><div class="pb-item"><div class="pb-sep"></div>Instagram Reels</div><div class="pb-item"><div class="pb-sep"></div>Teachers Pay Teachers</div><div class="pb-item"><div class="pb-sep"></div>YouTube</div><div class="pb-item"><div class="pb-sep"></div>Spotify</div><div class="pb-item"><div class="pb-sep"></div>Apple Music</div><div class="pb-item"><div class="pb-sep"></div>TikTok</div><div class="pb-item"><div class="pb-sep"></div>Instagram Reels</div><div class="pb-item"><div class="pb-sep"></div>Teachers Pay Teachers</div></div></div>
 
-<!-- TEACHER TEASER -->
-<a href="teachers.html" class="teacher-teaser" aria-label="Go to teachers resources">
-  <span class="tt-emoji" aria-hidden="true">🍎</span>
-  <span class="tt-text">
-    <strong>Teachers &amp; parents —</strong> browse 100+ ready-to-use classroom resources
-  </span>
-  <span class="tt-arrow" aria-hidden="true">→</span>
-</a>
+<!-- ============ THE KIDS ============ -->
+<section class="k-pals k-kids" aria-label="Our friends">
+  <h2 class="k-h k-kids-h">Our Friends</h2>
+  <button class="k-arrow k-prev" type="button" data-for="strip2" aria-label="Back"><span aria-hidden="true">‹</span></button>
+  <ul class="k-strip" id="strip2">
+    <li><button class="k-pal k-kid k-talker" type="button" style="--c:#C8B3F6" data-who="amara" data-slug="amara" aria-label="Amara, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/kids/amara_on.webp" alt="" loading="lazy"><span class="k-pn">Amara</span>
+    </button></li>
+    <li><button class="k-pal k-kid k-talker" type="button" style="--c:#8EC9F5" data-who="leo" data-slug="leo" aria-label="Leo, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/kids/leo_on.webp" alt="" loading="lazy"><span class="k-pn">Leo</span>
+    </button></li>
+    <li><button class="k-pal k-kid k-talker" type="button" style="--c:#7FD6C8" data-who="layla" data-slug="layla" aria-label="Layla, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/kids/layla_on.webp" alt="" loading="lazy"><span class="k-pn">Layla</span>
+    </button></li>
+    <li><button class="k-pal k-kid k-talker" type="button" style="--c:#FFB867" data-who="kenji" data-slug="kenji" aria-label="Kenji, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/kids/kenji_on.webp" alt="" loading="lazy"><span class="k-pn">Kenji</span>
+    </button></li>
+    <li><button class="k-pal k-kid k-talker" type="button" style="--c:#F9B7D3" data-who="priya" data-slug="priya" aria-label="Priya, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/kids/priya_on.webp" alt="" loading="lazy"><span class="k-pn">Priya</span>
+    </button></li>
+    <li><button class="k-pal k-kid k-talker" type="button" style="--c:#F58A82" data-who="mateo" data-slug="mateo" aria-label="Mateo, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/kids/mateo_on.webp" alt="" loading="lazy"><span class="k-pn">Mateo</span>
+    </button></li>
+    <li><button class="k-pal k-kid k-talker" type="button" style="--c:#FFDF6E" data-who="nora" data-slug="nora" aria-label="Nora, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/kids/nora_on.webp" alt="" loading="lazy"><span class="k-pn">Nora</span>
+    </button></li>
+    <li><button class="k-pal k-kid k-talker" type="button" style="--c:#A6E07A" data-who="ella" data-slug="ella" aria-label="Ella, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/kids/ella_on.webp" alt="" loading="lazy"><span class="k-pn">Ella</span>
+    </button></li>
+    <li><button class="k-pal k-kid k-talker" type="button" style="--c:#9FC3F7" data-who="omar" data-slug="omar" aria-label="Omar, tap to say hi">
+      <span class="k-say" aria-live="polite"></span><img src="assets/kids/omar_on.webp" alt="" loading="lazy"><span class="k-pn">Omar</span>
+    </button></li>
+  </ul>
+  <button class="k-arrow k-next" type="button" data-for="strip2" aria-label="Next"><span aria-hidden="true">›</span></button>
+</section>
 
-<!-- FOR KIDS -->
-<section class="sec" id="videos">
-  <div class="sec-inner">
-    <div class="row-head">
-      <div>
-        <div class="sec-label">For Kids</div>
-        <h2 class="sec-title">Watch, Sing &amp; Learn 🎬</h2>
-        <p class="sec-sub">36+ animated educational songs — science, world days, friendship and more.</p>
-      </div>
-      <a href="videos.html" class="see-all">All Songs →</a>
-    </div>
-    <div class="idx-grid">
-      <a href="videos.html" class="idx-card" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);">
-        <div class="idx-icon">🔢</div>
-        <h3>Back to School Math Fun 🆕</h3>
-        <p>Start the school year with numbers! Activity books in English &amp; Spanish.</p>
-        <span class="idx-arrow">Watch Now →</span>
-      </a>
-      <a href="videos.html" class="idx-card" style="background:linear-gradient(135deg,#16a34a,#0e7a38);">
-        <div class="idx-icon">⚽</div>
-        <h3>Goal! Soccer Champions</h3>
-        <p>Celebrate the summer soccer season with a fun sing-along!</p>
-        <span class="idx-arrow">Watch Now →</span>
-      </a>
-      <a href="videos.html" class="idx-card" style="background:linear-gradient(135deg,#23BFEF,#1aaddf);">
-        <div class="idx-icon">🎬</div>
-        <h3>36+ Songs</h3>
-        <p>Animated educational songs for every topic and world day.</p>
-        <span class="idx-arrow">Watch Now →</span>
-      </a>
-      <a href="videos.html" class="idx-card" style="background:linear-gradient(135deg,#2ED573,#26bc62);">
-        <div class="idx-icon">🖍️</div>
-        <h3>Coloring Books</h3>
-        <p>Free printable coloring books — color along with the songs!</p>
-        <span class="idx-arrow">Download Free →</span>
-      </a>
-      <a href="videos.html" class="idx-card" style="background:linear-gradient(135deg,#FF6B35,#e85a25);">
-        <div class="idx-icon">🌍</div>
-        <h3>World Days Calendar</h3>
-        <p>Songs for UNESCO days — sorted by nearest date.</p>
-        <span class="idx-arrow">See Calendar →</span>
-      </a>
-      <a href="https://youtube.com/@tune4learn" target="_blank" class="idx-card" style="background:linear-gradient(135deg,#FF4757,#e03040);" rel="noopener noreferrer">
-        <div class="idx-icon">▶</div>
-        <h3>YouTube Channel</h3>
-        <p>Subscribe for new songs, playlists and animated videos.</p>
-        <span class="idx-arrow">Subscribe →</span>
-      </a>
-    </div>
+<!-- ============ SONGS ============ -->
+<section id="songs" class="k-band b-songs">
+  <button class="k-peek k-talker" type="button" data-who="jigla" aria-label="Talk with Jigla"><span class="k-say" aria-live="polite"></span><img src="assets/cast/jigla_el_salliyor.webp" alt="" loading="lazy"></button>
+  <div class="k-wrap">
+    <h2 class="k-h">Songs</h2>
+    <ul class="k-grid" id="songsGrid"></ul>
+    <button class="k-more" type="button" data-shelf="songs">All songs</button>
   </div>
 </section>
 
-<!-- PLAY & CREATE — Interactive entrance to mazes/coloring -->
-<section class="sec play-sec" id="play-create" aria-labelledby="play-title">
-  <div class="sec-inner">
-    <div class="sec-label" style="color:#E84393;">Play &amp; Create</div>
-    <h2 class="sec-title" id="play-title">Jump In &amp; Have Fun 🎮</h2>
-    <p class="sec-sub">Interactive games and coloring pages — no sign-up, play right in the browser.</p>
-    <div class="play-grid">
-      <a href="mazes.html" class="play-card play-mazes" aria-label="Play educational mazes">
-        <div class="play-emoji" aria-hidden="true">🧩</div>
-        <div class="play-body">
-          <div class="play-badge">20+ Mazes</div>
-          <h3>Maze Adventures</h3>
-          <p>Classic, math and coding mazes. Ages 3–8.</p>
-          <span class="play-cta">Play Now →</span>
-        </div>
-        <div class="play-decor" aria-hidden="true">
-          <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span>
-        </div>
-      </a>
-      <a href="coloring.html" class="play-card play-coloring" aria-label="Open interactive coloring book">
-        <div class="play-emoji" aria-hidden="true">🎨</div>
-        <div class="play-body">
-          <div class="play-badge">Interactive</div>
-          <h3>Coloring Studio</h3>
-          <p>Color, paint and play with music. 16+ pages.</p>
-          <span class="play-cta">Start Coloring →</span>
-        </div>
-        <div class="play-decor" aria-hidden="true">
-          <span class="stripe s1"></span><span class="stripe s2"></span><span class="stripe s3"></span>
-        </div>
-      </a>
-    </div>
+<!-- ============ MATH ============ -->
+<section id="math" class="k-band b-math">
+  <button class="k-peek k-talker" type="button" data-who="clacka" aria-label="Talk with Clacka"><span class="k-say" aria-live="polite"></span><img src="assets/cast/clacka_el_salliyor.webp" alt="" loading="lazy"></button>
+  <div class="k-wrap">
+    <h2 class="k-h">Math Songs</h2>
+    <ul class="k-grid" id="mathGrid"></ul>
   </div>
 </section>
 
-<!-- FOR TEACHERS & PARENTS -->
-<div class="teachers-bg" id="teachers">
-  <div class="teachers-inner">
-    <div class="">
-      <div class="sec-label">For Teachers &amp; Parents</div>
-      <h2 class="sec-title">Everything You Need 📚</h2>
-      <p class="sec-sub">Free activity guides and research-backed materials for educators and families — paired with every song.</p>
-    </div>
-    <div class="t-grid">
-      <a href="teachers.html" class="t-card tc1" style="text-decoration:none;">
-        <div class="t-icon">📥</div>
-        <h3>Free Activity Packs</h3>
-        <p>19+ guides from Google Drive — no signup needed.</p>
-        <span style="font-size:0.82rem;font-weight:900;color:var(--sky);margin-top:auto;">Browse Packs →</span>
-      </a>
-      <a href="teachers.html" class="t-card tc2" style="text-decoration:none;">
-        <div class="t-icon">🏠</div>
-        <h3>Home Learning Tips</h3>
-        <p>Simple ways to use Tune4Learn songs at home every day.</p>
-        <span style="font-size:0.82rem;font-weight:900;color:var(--sun);margin-top:auto;">Learn More →</span>
-      </a>
-      <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" class="t-card tc3" style="text-decoration:none;" rel="noopener noreferrer">
-        <div class="t-icon">🗂️</div>
-        <h3>Premium Lesson Plans</h3>
-        <p>Full 45–70 min frameworks with timing and assessment on TPT.</p>
-        <span style="font-size:0.82rem;font-weight:900;color:var(--green);margin-top:auto;">Visit TPT →</span>
-      </a>
-      <a href="teachers.html" class="t-card tc4" style="text-decoration:none;">
-        <div class="t-icon">💌</div>
-        <h3>Newsletter</h3>
-        <p>New songs, free resources &amp; research summaries monthly.</p>
-        <span style="font-size:0.82rem;font-weight:900;color:var(--red);margin-top:auto;">Subscribe →</span>
-      </a>
-    </div>
-  </div>
-</div>
-
-<!-- RESEARCH -->
-<div class="research-bg" id="research">
-  <div class="research-inner">
-    <div class="row-head">
-      <div>
-        <div class="sec-label" style="color:#0099cc;">Research &amp; Blog 🔬</div>
-        <h2 class="sec-title">What Does Science Say?</h2>
-        <p class="sec-sub">Meta-analyses &amp; evidence-based insights — summarized in plain language.</p>
-      </div>
-      <a href="research.html" class="see-all">All Research →</a>
-    </div>
-    <div class="r-layout">
-      <div class="r-stack">
-        <a href="research.html" class="r-card" style="text-decoration:none;color:inherit;">
-          <span class="r-tag rt1">Systematic Review</span>
-          <h4>Music, Movement &amp; Language</h4>
-          <p>A review of 20 studies confirms music+movement significantly enhances linguistic skills in children aged 4–12.</p>
-          <div class="r-meta">Harmonia Journal · 2022</div>
-        </a>
-        <a href="research.html" class="r-card" style="text-decoration:none;color:inherit;">
-          <span class="r-tag rt2">Meta-Analysis</span>
-          <h4>Music Training &amp; Cognitive Growth</h4>
-          <p>Analysis of 5,612 schoolchildren shows music training has a significant positive effect on cognitive development.</p>
-          <div class="r-meta">IJME · 2019</div>
-        </a>
-        <a href="research.html" class="r-card" style="text-decoration:none;color:inherit;">
-          <span class="r-tag rt3">Mixed Methods</span>
-          <h4>The Magic of Group Singing</h4>
-          <p>Group singing significantly boosts children's happiness, social connection and sense of belonging.</p>
-          <div class="r-meta">Children &amp; Society · 2023</div>
-        </a>
-      </div>
-      <div class="r-sidebar">
-        <h3>Research-Backed.<br>Classroom-Ready.</h3>
-        <p>Every Tune4Learn resource is grounded in current research. We translate complex findings into practical tools.</p>
-        <ul class="r-list">
-          <li>5 research summaries</li>
-          <li>Plain language for educators</li>
-          <li>Monthly research digest</li>
-        </ul>
-        <a href="research.html" class="btn btn-sky" style="width:100%;justify-content:center;margin-top:0.5rem;">Read All Research →</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- FREQUENTLY ASKED QUESTIONS -->
-<section class="faq-bg" id="faq" aria-label="Frequently asked questions">
-  <div class="faq-inner">
-    <div class="sec-label">FAQ ❓</div>
-    <h2 class="sec-title">Common Questions</h2>
-    <p class="sec-sub">Quick answers for parents and teachers — from "are the videos free?" to "how are videos produced?".</p>
-
-    <div class="faq-list">
-      <details class="faq-item" open>
-        <summary class="faq-q">
-          <span class="faq-num">01</span>
-          <span class="faq-q-text">What is Tune4Learn?</span>
-          <span class="faq-icon" aria-hidden="true">+</span>
-        </summary>
-        <div class="faq-a"><p>Tune4Learn is an educational music brand that creates animated songs and classroom resources for young learners aged 3 to 8. Each song is designed to teach core early-learning concepts — mathematics, science, literacy, social studies, and global awareness days — through catchy melodies, colorful animation, and child-friendly storytelling. Our mission is simple: to make learning joyful through the universal language of music.</p></div>
-      </details>
-
-      <details class="faq-item">
-        <summary class="faq-q">
-          <span class="faq-num">02</span>
-          <span class="faq-q-text">Are the videos free?</span>
-          <span class="faq-icon" aria-hidden="true">+</span>
-        </summary>
-        <div class="faq-a"><p>Yes — all Tune4Learn animated songs are completely free to watch on YouTube, Spotify, and Apple Music. We believe quality educational content should be accessible to every child. For teachers and parents who want to extend the learning, we also offer premium printable resources — full lesson plans, activity books, and worksheets — on our <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" rel="noopener noreferrer">Teachers Pay Teachers store</a>.</p></div>
-      </details>
-
-      <details class="faq-item">
-        <summary class="faq-q">
-          <span class="faq-num">03</span>
-          <span class="faq-q-text">Are Tune4Learn videos safe for children?</span>
-          <span class="faq-icon" aria-hidden="true">+</span>
-        </summary>
-        <div class="faq-a"><p>Absolutely. Every Tune4Learn video is created with child safety as a top priority. The content is age-appropriate, free of violence or scary imagery, and aligned with YouTube Kids guidelines. Our videos contain no inappropriate language, no frightening themes, and no misleading content — just friendly characters, gentle humor, and clear educational messages.</p></div>
-      </details>
-
-      <details class="faq-item">
-        <summary class="faq-q">
-          <span class="faq-num">04</span>
-          <span class="faq-q-text">How are Tune4Learn videos produced?</span>
-          <span class="faq-icon" aria-hidden="true">+</span>
-        </summary>
-        <div class="faq-a"><p>Every Tune4Learn song begins with a clear educational goal, and our process is <strong>led by educators, not by technology</strong>. Our team of educators and early-childhood specialists chooses each topic, aligns it with established learning frameworks (numeracy, literacy, social-emotional development, UNESCO days), and drafts the lyrics and pedagogical direction. Once the educational foundation is in place, we use a mix of professional production tools — music software, animation programs, and modern creative tools — to turn the direction into a singable song with engaging visuals. Every video is then reviewed by educators for age-appropriateness and educational value before publication.</p><p><a href="faq.html#q4">Read the full process →</a></p></div>
-      </details>
-
-      <details class="faq-item">
-        <summary class="faq-q">
-          <span class="faq-num">05</span>
-          <span class="faq-q-text">How can teachers use Tune4Learn in the classroom?</span>
-          <span class="faq-icon" aria-hidden="true">+</span>
-        </summary>
-        <div class="faq-a"><p>Teachers use Tune4Learn videos in many ways: as morning circle-time openers, as transitions between activities, as introductions to new themes, as brain breaks, and as the foundation for full themed lessons. Many of our songs align with UNESCO international days and common early-learning curriculum standards. Our <a href="teachers.html">premium TPT lesson plans</a> provide complete 45–70 minute frameworks with timing and assessment built in.</p></div>
-      </details>
-
-      <details class="faq-item">
-        <summary class="faq-q">
-          <span class="faq-num">06</span>
-          <span class="faq-q-text">What free interactive activities do you offer?</span>
-          <span class="faq-icon" aria-hidden="true">+</span>
-        </summary>
-        <div class="faq-a"><p>Beyond our videos, the Tune4Learn website offers two free interactive play areas: our <a href="coloring.html">Coloring Studio</a> with 16+ digital coloring pages where children can paint and play with music, and our <a href="mazes.html">Maze Adventures</a> section with 20+ classic, math, and coding mazes designed for ages 3 to 8. Both work directly in the browser — no sign-up, no downloads, no ads.</p></div>
-      </details>
-    </div>
-
-    <div class="faq-all-wrap">
-      <a href="faq.html" class="faq-all-btn">Read all 16 FAQs →</a>
-    </div>
+<!-- ============ GAMES ============ -->
+<section id="games" class="k-band b-games">
+  <button class="k-peek k-talker" type="button" data-who="labba" aria-label="Talk with Labba"><span class="k-say" aria-live="polite"></span><img src="assets/cast/labba_el_salliyor.webp" alt="" loading="lazy"></button>
+  <div class="k-wrap">
+    <h2 class="k-h">Games</h2>
+    <ul class="k-grid">
+      <li><a href="mazes.html" class="k-card k-game" style="--c:#A6E07A">
+        <span class="k-thumb"><img src="assets/cast/labba_sevinc.webp" alt="" loading="lazy"></span>
+        <span class="k-title">Mazes</span><span class="k-count">Play</span>
+      </a></li>
+      <li><a href="coloring.html" class="k-card k-game" style="--c:#F9B7D3">
+        <span class="k-thumb"><img src="assets/cast/hugza_sevinc.webp" alt="" loading="lazy"></span>
+        <span class="k-title">Coloring</span><span class="k-count">Color</span>
+      </a></li>
+      <li><button type="button" aria-disabled="true" class="k-card k-game is-soon" style="--c:#C8B3F6">
+        <span class="k-thumb"><img src="assets/cast/abza_sevinc.webp" alt="" loading="lazy"></span>
+        <span class="k-title">ABC Games</span><span class="k-count is-none">Coming soon</span>
+      </button></li>
+      <li><button type="button" aria-disabled="true" class="k-card k-game is-soon" style="--c:#FFB867">
+        <span class="k-thumb"><img src="assets/cast/clacka_sevinc.webp" alt="" loading="lazy"></span>
+        <span class="k-title">Counting Games</span><span class="k-count is-none">Coming soon</span>
+      </button></li>
+      <li><button type="button" aria-disabled="true" class="k-card k-game is-soon" style="--c:#F58A82">
+        <span class="k-thumb"><img src="assets/cast/jigla_sevinc.webp" alt="" loading="lazy"></span>
+        <span class="k-title">Move &amp; Freeze</span><span class="k-count is-none">Coming soon</span>
+      </button></li>
+      <li><button type="button" aria-disabled="true" class="k-card k-game is-soon" style="--c:#FFDF6E">
+        <span class="k-thumb"><img src="assets/cast/timza_sevinc.webp" alt="" loading="lazy"></span>
+        <span class="k-title">My Day Helper</span><span class="k-count is-none">Coming soon</span>
+      </button></li>
+    </ul>
   </div>
 </section>
 
-<!-- NEWSLETTER -->
-<div class="nl-wrap" id="newsletter">
-  <div class="nl-box">
-    <h2>Join Our Community! 📬</h2>
-    <p>New songs, free resources &amp; research insights in your inbox</p>
-    <div class="nl-form"><form id="sib-form" method="POST" action="https://833a3c92.sibforms.com/serve/MUIFAJEbQYBj7nfhR_8IpeKFp8pp1l_Pmk0Lvrh_Dt-Y8STZCSrSbyGkdou7GT9EQLDNaeYAym9zlmpedEOZ6XWuRaTBWw7ulghhl8N7MD9ifLSU9qO5CM5s0LZt8zh7V1L5IFNadsr5JPd8ZieCpa-NlV9UL-nzzTwNWxznxUxkmlY-9bAsao8c0Oht8cI_EPF7bq103gEsytdZHQ==" style="display:flex;gap:0.7rem;justify-content:center;flex-wrap:wrap;">
-      <input type="text" name="EMAIL" class="nl-input" type="email" placeholder="your@email.com" required autocomplete="off">
-      <input type="text" name="email_address_check" value="" style="display:none;">
-      <input type="hidden" name="locale" value="en">
-      <input type="hidden" name="html_type" value="simple">
-      <button type="submit" class="nl-submit">Subscribe →</button>
-    </form></div>
+<!-- ============ SPECIAL DAYS ============ -->
+<section id="days" class="k-band b-days">
+  <button class="k-peek k-talker" type="button" data-who="hugza" aria-label="Talk with Hugza"><span class="k-say" aria-live="polite"></span><img src="assets/cast/hugza_el_salliyor.webp" alt="" loading="lazy"></button>
+  <div class="k-wrap">
+    <h2 class="k-h">Special Days</h2>
+    <ul class="k-grid" id="daysGrid"></ul>
+    <button class="k-more" type="button" data-shelf="days">All special days</button>
   </div>
-</div>
+</section>
+</main>
 
-<footer><div class="footer-inner"><div class="footer-grid"><div><picture><source srcset="assets/t4l-logo.webp" type="image/webp"><img src="assets/t4l-logo.png" alt="Tune4Learn" class="footer-logo" width="44" height="44" decoding="async" loading="lazy"></picture><p class="footer-brand">Educational songs and animated videos for children ages 3–8. Making learning joyful through the power of music.</p><div class="soc-row"><a href="https://youtube.com/@tune4learn" target="_blank" class="soc-btn" style="color:#FF0000;" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 0 0 .5 6.19C0 8.04 0 12 0 12s0 3.96.5 5.81a3.02 3.02 0 0 0 2.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14C24 15.96 24 12 24 12s0-3.96-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg></a><a href="https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh" target="_blank" class="soc-btn" style="color:#1DB954;" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></a><a href="https://music.apple.com/us/artist/tune4learn/1781419056" target="_blank" class="soc-btn" style="color:#FC3C44;" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701z"/></svg></a><a href="https://www.tiktok.com/@tune4learn" target="_blank" class="soc-btn" style="color:#ffffff;" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg></a><a href="https://www.instagram.com/Tune4Learn" target="_blank" class="soc-btn" style="color:#E1306C;" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg></a><a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" class="soc-btn" style="color:#FF6B35;" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></a></div></div><div class="footer-col"><h5>For Kids</h5><ul><li><a href="videos.html">Videos &amp; Songs</a></li><li><a href="videos.html">Coloring Books</a></li><li><a href="videos.html">World Days</a></li><li><a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener noreferrer">YouTube</a></li></ul></div><div class="footer-col"><h5>For Teachers</h5><ul><li><a href="teachers.html">Activity Packs</a></li><li><a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" rel="noopener noreferrer">TPT Store</a></li><li><a href="research.html">Research &amp; Blog</a></li></ul></div><div class="footer-col"><h5>Follow Us</h5><ul><li><a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener noreferrer">YouTube</a></li><li><a href="https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh" target="_blank" rel="noopener noreferrer">Spotify</a></li><li><a href="https://music.apple.com/us/artist/tune4learn/1781419056" target="_blank" rel="noopener noreferrer">Apple Music</a></li><li><a href="https://www.instagram.com/Tune4Learn" target="_blank" rel="noopener noreferrer">Instagram</a></li><li><a href="https://www.tiktok.com/@tune4learn" target="_blank" rel="noopener noreferrer">TikTok</a></li></ul></div></div><div class="footer-bottom"><p>© 2026 Tune4Learn · All rights reserved</p></div></div></footer>
+<footer class="k-foot">
+  <img src="assets/t4l-logo.webp" alt="Tune4Learn" width="96" height="96" loading="lazy">
+  <nav aria-label="Footer links">
+    <a href="teachers.html">For Families &amp; Teachers</a>
+    <a class="js-channel" href="https://www.youtube.com/@Tune4Learn" rel="noopener">YouTube</a>
+    <a href="faq.html">FAQ</a>
+    <a href="research.html">Research</a>
+  </nav>
+  <p>© 2026 Tune4Learn · Where Learning Sings</p>
+</footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-<script>
-function toggleMenu() {
-  var menu = document.getElementById('mobileMenu');
-  if (menu) menu.classList.toggle('open');
-}
-document.addEventListener('DOMContentLoaded', function() {
-  document.addEventListener('click', function(e) {
-    var menu = document.getElementById('mobileMenu');
-    var btn = document.getElementById('hamburger');
-    if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
-      menu.classList.remove('open');
-    }
-  });
-});
-</script><script>
-  const nav=document.getElementById('navbar');
-  window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
-  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in');}),{threshold:0.12,rootMargin:'0px 0px -36px 0px'});
-  document.querySelectorAll('.aos').forEach(el=>obs.observe(el));
-</script>
-<!-- ============================================ -->
-<!-- SUPPORT US WIDGET — Floating button + modal  -->
-<!-- Bu bloğu tüm sayfalarda <script>
-/* ── GA4 Event Tracking ── Delegated listener */
-(function(){
-  if(!window.gtag) return;
-  document.addEventListener('click', function(e){
-    const a = e.target.closest('a,button,[data-track]');
-    if(!a) return;
-    const href = (a.getAttribute('href')||'').toLowerCase();
-    const txt = (a.textContent||'').trim().substring(0,60);
-    const track = a.getAttribute('data-track');
-    // YouTube video clicks
-    if(href.includes('youtube.com/watch') || href.includes('youtu.be/')){
-      const m = href.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
-      gtag('event','video_click',{video_id:m?m[1]:'',video_title:txt,page:location.pathname});
-    }
-    // PDF downloads
-    else if(href.endsWith('.pdf') || a.hasAttribute('download')){
-      gtag('event','file_download',{file_name:href.split('/').pop(),file_type:'pdf',page:location.pathname});
-    }
-    // External links (outbound)
-    else if(href.startsWith('http') && !href.includes(location.hostname) && !href.startsWith('mailto:')){
-      gtag('event','click_outbound',{link_url:href,link_text:txt});
-    }
-    // Custom-tracked actions (data-track="maze_open" etc.)
-    if(track){
-      gtag('event',track,{label:txt,page:location.pathname});
-    }
-  }, {passive:true});
-})();
-</script>
-</body> etiketinden  -->
-<!-- HEMEN ÖNCE yapıştırın. İş yapacak 3 parça:   -->
-<!-- 1) CSS (stil) 2) HTML (buton+modal) 3) JS    -->
-<!-- ============================================ -->
-<style>
-/* Floating buton (her sayfada sağ alt) */
-.support-fab {
-  position: fixed; right: 20px; bottom: 20px; z-index: 997;
-  display: inline-flex; align-items: center; gap: 8px;
-  background: linear-gradient(135deg, #FF4757 0%, #FF6B35 100%);
-  color: white; font-family: 'Nunito', sans-serif; font-weight: 900;
-  font-size: 0.9rem; padding: 12px 20px; border-radius: 30px;
-  border: none; cursor: pointer; text-decoration: none;
-  box-shadow: 0 6px 20px rgba(255,71,87,0.35);
-  transition: transform 0.2s, box-shadow 0.2s;
-  animation: supportPulse 2.5s ease-in-out infinite;
-}
-.support-fab:hover {
-  transform: translateY(-3px) scale(1.04);
-  box-shadow: 0 10px 28px rgba(255,71,87,0.5);
-  animation: none;
-}
-.support-fab-icon { font-size: 1.2rem; }
-@keyframes supportPulse {
-  0%, 100% { box-shadow: 0 6px 20px rgba(255,71,87,0.35); }
-  50% { box-shadow: 0 6px 28px rgba(255,71,87,0.6); }
-}
+<dialog class="k-shelf" id="shelf" aria-labelledby="s-title">
+  <div class="k-shelf-top"><span id="s-head"></span><h3 id="s-title"></h3>
+  <button class="k-close" type="button" id="s-close" aria-label="Close">×</button></div>
+  <ul class="k-shelf-list" id="s-list"></ul>
+</dialog>
 
-/* Modal overlay */
-.support-modal {
-  display: none; position: fixed; inset: 0; z-index: 9998;
-  background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-  align-items: center; justify-content: center; padding: 20px;
-  animation: supportFadeIn 0.25s ease-out;
-}
-.support-modal.open { display: flex; }
-@keyframes supportFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+<dialog class="k-modal" id="modal" aria-labelledby="m-title">
+  <button class="k-close" type="button" id="m-close" aria-label="Close">×</button>
+  <div class="k-media" id="m-media"></div>
+  <h3 id="m-title"></h3>
+</dialog>
 
-/* Modal içeriği */
-.support-box {
-  background: white; border-radius: 24px; max-width: 440px; width: 100%;
-  padding: 2rem 1.8rem; position: relative; max-height: 90vh; overflow-y: auto;
-  animation: supportSlideUp 0.3s ease-out;
-  font-family: 'Nunito', sans-serif;
-}
-@keyframes supportSlideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.support-close {
-  position: absolute; top: 14px; right: 14px; width: 36px; height: 36px;
-  background: #f4f4f4; border: none; border-radius: 50%; cursor: pointer;
-  font-size: 1.3rem; color: #666; display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s;
-}
-.support-close:hover { background: #ff4757; color: white; transform: rotate(90deg); }
-
-.support-head { text-align: center; margin-bottom: 1.4rem; }
-.support-emoji { font-size: 2.8rem; display: block; margin-bottom: 0.5rem; }
-.support-title {
-  font-family: 'Fredoka One', cursive; font-size: 1.6rem;
-  color: #1E2A3A; margin-bottom: 0.4rem;
-}
-.support-subtitle {
-  font-size: 0.9rem; color: #7F8C8D; font-weight: 600;
-  line-height: 1.55;
-}
-
-/* Opsiyon kartları */
-.support-options { display: flex; flex-direction: column; gap: 10px; }
-.support-option {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 16px; border-radius: 16px; text-decoration: none;
-  border: 2px solid #f0f0f0; background: white;
-  transition: all 0.2s;
-}
-.support-option:hover {
-  transform: translateX(4px); border-color: var(--support-color, #23BFEF);
-  background: var(--support-bg, #f7fbff);
-}
-.support-option-emoji { font-size: 1.7rem; flex-shrink: 0; }
-.support-option-body { flex: 1; }
-.support-option-title {
-  font-size: 0.95rem; font-weight: 900; color: #1E2A3A;
-  margin-bottom: 2px;
-}
-.support-option-desc {
-  font-size: 0.78rem; color: #7F8C8D; font-weight: 600;
-  line-height: 1.4;
-}
-.support-option-arrow {
-  color: var(--support-color, #23BFEF); font-weight: 900; font-size: 1.2rem;
-}
-
-/* Alt not */
-.support-foot {
-  margin-top: 1.4rem; padding-top: 1.2rem;
-  border-top: 1.5px dashed #e5e5e5;
-  text-align: center;
-}
-.support-foot p {
-  font-size: 0.8rem; color: #7F8C8D; font-weight: 600; margin-bottom: 0.7rem;
-}
-.support-share-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-.support-share-btn {
-  width: 40px; height: 40px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  text-decoration: none; font-size: 1.1rem; color: white;
-  transition: transform 0.2s;
-}
-.support-share-btn:hover { transform: scale(1.15); }
-.ss-yt { background: #FF0000; }
-.ss-em { background: #EA4335; }
-.ss-cp { background: #6C3FA0; border: none; cursor: pointer; font-family: inherit; font-size: 1.1rem; }
-
-@media (max-width: 480px) {
-  .support-fab { padding: 10px 16px; font-size: 0.85rem; right: 14px; bottom: 14px; }
-  .support-box { padding: 1.6rem 1.3rem; border-radius: 20px; }
-  .support-title { font-size: 1.35rem; }
-}
-
-/* Skip to content link — visible on keyboard focus only */
-.skip-link{position:absolute;top:-100px;left:8px;background:#6C3FA0;color:#fff;padding:10px 18px;border-radius:0 0 10px 10px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:0.92rem;text-decoration:none;z-index:9999;transition:top 0.2s;}
-.skip-link:focus{top:0;outline:3px solid #FFD93D;}
-</style>
-
-<button class="support-fab" onclick="openSupportModal()">
-  <span class="support-fab-icon">💛</span>
-  <span>Support Us</span>
-</button>
-
-<div class="support-modal" id="supportModal" onclick="if(event.target===this)closeSupportModal()">
-  <div class="support-box">
-    <button class="support-close" onclick="closeSupportModal()" aria-label="Close">✕</button>
-
-    <div class="support-head">
-      <span class="support-emoji">💛</span>
-      <div class="support-title">Support Tune4Learn</div>
-      <p class="support-subtitle">Every contribution helps us create more educational songs and free resources for children around the world!</p>
-    </div>
-
-    <div class="support-options">
-
-      <a href="https://www.teacherspayteachers.com/store/tune4learn" target="_blank" rel="noopener"
-         class="support-option" style="--support-color:#FF6B35; --support-bg:#fff6ed;">
-        <span class="support-option-emoji">🛒</span>
-        <div class="support-option-body">
-          <div class="support-option-title">Shop on TPT</div>
-          <div class="support-option-desc">Premium activity packs &amp; teaching resources</div>
-        </div>
-        <span class="support-option-arrow">→</span>
-      </a>
-
-      <a href="https://ko-fi.com/tune4learn" target="_blank" rel="noopener"
-         class="support-option" style="--support-color:#29ABE0; --support-bg:#f0f9ff;">
-        <span class="support-option-emoji">☕</span>
-        <div class="support-option-body">
-          <div class="support-option-title">Buy Us a Coffee on Ko-fi</div>
-          <div class="support-option-desc">One-time tips &amp; monthly support</div>
-        </div>
-        <span class="support-option-arrow">→</span>
-      </a>
-
-      <a href="https://youtube.com/@tune4learn?sub_confirmation=1" target="_blank" rel="noopener"
-         class="support-option" style="--support-color:#FF4757; --support-bg:#fff5f5;">
-        <span class="support-option-emoji">🔔</span>
-        <div class="support-option-body">
-          <div class="support-option-title">Subscribe on YouTube</div>
-          <div class="support-option-desc">Free — but means the world to us!</div>
-        </div>
-        <span class="support-option-arrow">→</span>
-      </a>
-
-    </div>
-
-    <div class="support-foot">
-      <p>💬 <strong>Free &amp; easy:</strong> Share with fellow teachers!</p>
-      <div class="support-share-row">
-        <a href="https://youtube.com/@tune4learn" target="_blank" rel="noopener" class="support-share-btn ss-yt" aria-label="YouTube" title="Our YouTube channel">▶</a>
-        <a href="mailto:?subject=Tune4Learn%20-%20Educational%20Songs&body=I%20found%20this%20great%20resource%20for%20teachers%20and%20parents:%20https://tune4learn.com" class="support-share-btn ss-em" aria-label="Email" title="Share via email">@</a>
-        <button onclick="copyT4LLink(this)" class="support-share-btn ss-cp" aria-label="Copy link" title="Copy link">⧉</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<script>
-function copyT4LLink(btn) {
-  const url = 'https://tune4learn.com';
-  const original = btn.innerHTML;
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(() => {
-      btn.innerHTML = '✓';
-      btn.style.background = '#2ED573';
-      setTimeout(() => { btn.innerHTML = original; btn.style.background = ''; }, 1500);
-    }).catch(() => fallbackCopy(url, btn, original));
-  } else {
-    fallbackCopy(url, btn, original);
-  }
-}
-function fallbackCopy(text, btn, original) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
-  document.body.appendChild(ta);
-  ta.select();
-  try {
-    document.execCommand('copy');
-    btn.innerHTML = '✓';
-    btn.style.background = '#2ED573';
-    setTimeout(() => { btn.innerHTML = original; btn.style.background = ''; }, 1500);
-  } catch (e) {}
-  document.body.removeChild(ta);
-}
-function openSupportModal() {
-  document.getElementById('supportModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeSupportModal() {
-  document.getElementById('supportModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeSupportModal();
-});
-</script>
-<!-- === SUPPORT WIDGET SONU === -->
-
+<script src="settings.js"></script>
+<script src="kids.js?v=2"></script>
 </body>
 </html>

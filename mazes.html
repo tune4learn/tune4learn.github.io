@@ -371,7 +371,13 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
       "logo": "https://tune4learn.com/assets/t4l-logo.png",
       "description": "Educational music platform for children ages 3–8. Songs, coloring books and games that support global awareness and early childhood education.",
       "sameAs": [
-        "https://www.youtube.com/@Tune4Learn"
+        "https://www.youtube.com/@Tune4Learn",
+        "https://music.youtube.com/channel/UC-Tune4Learn",
+        "https://open.spotify.com/intl-tr/artist/0RtYX9g5U4x5OBQBbZ7gUh",
+        "https://music.apple.com/us/artist/tune4learn/1781419056",
+        "https://www.instagram.com/Tune4Learn",
+        "https://www.tiktok.com/@tune4learn",
+        "https://www.teacherspayteachers.com/store/tune4learn"
       ]
     },
     {
@@ -394,33 +400,6 @@ canvas#mazeCanvas{border-radius:12px;border:2.5px solid #E2E8F0;touch-action:non
 }
 </script>
 <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SSPW3HB9F8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-SSPW3HB9F8');
-  // ── GA4 event helpers ──
-  window.t4lTrack = function(name, params){
-    try { gtag('event', name, params || {}); } catch(e) {}
-  };
-  // Auto-track outbound nav links (header/footer) once DOM is ready
-  document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('a[href]').forEach(function(a){
-      const href = a.getAttribute('href') || '';
-      // Track internal nav (.html links). YouTube/outbound is handled per-page.
-      if (href.endsWith('.html')) {
-        a.addEventListener('click', function(){
-          window.t4lTrack('nav_click', {
-            link_url: href,
-            link_text: (a.textContent || '').trim().substring(0, 80),
-            page: location.pathname
-          });
-        }, { passive: true });
-      }
-    });
-  });
-</script>
 <!-- Schema.org / JSON-LD for SEO rich results -->
 <script type="application/ld+json">
 {

@@ -237,33 +237,6 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--dk);overfl
 }
 </script>
 <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SSPW3HB9F8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-SSPW3HB9F8');
-  // ── GA4 event helpers ──
-  window.t4lTrack = function(name, params){
-    try { gtag('event', name, params || {}); } catch(e) {}
-  };
-  // Auto-track outbound nav links (header/footer) once DOM is ready
-  document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('a[href]').forEach(function(a){
-      const href = a.getAttribute('href') || '';
-      // Track internal nav (.html links). YouTube/outbound is handled per-page.
-      if (href.endsWith('.html')) {
-        a.addEventListener('click', function(){
-          window.t4lTrack('nav_click', {
-            link_url: href,
-            link_text: (a.textContent || '').trim().substring(0, 80),
-            page: location.pathname
-          });
-        }, { passive: true });
-      }
-    });
-  });
-</script>
 <!-- Schema.org / JSON-LD for SEO rich results -->
 <script type="application/ld+json">
 {
